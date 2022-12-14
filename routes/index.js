@@ -4,15 +4,16 @@ var router = express.Router();
 var menuClass = require('../config/menu_model')
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/',  async (req, res, next) => {
 
-  const menus = new menuClass()
+  const classMenus = new menuClass()
 
-  menus.refactorMenu( function (err, res) {
-    // console.log(res)
-  } )
+  var refactorMenu = await classMenus.refactorMenu()
 
-  res.render('index', { title: 'Express' });
+  console.log(refactorMenu)
+
+  res.render('index', { title: 'Express', 'menu': classMenus.bikinMenu(refactorMenu) });
+
 });
 
 module.exports = router;

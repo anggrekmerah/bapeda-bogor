@@ -68,46 +68,64 @@ module.exports = class menu_model extends crud_model  {
     
     }
 
-    bikinMenu(menus) {
+    bikinMenu(menus, isSub = false) {
   
-        var html = '<ul>'
+        var html = ''
       
         for (var key in menus) {
           
           if(menus[key].submenu) {
       
-            html += '<li>' + menus[key].menu_name + '<ul>' + bikinMenu(menus[key].submenu) + '</ul> </li>'
+            html += '<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts' + menus[key].id_menu + '" aria-expanded="false" aria-controls="collapseLayouts">'
             
+                html += '<div class="sb-nav-link-icon") <i class="' + menus[key].icon + '"></i></div>' 
+                
+                    html += menus[key].menu_name
+                    
+                html += '<div class="sb-sidenav-collapse-arrow"> <i class="fas fa-angle-down"></i></div>'
+
+            html += '</a>'
+            
+            html += '<div class="collapse" id="collapseLayouts' + menus[key].id_menu + '" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">'
+            html += '<nav class="sb-sidenav-menu-nested nav">'
+            html += this.bikinMenu(menus[key].submenu, true) 
+            html += '</nav>'
+            html += '</div>'
+
           } else {
       
-            html += '<li>' + menus[key].menu_name + '</li>'
+            if(isSub) {
+                html += '<a class="nav-link" href="index.html">' + menus[key].menu_name + '</a>'
+            } else {
+                html += '<a class="nav-link" href="index.html"> <div class="sb-nav-link-icon"> <i class="fas fa-tachometer-alt">' + menus[key].menu_name + '</i></div></a>'
+            }
+            
       
           }
       
       
         }
       
-        html += '</ul>'
-      
         return html
       
       }
     
-    refactorMenu( callback ) {
+    refactorMenu( ) {
 
-        this.getAll( { "table" : "bapenda.m_menu", "id_field" : "parent_id",  "order" : "asc" } ).then( (res) => {
+        return new Promise((resolve, reject) => {
+
+            this.getAll( { "table" : "bapenda.m_menu", "id_field" : "parent_id",  "order" : "asc" } ).then( (res) => {
             
-            var menus = this.nestedChildren2 (res)
+                resolve( this.nestedChildren2 (res) )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
 
-            console.dir(menus, {depth: null})
-
-            return callback(false, menu)
-    
-        }).catch( (err) => {
-            
-            return callback(true, err)
-    
         })
+        
 
     }
 
