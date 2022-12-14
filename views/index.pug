@@ -1,9 +1,107 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  h1 testsdf
-  a(href="http://", target="_blank", rel="noopener noreferrer", class="btn btn-primary") test link  
+  div(class="container-fluid" style="margin-top : 45px;")
+    div(class="row")
+      
+      div(class="col-md-2")
+        div(class="card")
+          div(class="card-header blinking-in")
+            i(class="fa fa-phone me-2") 
+            |  Incoming call
+          div(class="card-body")
+            p(class="card-text") 
+              span  From : 08212071292
+        
+      div(class="col-md-2")
+        div(class="card")
+          div(class="card-header blinking-out")
+            i(class="fa fa-phone me-2") 
+            |  Outgoing call
+          div(class="card-body")
+            p(class="card-text")  From : (Extension) 997
+            p(class="card-text")  To : 08212071292
 
-//- include footer
+    div(class="row mt-3")
+
+      div(class="col-md-4 border pt-2")
+        
+        div(class="row p-0")
+
+          div(class="col-md-3 d-flex justify-content-center pb-2")
+            div(class="rounded-circle overflow-hidden border border-primary  border-5" style="width:80px; height: 80px")
+              img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px")
+          
+          div(class="col-md-9 ps-2")
+            table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+              tr
+                td Maisaroh
+                  span(class="badge bg-primarys float-end") AVAILABLE
+                  
+              tr 
+                td ( Extension ) 9957
+                  span(class="badge bg-primarys ms-1 float-end") Calls taken 
+                    span(class="badge bg-warning text-dark") 1
+              
+          div(class="col-md-12 bg-primarys d-flex bd-highlight ")
+            div(class="p-2 flex-fill bd-highlight") 
+              span(class="badge rounded-pill bg-warning text-dark") IDLE
+            div(class="p-2 flex-fill bd-highlight") 
+              span(class="ms-1 text-light") 00:00:00
+            div(class="p-2 flex-fill bd-highlight") 
+              span(class="ms-1 text-light") 082122071292
+            div(class="p-2 flex-fill bd-highlight") 
+              button(class="btn btn-warning btn-sm float-end ms-1") Barge
+              button(class="btn btn-warning btn-sm float-end ms-1") Spy
+              button(class="btn btn-warning btn-sm float-end ms-1") Spy Wishp
+
+      div(class="col-md-4 border bg-disable pt-2")
+        
+        div(class="row p-0")
+
+          div(class="col-md-3 d-flex justify-content-center pb-2")
+            div(class="rounded-circle overflow-hidden border border-disable  border-5" style="width:80px; height: 80px")
+              img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px; -webkit-filter: grayscale(100%); filter: grayscale(100%);")
+          
+          div(class="col-md-9 ps-2")
+            table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+              tr
+                td Maisaroh
+                  span(class="badge bg-secondary float-end") UNAVAILABLE
+                  
+              tr 
+                td ( Extension ) 9957
+                  span(class="badge bg-secondary ms-1 float-end") Calls taken 
+                    span(class="badge bg-warning text-dark") 1
+              
+          div(class="col-md-12 bg-disable d-flex bd-highlight ")
+            div(class="p-2 flex-fill bd-highlight") 
+              span(class="badge rounded-pill bg-secondary") OFF
+            div(class="p-2 flex-fill bd-highlight") 
+              span(class="ms-1 text-light") 00:00:00
+            div(class="p-2 flex-fill bd-highlight") 
+              span(class="ms-1 text-light") 082122071292
+            div(class="p-2 flex-fill bd-highlight") 
+              button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Barge
+              button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Spy
+              button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Spy Wishp
+            
+
+
+
+      
+
+      
+
+        
+
+        
+
+
+
+      
+        
+                  
+        
+
+            

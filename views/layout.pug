@@ -13,10 +13,56 @@ html
 
     link(href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet")
     link(href="/stylesheets/css/styles.css" rel="stylesheet")
-    
-    script(src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous")
+
+    script(src="https://kit.fontawesome.com/efdf8af5d0.js" crossorigin="anonymous")
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js") 
     
+    style(type="text/css").
+      
+      @keyframes blinking-in {
+        0% {
+          background-color: #cef1b4;
+          
+        }
+      
+        100% {
+          background-color: #abef78;
+          
+        }
+      }
+
+      @keyframes blinking-out {
+        0% {
+          background-color: #edafaf;
+          
+        }
+      
+        100% {
+          background-color: #e37676;
+          
+        }
+      }
+
+      .blinking-in {
+       animation: blinking-in 1s infinite;
+      }
+
+      .blinking-out {
+       animation: blinking-out 1s infinite;
+      }
+
+      .img-cover {
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .bg-primarys { background-color:#1da1f2; }
+      .border-primary { border-color:#1da1f2 !important; }
+      .border-primary { color:#1da1f2 !important; }
+      .bg-disable { background-color:#cfcdcd; }
+      
+
+
   body(class="sb-nav-fixed")
 
     nav(class="sb-topnav navbar navbar-expand navbar-dark bg-dark")
