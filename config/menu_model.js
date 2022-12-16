@@ -71,14 +71,32 @@ module.exports = class menu_model extends crud_model  {
     bikinMenu(menus, isSub = false) {
   
         var html = ''
-      
+                        
         for (var key in menus) {
           
           if(menus[key].submenu) {
       
-            html += '<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts' + menus[key].id_menu + '" aria-expanded="false" aria-controls="collapseLayouts">'
+            // html += '<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages' + menus[key].id_menu + '" aria-expanded="false" aria-controls="collapsePages">'
+            // html += '<div class="sb-nav-link-icon"> <i class="' + menus[key].icon + '"></i></div>'
+            // html += menus[key].menu_name
+            // html += '<div class="sb-sidenav-collapse-arrow"> <i class="fas fa-angle-down"></i></div>'
+            // html += '</a>'
             
-                html += '<div class="sb-nav-link-icon") <i class="' + menus[key].icon + '"></i></div>' 
+
+            // html += '<div class="collapse" id="collapsePages' + menus[key].id_menu + '" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion' + menus[key].parent_id + '" >'
+            //     html += '<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages' + menus[key].id_menu + '" >'
+                    
+            //         html += this.bikinMenu(menus[key].submenu, true) 
+                       
+                    
+            //     html += '</nav>'
+            // html += '</div>'
+
+            
+
+            html += '<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts' + menus[key].id_menu + '" aria-expanded="false" aria-controls="collapseLayouts' + menus[key].id_menu + '">'
+            
+                html += '<div class="sb-nav-link-icon"> <i class="' + menus[key].icon + '"></i></div>' 
                 
                     html += menus[key].menu_name
                     
@@ -86,8 +104,8 @@ module.exports = class menu_model extends crud_model  {
 
             html += '</a>'
             
-            html += '<div class="collapse" id="collapseLayouts' + menus[key].id_menu + '" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">'
-            html += '<nav class="sb-sidenav-menu-nested nav">'
+            html += '<div class="collapse" id="collapseLayouts' + menus[key].id_menu + '" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages' + menus[key].id_menu + '">'
+            html += '<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages' + menus[key].id_menu + '">'
             html += this.bikinMenu(menus[key].submenu, true) 
             html += '</nav>'
             html += '</div>'
@@ -95,7 +113,23 @@ module.exports = class menu_model extends crud_model  {
           } else {
       
             if(isSub) {
-                html += '<a class="nav-link" href="index.html">' + menus[key].menu_name + '</a>'
+                if(menus[key].submenu) {
+
+                    html += '<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts' + menus[key].id_menu + '" aria-expanded="false" aria-controls="collapseLayouts' + menus[key].id_menu + '" >'
+                        html += menus[key].menu_name
+                        html += '<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>'
+                    html += '</a>'
+
+                    // html += '<div class="collapse" id="pagesCollapse' + menus[key].id_menu + '" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages' + menus[key].id_menu + '" >'
+                    //     html += '<nav class="sb-sidenav-menu-nested nav">'
+                    //         html += this.bikinMenu(menus[key].submenu, true) 
+                    //     html += '</nav>'
+                    // html += '</div>'
+                    
+                } else {
+                    html += '<a class="nav-link" href="'+menus[key].menu_url+'">' + menus[key].menu_name + '</a>'
+                }
+                
             } else {
                 html += '<a class="nav-link" href="index.html"> <div class="sb-nav-link-icon"> <i class="fas fa-tachometer-alt">' + menus[key].menu_name + '</i></div></a>'
             }

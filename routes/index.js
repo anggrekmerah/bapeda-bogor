@@ -10,8 +10,6 @@ router.get('/',  async (req, res, next) => {
 
   var refactorMenu = await classMenus.refactorMenu()
 
-  console.log(refactorMenu)
-
   res.render('index', { title: 'Express', 'menu': classMenus.bikinMenu(refactorMenu) });
 
 });

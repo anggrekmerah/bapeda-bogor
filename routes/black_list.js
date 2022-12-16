@@ -10,7 +10,7 @@ router.get('/',  async (req, res, next) => {
 
   var refactorMenu = await classMenus.refactorMenu()
 
-  res.render('users', { title: 'users', 'menu': classMenus.bikinMenu(refactorMenu) });
+  res.render('black_list', { title: 'black_list', 'menu': classMenus.bikinMenu(refactorMenu) });
 
 });
 

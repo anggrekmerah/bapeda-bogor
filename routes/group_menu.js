@@ -10,7 +10,7 @@ router.get('/',  async (req, res, next) => {
 
   var refactorMenu = await classMenus.refactorMenu()
 
-  res.render('users', { title: 'users', 'menu': classMenus.bikinMenu(refactorMenu) });
+  res.render('group_menu', { title: 'group_menu', 'menu': classMenus.bikinMenu(refactorMenu) });
 
 });
 
