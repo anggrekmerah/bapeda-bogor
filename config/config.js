@@ -1,6 +1,9 @@
 
 // require('dotenv').config({path:'/home/git/sms/.env'})
 require('dotenv').config({path:'.env'})
+
+const mariadb = require('mariadb');
+
 const env = process.env;
 
 const config = {
@@ -14,4 +17,17 @@ const config = {
   
 };
 
-module.exports = config;
+const pool = mariadb.createPool(config.db);
+
+// expose the ability to create new connections
+module.exports={
+    getConnection: function(){
+      return new Promise(function(resolve,reject){
+        pool.getConnection().then(function(connection){
+          resolve(connection);
+        }).catch(function(error){
+          reject(error);
+        });
+      });
+    }
+  }

@@ -76,7 +76,7 @@ router.get('/datatable',  async (req, res, next) => {
     ]
 
     var data = await menuModels.datatable(req, cols)
-    
+   
     res.json(data)
 
 });

@@ -201,6 +201,7 @@ module.exports = class ssp extends crud_model {
                 
                 this.execQuery( sqlFilter, bindings).then( (resFilter) => {
 
+                    
                     var recordsFiltered = resFilter[0]['total_filter'];
 
                     // Total data set length
