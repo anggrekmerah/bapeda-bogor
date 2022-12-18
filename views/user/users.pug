@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        a(class="btn btn-primary float-end mb-2" href="group/add") Add User
+        table(class="table table-sm table-bordered display compact table-striped" id="tableUser")
+            thead 
+                tr
+                    th(scope="col" class="text-center") No
+                    th(scope="col") Group Name 
+                    th(scope="col") Extension
+                    th(scope="col") First Name 
+                    th(scope="col") Last Name
+                    th(scope="col") Parent User
+                    th(scope="col") Age 
+                    th(scope="col") Last Login
+                    th(scope="col") Last Logout
+                    th(scope="col") Created By 
+                    th(scope="col") Updated By
+                    th(scope="col" class="text-center") Action
+            tbody 
+               

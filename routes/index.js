@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var menuClass = require('../config/menu_model')
+var menuClass = require('../config/navbar_model')
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {

@@ -1,0 +1,166 @@
+extends ../layout
+
+block content
+    h1(class="mt-4") #{title}
+
+    div(class="container-fluid overflow-hidden" style="margin-top : 35px;")
+        div(class="row bg-secondary px-0 py-2")
+            div(class="col")
+                div(class="card")
+                    div(class="row")
+                        div(class="col-md-3 text-center pt-1" )
+                            h1: i(class="fas fa-phone")
+                        div(class="col-md-8")
+                            span Incoming Calls
+                            span: h4 5
+            //- div(class="col")
+            //-     div(class="card")
+            //-         div(class="row")
+            //-             div(class="col-md-3 text-center pt-1 " )
+            //-                 h1: i(class="fas fa-phone-alt")
+            //-             div(class="col-md-8")
+            //-                 span Outgoing Calls
+            //-                 span: h4 5
+            div(class="col")
+                div(class="card")
+                    div(class="row")
+                        div(class="col-md-3 text-center pt-1 " )
+                            h1: i(class="fas fa-phone-volume")
+                        div(class="col-md-8")
+                            span Receive Calls
+                            span: h4 5
+            //- div(class="col")
+            //-     div(class="card")
+            //-         div(class="row")
+            //-             div(class="col-md-3 text-center pt-1 " )
+            //-                 h1: i(class="fas fa-blender-phone")
+            //-             div(class="col-md-8")
+            //-                 span Hold Calls
+            //-                 span: h4 5
+            div(class="col")
+                div(class="card")
+                    div(class="row")
+                        div(class="col-md-3 text-center pt-1 " )
+                            h1: i(class="fas fa-phone-slash")
+                        div(class="col-md-8")
+                            span Abandon Calls
+                            span: h4 5
+        div(class="row mt-1")
+            
+            div(class="col-md-8 p-0 pe-1")
+                div(class="col-md-12 bg-secondary p-2")
+                    div(id="chartContainer" style="height: 650px; width: auto; margin: 0px auto;")
+
+            div(class="col-md-4 bg-secondary p-2")
+            
+                div(class="card border")
+                    div(class="card-header  text-dark") Agent List
+                        div(class="row border pt-2 mt-1")
+                            div(class="col-md-3 d-flex justify-content-center pb-2")
+                                div(class="rounded-circle overflow-hidden border border-primary  border-5" style="width:80px; height: 80px")
+                                    img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px")
+                        
+                            div(class="col-md-9 ps-2")
+                                table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+                                    tr
+                                        td Maisaroh
+                                            span(class="badge bg-primarys float-end") AVAILABLE
+                                        
+                                    tr 
+                                        td ( Extension ) 9957
+                                            span(class="badge bg-primarys ms-1 float-end") Calls taken 
+                                                span(class="badge bg-warning text-dark") 1
+                            
+                            div(class="col-md-12 bg-dark d-flex bd-highlight ")
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="badge rounded-pill bg-warning text-dark") IDLE
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="ms-1 text-light") 00:00:00
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="ms-1 text-light") 082122071292
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    button(class="btn btn-warning btn-sm float-end ms-1") Barge
+                                    button(class="btn btn-warning btn-sm float-end ms-1") Wishp
+                                    button(class="btn btn-warning btn-sm float-end ms-1") Spy 
+                        div(class="row border pt-2 mt-1")
+                            div(class="col-md-3 d-flex justify-content-center pb-2")
+                                div(class="rounded-circle overflow-hidden border border-primary  border-5" style="width:80px; height: 80px")
+                                    img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px")
+                        
+                            div(class="col-md-9 ps-2")
+                                table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+                                    tr
+                                        td Maisaroh
+                                            span(class="badge bg-primarys float-end") AVAILABLE
+                                        
+                                    tr 
+                                        td ( Extension ) 9957
+                                            span(class="badge bg-primarys ms-1 float-end") Calls taken 
+                                                span(class="badge bg-warning text-dark") 1
+                            
+                            div(class="col-md-12 bg-dark d-flex bd-highlight ")
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="badge rounded-pill bg-warning text-dark") IDLE
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="ms-1 text-light") 00:00:00
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="ms-1 text-light") 082122071292
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    button(class="btn btn-warning btn-sm float-end ms-1") Barge
+                                    button(class="btn btn-warning btn-sm float-end ms-1") Wishp
+                                    button(class="btn btn-warning btn-sm float-end ms-1") Spy 
+                        div(class="row border pt-2 mt-1")
+                            div(class="col-md-3 d-flex justify-content-center pb-2")
+                                div(class="rounded-circle overflow-hidden border border-disable  border-5" style="width:80px; height: 80px")
+                                    img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px; -webkit-filter: grayscale(100%); filter: grayscale(100%);")
+                            
+                            div(class="col-md-9 ps-2")
+                                table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+                                    tr
+                                        td Maisaroh
+                                            span(class="badge bg-secondary float-end") UNAVAILABLE
+                                        
+                                    tr 
+                                        td ( Extension ) 9957
+                                            span(class="badge bg-secondary ms-1 float-end") Calls taken 
+                                                span(class="badge bg-warning text-dark") 1
+                            
+                            div(class="col-md-12 bg-disable d-flex bd-highlight ")
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="badge rounded-pill bg-secondary") OFF
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="ms-1 text-light") 00:00:00
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="ms-1 text-light") 082122071292
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Barge
+                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Wishp
+                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Spy 
+                        div(class="row border pt-2 mt-1")
+                            div(class="col-md-3 d-flex justify-content-center pb-2")
+                                div(class="rounded-circle overflow-hidden border border-disable  border-5" style="width:80px; height: 80px")
+                                    img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px; -webkit-filter: grayscale(100%); filter: grayscale(100%);")
+                            
+                            div(class="col-md-9 ps-2")
+                                table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+                                    tr
+                                        td Maisaroh
+                                            span(class="badge bg-secondary float-end") UNAVAILABLE
+                                        
+                                    tr 
+                                        td ( Extension ) 9957
+                                            span(class="badge bg-secondary ms-1 float-end") Calls taken 
+                                                span(class="badge bg-warning text-dark") 1
+                            
+                            div(class="col-md-12 bg-disable d-flex bd-highlight ")
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="badge rounded-pill bg-secondary") OFF
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="ms-1 text-light") 00:00:00
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    span(class="ms-1 text-light") 082122071292
+                                div(class="p-2 flex-fill bd-highlight") 
+                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Barge
+                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Wishp
+                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Spy
+                        

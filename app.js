@@ -3,18 +3,17 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var groupRouter = require('./routes/group');
-var menuRouter = require('./routes/menu');
-var group_menuRouter = require('./routes/group_menu');
-var sitemapRouter = require('./routes/sitemap');
 
-var phone_bookRouter = require('./routes/phone_book');
-var black_listRouter = require('./routes/black_list');
-var extensionRouter = require('./routes/extension');
+// middleware
+var menuMids = require('./middleware/menuMid');
+var renderObject = require('./middleware/renderObject');
 
+// routes
+var routers = require('./routers');
+
+ 
 var app = express();
 
 // view engine setup
@@ -28,15 +27,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/group', groupRouter);
-app.use('/menu', menuRouter);
-app.use('/group-menu', group_menuRouter);
-app.use('/sitemap', sitemapRouter);
-app.use('/phone-book', phone_bookRouter);
-app.use('/black-list', black_listRouter);
-app.use('/extension', extensionRouter);
+app.use(menuMids.menuMiddleware)
+app.use(renderObject.renderObjectMiddleware)
+
+app.use(session({
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  secret: '!!@@#@$@#!$',
+  cookie: { secure: false }
+}));
+
+routers.routes(app)
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

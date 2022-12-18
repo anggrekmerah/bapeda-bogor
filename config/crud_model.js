@@ -12,64 +12,96 @@ module.exports = class crud_model  {
        
     }
 
-    async execQuery(sql) {    
+    async execQuery(sql, binding = []) {     
   
-      return await this.conn.query(sql); 
-    
+      var conn = await this.conn.getConnection()
+
+      var data = await conn.query(sql, binding); 
+      
+      conn.end()
+
+      return data  
+
     }
 
     async getAll(params) {
 
-      var sql = "SELECT * FROM " + params.table  + " order by " + params.id_field + " " + params.order  
-  
-      return await this.conn.query(sql); 
+      var conn = await this.conn.getConnection()
+      
+        var sql = "SELECT * FROM " + params.table  + " order by " + params.id_field + " " + params.order  
+    
+        var data = await conn.query(sql);
+
+      conn.end()
+       
+      return data
     
     }
 
     async getById(params) {
 
-      var sql = "SELECT * FROM " + params.table + " where " + params.id_key + " = ? "    
-  
-      return await this.conn.query( sql, [params.id_value] ); 
+      var conn = await this.conn.getConnection()
+
+        var sql = "SELECT * FROM " + params.table + " where " + params.id_key + " = ? "    
+    
+        var data = await conn.query( sql, [params.id_value] );
+      
+      conn.end()
+
+       return data
     
     }
 
     async saveData(params) {
 
-      const vals = []
+      var conn = await this.conn.getConnection()
+      
+        const vals = []
 
-      for (let index = 0; index < params.values.length; index++) {
+        for (let index = 0; index < params.values.length; index++) {
 
-        vals.push('?')
-        
-      }
+          vals.push('?')
+          
+        }
 
-      var sql = "insert into " + params.table + " ( " + params.fields + " ) values ( '" +  vals.join("','")  + "' ) "
+        var sql = "insert into " + params.table + " ( " + params.fields + " ) values ( "+  vals.join(",")  + " ) "
 
-      return await this.conn.query(sql, params.values);
-    
+        var data = await conn.query(sql, params.values);
+
+      conn.end()
+      
+      return data  
+
     }
 
     async updateData(params) {
 
-      const sets = []
-      const vals = []
-     
-      for (const key in params.sets) {
-        
-        if (Object.hasOwnProperty.call(params.sets, key)) {
+      var conn = await this.conn.getConnection()
+      
+        const sets = []
+        const vals = []
+      
+        for (const key in params.sets) {
+          
+          if (Object.hasOwnProperty.call(params.sets, key)) {
 
-          sets.push( key + " = ? " )
+            sets.push( key + " = ? " )
 
-          vals.push(params.sets[key])
+            vals.push(params.sets[key])
+
+          }
 
         }
 
-      }
+        vals.push(params.id_val)
 
-      var sql = "update " + params.table + " set " + sets.join("','") + " where " + params.id_key + " = ? "
+        var sql = "update " + params.table + " set " + sets.join(",") + " where " + params.id_key + " = ? "
 
-      return await this.conn.query(sql, params.id_value);
+        var data = await conn.query(sql, vals);
+      
+      conn.end()
+
+      return data
     
     }
 

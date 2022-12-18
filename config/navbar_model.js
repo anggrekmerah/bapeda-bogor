@@ -2,8 +2,14 @@ const mariadb = require('mariadb');
 
 const crud_model = require('./crud_model');
 
-module.exports = class menu_model extends crud_model  {
+module.exports = class navbar_model extends crud_model  {
 
+    constructor() {
+        
+        super()
+         
+    }
+    
     nestedChildren2 (menu) {
       
         var out = {};
@@ -11,8 +17,10 @@ module.exports = class menu_model extends crud_model  {
         delete menu.meta
     
         for (const key in menu)        
-            out[menu[key].id_menu] = menu[key]
+            out[ 'k' + menu[key].id_menu] = menu[key]
     
+        // console.log(out)
+
         this.nestedChildren3(out)
     
         return out;
@@ -25,8 +33,8 @@ module.exports = class menu_model extends crud_model  {
     
         for (const k in menu) {
         
-            var pid = ( parentId != '' ) ? parentId : menu[k].parent_id
-            var mid = ( menuId != '' ) ? menuId : menu[k].id_menu
+            var pid = ( parentId != '' ) ? 'k' + parentId : 'k' + menu[k].parent_id
+            var mid = ( menuId != '' ) ? 'k' + menuId : 'k' + menu[k].id_menu
     
             if( pid != 0 ) {
     
@@ -63,7 +71,7 @@ module.exports = class menu_model extends crud_model  {
             delete menu[h]
     
         }
-    
+
         return menu
     
     }
@@ -131,7 +139,8 @@ module.exports = class menu_model extends crud_model  {
                 }
                 
             } else {
-                html += '<a class="nav-link" href="index.html"> <div class="sb-nav-link-icon"> <i class="fas fa-tachometer-alt">' + menus[key].menu_name + '</i></div></a>'
+                
+                html += '<a class="nav-link" href="'+menus[key].menu_url+'"> <div class="sb-nav-link-icon"> <i class="' + menus[key].icon + '"></i></div>' + menus[key].menu_name + '</a>'
             }
             
       
@@ -148,7 +157,7 @@ module.exports = class menu_model extends crud_model  {
 
         return new Promise((resolve, reject) => {
 
-            this.getAll( { "table" : "bapenda.m_menu", "id_field" : "parent_id",  "order" : "asc" } ).then( (res) => {
+            this.getAll( { "table" : "bapenda.m_menu", "id_field" : "order_menu",  "order" : "asc" } ).then( (res) => {
             
                 resolve( this.nestedChildren2 (res) )
         
