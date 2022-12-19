@@ -33,7 +33,9 @@ router.get('/datatable',  async (req, res, next) => {
            'db': 'id_group', 
            'dt' : 0,
            'formatter' : function( d, row ) {
-               return row.nomor
+
+                Number(row.nomor)
+
            }
        }
        ,{ 'db': 'group_name', 'dt' : 1 }
@@ -74,7 +76,7 @@ router.get('/datatable',  async (req, res, next) => {
 
     var data = await groupMenuModels.datatable(req, cols)
     
-    res.json(data)
+    res.status(200).send(data)
 
 });
 

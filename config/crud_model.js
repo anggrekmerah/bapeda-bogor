@@ -36,7 +36,7 @@ module.exports = class crud_model  {
           // establish a connection to MariaDB
           conn = await config.getConnection();
 
-          var sql = "SELECT * FROM " + params.table  + " order by " + params.id_field + " " + params.order  
+          var sql = "SELECT * FROM " + params.table  + " where active = 'Y' order by " + params.id_field + " " + params.order  
     
           var data = await conn.query(sql);
           

@@ -19,7 +19,31 @@ module.exports = class extensionModel extends crud_model  {
 
     }
 
-    getMenuById(id) {
+    getAllData(){
+
+        return new Promise((resolve, reject) => {
+        
+            var params = {
+                 table : this.tableName
+                ,id_field : this.prmaryKey
+                ,order : 'asc'
+            }
+
+            this.getAll(params).then( (res) => {
+            
+                resolve( res )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+
+    }
+
+    getDataById(id) {
         
         return new Promise((resolve, reject) => {
         
@@ -43,7 +67,7 @@ module.exports = class extensionModel extends crud_model  {
 
     }
 
-    saveMenu( body ) {
+    insertData( body ) {
 
         return new Promise((resolve, reject) => {
 
@@ -68,7 +92,7 @@ module.exports = class extensionModel extends crud_model  {
 
     }
 
-    inActiveMenu( body ) {
+    inActive( body ) {
 
         return new Promise((resolve, reject) => {
 
@@ -96,7 +120,7 @@ module.exports = class extensionModel extends crud_model  {
 
     }
 
-    updateMenu( body ) {
+    update_data( body ) {
 
         return new Promise((resolve, reject) => {
 

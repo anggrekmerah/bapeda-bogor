@@ -3,6 +3,7 @@ var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const groupModel = require('../models/group/groupModel')
+const helper = require('../config/helper')
 
 var controllerName = 'group'
 var groupModels = new groupModel()
@@ -20,7 +21,7 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:groupId',  async (req, res, next) => {
 
-    var inActiveGroup = await groupModels.inActiveGroup(req.params)
+    var inActiveGroup = await groupModels.inActive(req.params)
 
     res.redirect('/group');
 
@@ -33,7 +34,8 @@ router.get('/datatable',  async (req, res, next) => {
             'db': 'id_group', 
             'dt' : 0,
             'formatter' : function( d, row ) {
-                return row.nomor
+
+                return Number(row.nomor)
             }
         }
         ,{ 'db': 'group_name', 'dt' : 1 }
@@ -73,60 +75,18 @@ router.get('/datatable',  async (req, res, next) => {
     ]
 
     var data = await groupModels.datatable(req, cols)
-    
-    res.json(data)
+
+    res.status(200).json(data)
 
 });
 
 router.get('/add',  async (req, res, next) => {
   
-    var q = req.query
-
-    if('id' in q){
-        var d = await groupModels.getGroupById(q.id)  
-        if(d) {
-            
-            req.renderObjects.dataUpdate = d[0]
-        }
-    } else {
-        req.renderObjects.dataUpdate = { group_name : '', group_desc : '' }
-    }
-
+    let flashMessage = await helper.flashMessage(req, groupModels, { group_name : '', group_desc : '' } )
+    
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Add Group'
-
-    var resultMessage = (req.session.resultMessage) ? req.session.resultMessage : '' 
-
-    delete req.session.resultMessage
-
-    var alert = ''
-    if (resultMessage != '') {
-
-        for (const key in resultMessage) {
-            
-            if (resultMessage[key].param == 'success') {
-              
-                alert += '<div class="alert alert-success d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-check me-1"></i>'
-                alert += '<div>'
-                alert += resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-              
-            } else {
-                alert += '<div class="alert alert-danger d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-exclamation-triangle me-1"></i>'
-                alert += '<div>'
-                alert +=  resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-            }
-
-        }
-
-    }
-
-    req.renderObjects.alert = alert
+    req.renderObjects.alert = flashMessage
 
     res.render('group/add-group', req.renderObjects );
   
@@ -144,27 +104,9 @@ router.post('/save',
         return false
     }
 
-    var saveGroup = await groupModels.saveGroup(req.body)
+    var saveGroup = await groupModels.insertData(req.body)
 
-    if(saveGroup) {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success save group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed save group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
+    req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success save group') : helper.MessageFailed('Failed save group')
 
     res.redirect('/group/add');
 
@@ -182,27 +124,9 @@ router.post('/update',
         return false
     }
     
-    var saveGroup = await groupModels.updateGroup({ ...req.body, ...req.query})
+    var saveGroup = await groupModels.update_data({ ...req.body, ...req.query})
 
-    if(saveGroup) {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success update group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed update group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
+    req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success update group') : helper.MessageFailed('Failed update group')
 
     res.redirect('/group/add');
 

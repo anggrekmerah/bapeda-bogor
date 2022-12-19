@@ -33,7 +33,8 @@ router.get('/datatable',  async (req, res, next) => {
             'db': 'id_menu', 
             'dt' : 0,
             'formatter' : function( d, row ) {
-                return row.nomor
+
+                return Number(row.nomor)
             }
         }
         ,{ 'db': 'menu_name', 'dt' : 1 }
@@ -76,8 +77,8 @@ router.get('/datatable',  async (req, res, next) => {
     ]
 
     var data = await menuModels.datatable(req, cols)
-   
-    res.json(data)
+    console.log(data)
+    res.status(200).send(data)
 
 });
 

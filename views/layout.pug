@@ -69,9 +69,11 @@ html
 
   body(class="sb-nav-fixed")
 
-    nav(class="sb-topnav navbar navbar-expand navbar-dark bg-dark")
+    nav(class="sb-topnav navbar navbar-expand navbar-light bg-light shadow-sm")
       
-      a(class="navbar-brand ps-3" href="index.html") Bapenda-bogor
+      a(class="navbar-brand ps-3" href="/") 
+        img(src="/images/img/logo.png" style="width:54px; height:54px;")
+        img(src="/images/img/logo-name.png" style="width:150px; height:40px;" class="ms-2")
       //- <!-- Sidebar Toggle-->
       button(class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"): i( class="fas fa-bars")
       //- <!-- Navbar Search-->
@@ -94,7 +96,7 @@ html
       
       div(id="layoutSidenav_nav")
       
-        nav(class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion")
+        nav(class="sb-sidenav accordion sb-sidenav-light shadow-sm" id="sidenavAccordion")
       
           div(class="sb-sidenav-menu")
       

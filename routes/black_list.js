@@ -34,7 +34,9 @@ router.get('/datatable',  async (req, res, next) => {
             'db': 'id_black_list', 
             'dt' : 0,
             'formatter' : function( d, row ) {
-                return row.nomor
+ 
+                return Number(row.nomor)
+ 
             }
         }
         ,{ 'db': 'phone_number', 'dt' : 1 }
@@ -75,7 +77,7 @@ router.get('/datatable',  async (req, res, next) => {
 
     var data = await blackListModels.datatable(req, cols)
     
-    res.json(data)
+    res.status(200).send(data)
 
 });
 

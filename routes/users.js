@@ -3,9 +3,14 @@ var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const userModel = require('../models/user/userModels');
+const helper = require('../config/helper')
+const groupModel = require('../models/group/groupModel');
+const extensionModel = require('../models/extension/extensionModel');
 
 var controllerName = 'users'
 var userModels = new userModel()
+var groupModels = new groupModel()
+var extensionModels = new extensionModel()
 
 
 /* GET home page. */
@@ -18,14 +23,6 @@ router.get('/',  async (req, res, next) => {
 
 });
 
-router.get('/delete/:menuId',  async (req, res, next) => {
-
-    var inActiveGroup = await userModels.inActiveGroup(req.params)
-
-    res.redirect('/menu');
-
-});
-
 router.get('/datatable',  async (req, res, next) => {
     
     var cols = [
@@ -33,7 +30,8 @@ router.get('/datatable',  async (req, res, next) => {
             'db': 'id_user', 
             'dt' : 0,
             'formatter' : function( d, row ) {
-                return row.nomor
+
+                return Number(row.nomor)
             }
         }
         ,{ 'db': 'id_group', 'dt' : 1 }
@@ -69,7 +67,7 @@ router.get('/datatable',  async (req, res, next) => {
                 
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                    html += '    <a href="/users/add?id='+row.id_user+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
+                    // html += '    <a href="/users/add?id='+row.id_user+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
                     html += '    <a href="/users/delete/'+row.id_user+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
                     html += '</div>'
                 
@@ -80,144 +78,92 @@ router.get('/datatable',  async (req, res, next) => {
 
     var data = await userModels.datatable(req, cols)
     
-    res.json(data)
+    res.status(200).send(data)
 
 });
 
+router.get('/delete/:groupId',  async (req, res, next) => {
+
+  var inActiveGroup = await userModels.inActive(req.params)
+
+  res.redirect('/group');
+
+});
 router.get('/add',  async (req, res, next) => {
-    
 
-    var q = req.query
+  let flashMessage = await helper.flashMessage(req, userModels, { 
 
-    if('id' in q){
-        var d = await userModels.getMenuById(q.id)  
-        if(d) {
-            
-            req.renderObjects.dataUpdate = d[0]
-        }
-    } else {
-        req.renderObjects.dataUpdate = { menu_name : '', menu_desc : '', menu_url : '', icon : '', active : '' }
-    }
-
-    req.renderObjects.controller = controllerName
-    req.renderObjects.title = 'Add Menu'
-
-    var resultMessage = (req.session.resultMessage) ? req.session.resultMessage : '' 
-
-    delete req.session.resultMessage
-
-    var alert = ''
-    if (resultMessage != '') {
-
-        for (const key in resultMessage) {
-            
-            if (resultMessage[key].param == 'success') {
-              
-                alert += '<div class="alert alert-success d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-check me-1"></i>'
-                alert += '<div>'
-                alert += resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-              
-            } else {
-                alert += '<div class="alert alert-danger d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-exclamation-triangle me-1"></i>'
-                alert += '<div>'
-                alert +=  resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-            }
-
-        }
-
-    }
-
-    req.renderObjects.alert = alert
-
-    res.render('menu/add-menu', req.renderObjects );
+         id_group : ''
+        ,id_extension : ''
+        ,username : ''
+        ,password : ''
+        ,first_name : ''
+        ,last_name : ''
+        ,photo : ''
+        ,ages : ''
+        ,parent_user : ''
+        ,active : ''
+        
+      })
   
+  var dataGroups = await groupModels.getAllData()
+  var dataExt = await extensionModels.getAllData()
+  var dataUser = await userModels.getAllData()
+
+  req.renderObjects.controller = controllerName
+  req.renderObjects.title = 'Add User'
+  req.renderObjects.alert = flashMessage
+
+  delete dataGroups.meta
+  req.renderObjects.groupList = dataGroups
+
+  delete dataExt.meta
+  req.renderObjects.extList = dataExt
+
+  delete dataUser.meta
+  req.renderObjects.userList = dataUser
+
+  res.render('user/add-user', req.renderObjects );
+
 });
 
-router.post('/save',
-    body('menuName').not().isEmpty().withMessage('Menu name required').isLength({min:3, max:100}).withMessage('Group name length min:3 max:100'),
-    body('menuDesc').not().isEmpty().withMessage('Descrition Menu required').isLength({min:3, max:100}).withMessage('Descrition Menu length min:3 max:100'),
-    body('menuUrl').not().isEmpty().withMessage('Url Menu required').isLength({min:3, max:255}).withMessage('Descrition Menu length min:3 max:255')
+router.post('/save',  
+  body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
 ,async (req, res, next) => {
-  
-    const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
-        return false
-    }
+  const errors = validationResult(req);
 
-    var saveGroup = await userModels.saveGroup(req.body)
+  if (!errors.isEmpty()) {
+      req.session.resultMessage = errors.array()
+      res.redirect('/group/add');
+      return false
+  }
 
-    if(saveGroup) {
+  var saveGroup = await userModels.insertData(req.body)
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success save group'
-           ,param:'success'
-           ,location:''
-       }]
+  req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success save group') : helper.MessageFailed('Failed save group')
 
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed save group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+  res.redirect('/group/add');
 
 });
 
 router.post('/update',  
-    body('menuName')
-        .not().isEmpty()
-        .withMessage('Group name required')
-        .isLength({min:3, max:100})
-        .withMessage('Group name length min:3 max:50')
+  body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
 ,async (req, res, next) => {
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+      req.session.resultMessage = errors.array()
+      res.redirect('/group/add');
+      return false
+  }
   
-    const errors = validationResult(req);
+  var saveGroup = await userModels.update_data({ ...req.body, ...req.query})
 
-    if (!errors.isEmpty()) {
-        req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
-        return false
-    }
-    
-    var saveGroup = await userModels.updateGroup({ ...req.body, ...req.query})
+  req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success update group') : helper.MessageFailed('Failed update group')
 
-    if(saveGroup) {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success update group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed update group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+  res.redirect('/group/add');
 
 });
 

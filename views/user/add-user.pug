@@ -1,0 +1,74 @@
+extends ../layout
+
+block content
+    
+    if 'id_group' in dataUpdate 
+        - var action = "update?id="+ dataUpdate.id_group
+        - var buttonAction = 'Update'
+    else 
+        - var action = "save"
+        - var buttonAction = 'Save'
+
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+            div(class="col-md-6")
+                | !{alert}
+                form(class="row g-3" action=action method="post" id="formGroup")
+                    div(class="col-md-6")
+                        div(class="mb-3")
+                            label(for="firstName" class="form-label") First Name 
+                            input(type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" value=dataUpdate.first_name  )
+                                
+                        div(class="mb-3")
+                            label(for="lastName" class="form-label") Last Name 
+                            input(type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" value=dataUpdate.last_name  )
+
+                        div(class="mb-3")
+                            label(for="ages" class="form-label") Ages 
+                            input(type="text" class="form-control" id="ages" name="ages" placeholder="Ages" value=dataUpdate.ages  )
+
+                        div(class="mb-3")
+                            label(for="username" class="form-label") Username 
+                            input(type="text" class="form-control" id="username" name="username" placeholder="Username" value=dataUpdate.username  )
+
+                        div(class="mb-3")
+                            label(for="password" class="form-label") Password 
+                            input(type="text" class="form-control" id="password" name="password" placeholder="Password"  )
+
+                        div(class="mb-3")
+                            label(for="Photo" class="form-label") Photo
+                            input(type="file" class="form-control" id="photo" name="photo"  )
+
+                        
+                    div(class="col-md-6")
+                        
+                        div(class="mb-3")
+                            label(for="Group" class="form-label") Group
+                            select(class="form-control" id="groupId" name="groupId" )
+                                each val, index in groupList
+                                    option(value=groupList[index].id_group) #{groupList[index].group_name}
+
+                        div(class="mb-3")
+                            label(for="Extension" class="form-label") Extension
+                            select(class="form-control" id="extensionId" name="extensionId" )
+                                each val, index in extList
+                                    option(value=extList[index].id_extension) #{extList[index].extension}
+
+                        div(class="mb-3")
+                            label(for="parentUser" class="form-label") Parent User
+                            select(class="form-control" id="parentUser" name="parentUser" )
+                                each val, index in userList
+                                    option(value=userList[index].id_user) #{userList[index].first_name} + #{userList[index].last_name}
+
+                        div(class="mb-3")
+                            button(type="submit" class="btn btn-primary float-end") #{buttonAction}
+                            a( class="btn btn-primary float-end me-2" href="/group" ) List
+                            button(type="button" class="btn btn-danger float-end me-2" id="discard") Discard
+        
+            div(class="col-md-6")
+                label(class="fw-bold") Notes : 
+                p This group form serves to create a user group, so the user can be directed to the group to which it is going
+                p(class="text-danger") - Group Name Mandatory
+                p(class="text-danger") - Group Description Optional
+            

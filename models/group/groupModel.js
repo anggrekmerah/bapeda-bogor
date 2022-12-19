@@ -7,17 +7,50 @@ const datatable = new ssp();
 
 module.exports = class groupModel extends crud_model  {
 
+    tableName
+
+    prmaryKey
+
     constructor() {
+
         super()
+
+        this.tableName = 'bapenda.m_group'
+        this.prmaryKey = 'id_group' 
+
     }
 
-    getGroupById(id) {
+    getAllData(){
+
+        return new Promise((resolve, reject) => {
+        
+            var params = {
+                 table : this.tableName
+                ,id_field : this.prmaryKey
+                ,order : 'asc'
+            }
+
+            this.getAll(params).then( (res) => {
+            
+                resolve( res )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+
+    }
+
+    getDataById(id) {
         
         return new Promise((resolve, reject) => {
         
             var params = {
-                table : 'bapenda.m_group'
-                ,id_key : 'id_group' 
+                table : this.tableName
+                ,id_key : this.prmaryKey
                 ,id_value : id
             }
 
@@ -35,13 +68,13 @@ module.exports = class groupModel extends crud_model  {
 
     }
 
-    saveGroup( body ) {
+    insertData( body ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   values : [body.groupName, body.groupDesc, 1, new Date()]
-                , table : 'bapenda.m_group'
+                , table : this.tableName
                 , fields : 'group_name, group_desc, user_created, created_datetime'
             }
 
@@ -60,7 +93,7 @@ module.exports = class groupModel extends crud_model  {
 
     }
 
-    inActiveGroup( body ) {
+    inActive( body ) {
 
         return new Promise((resolve, reject) => {
 
@@ -68,8 +101,8 @@ module.exports = class groupModel extends crud_model  {
                   sets : {
                     'active' : 'N'
                   }
-                , table : 'bapenda.m_group'
-                , id_key : 'id_group'
+                , table : this.tableName
+                , id_key : this.prmaryKey
                 , id_val : body.groupId
             }
 
@@ -88,7 +121,7 @@ module.exports = class groupModel extends crud_model  {
 
     }
 
-    updateGroup( body ) {
+    update_data( body ) {
 
         return new Promise((resolve, reject) => {
 
@@ -99,8 +132,8 @@ module.exports = class groupModel extends crud_model  {
                     ,'update_datetime' : new Date()
                     ,'user_updated' : 1
                   }
-                , table : 'bapenda.m_group'
-                , id_key : 'id_group'
+                , table : this.tableName
+                , id_key : this.prmaryKey
                 , id_val : body.id
             }
 
@@ -123,7 +156,7 @@ module.exports = class groupModel extends crud_model  {
 
         const query = 'select * from bapenda.m_group where active = "Y" order by id_group desc'
 
-        return datatable.simple(query, req, 'id_group', cols)
+        return datatable.simple(query, req, this.prmaryKey, cols)
 
     }
 

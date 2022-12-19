@@ -33,7 +33,9 @@ router.get('/datatable',  async (req, res, next) => {
             'db': 'id_phone_book', 
             'dt' : 0,
             'formatter' : function( d, row ) {
-                return row.nomor
+
+                return Number(row.nomor)
+
             }
         }
         ,{ 'db': 'phone_name', 'dt' : 1 }
@@ -75,7 +77,7 @@ router.get('/datatable',  async (req, res, next) => {
 
     var data = await phoneBookModels.datatable(req, cols)
     
-    res.json(data)
+    res.status(200).send(data)
 
 });
 

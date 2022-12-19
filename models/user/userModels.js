@@ -19,7 +19,31 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    getMenuById(id) {
+    getAllData(){
+
+        return new Promise((resolve, reject) => {
+        
+            var params = {
+                 table : this.tableName
+                ,id_field : this.prmaryKey
+                ,order : 'asc'
+            }
+
+            this.getAll(params).then( (res) => {
+            
+                resolve( res )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+
+    }
+
+    getDataById(id) {
         
         return new Promise((resolve, reject) => {
         
@@ -43,14 +67,25 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    saveMenu( body ) {
+    insertData( body ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.menuName, body.menuDesc, body.menuUrl, body.parentId, body.icon, body.orderMenu, 1, new Date()]
-                , table : 'bapenda.m_menu'
-                , fields : 'menu_name, menu_desc, menu_url, parent_id, icon, order_menu, user_created, created_datetime'
+                  values : [
+                    body.groupId, 
+                    body.extensionId, 
+                    body.username, 
+                    body.password, 
+                    body.firstName, 
+                    body.lastName,
+                    body.photo,
+                    body.age,
+                    body.parentUser,
+                    1,
+                    new Date()]
+                , table : this.tableName
+                , fields : 'id_group, id_extension, username, password, first_name, last_name, photo, ages, parent_user, user_creatd, created_datetime'
             }
 
             this.saveData(params).then( (res) => {
@@ -68,7 +103,7 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    inActiveMenu( body ) {
+    inActive( body ) {
 
         return new Promise((resolve, reject) => {
 
@@ -96,7 +131,7 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    updateMenu( body ) {
+    update_data( body ) {
 
         return new Promise((resolve, reject) => {
 
