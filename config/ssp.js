@@ -56,8 +56,10 @@ module.exports = class ssp extends crud_model {
 	{
 		var limit = '';
 
-		if ( 'start' in request && request['length'] != -1 ) {
-			limit = "LIMIT " + parseInt(request['start']) + ", " + parseInt( request['length'] );
+        var q = request.query
+
+		if ( 'start' in q && q['length'] != -1 ) {
+			limit = " LIMIT " + parseInt(q['start']) + ", " + parseInt( q['length'] );
 		}
 
 		return limit;
@@ -80,27 +82,30 @@ module.exports = class ssp extends crud_model {
 	{
 		var order = '';
 
-		if ( 'order' in request && count($request['order']) ) {
+        var q = request.query
+
+
+		if ( 'order' in q && q['order'].length ) {
 
 			var orderBy = [];
 
 			var dtColumns = this.pluck( columns, 'dt' );
 
-			for ( let i=0; i < request['order'].length ; $i++ ) {
+			for ( let i=0; i < q['order'].length ; i++ ) {
 				
                 // Convert the column index into the column data property
-				var columnIdx = parseInt(request['order'][i]['column'])
+				var columnIdx = parseInt(q['order'][i]['column'])
 
-				var requestColumn = request['columns'][columnIdx];
+				var requestColumn = q['columns'][columnIdx];
 
 				columnIdx = this.array_search( requestColumn['data'], dtColumns );
 				var column = columns[ columnIdx ];
 
 				if ( requestColumn['orderable'] == 'true' ) {
 
-					var dir = (request['order'][i]['dir'] === 'asc') ? 'ASC' : 'DESC';
+					var dir = (q['order'][i]['dir'] === 'asc') ? 'ASC' : 'DESC';
 
-					orderBy.push('`' + column['db'] + '` ' + $dir)
+					orderBy.push('`' + column['db'] + '` ' + dir)
 				}
 			}
 
@@ -118,15 +123,16 @@ module.exports = class ssp extends crud_model {
 		var globalSearch = [];
 		var columnSearch = [];
 		var dtColumns = this.pluck( columns, 'dt' );
+        var q = request.query
 
-		if ( 'search' in request && request['search']['value'] != '' ) {
-			var str = request['search']['value'];
+		if ( 'search' in q && q['search']['value'] != '' ) {
+			var str = q['search']['value'];
 
-            var ien = request['columns'].length ;
+            var ien = q['columns'].length ;
 
 			for ( let i=0;  i < ien ; i++ ) {
 				
-                var requestColumn = request['columns'][i];
+                var requestColumn = q['columns'][i];
 				var columnIdx = this.array_search( requestColumn['data'], dtColumns );
 				var column = columns[ columnIdx ];
 
@@ -140,13 +146,13 @@ module.exports = class ssp extends crud_model {
 		}
 
 		// Individual column filtering
-		if ( 'columns' in request ) {
+		if ( 'columns' in q ) {
 			
-            var ien = request['columns'].length
+            var ien = q['columns'].length
 
             for ( let i=0; i < ien ; i++ ) {
 				
-                var requestColumn = request['columns'][i];
+                var requestColumn = q['columns'][i];
 				var columnIdx = this.array_search( requestColumn['data'], dtColumns );
 				var column = columns[ columnIdx ];
 
@@ -192,8 +198,8 @@ module.exports = class ssp extends crud_model {
 
             // Main query to actually get the data
 
-            var sqlUtama = "SELECT  *, (@nomors := @nomors+1) as nomor FROM (" +query+ ") A " + where + order + limit + " , (select @nomors := 0) r"
-            // console.log('sqlUtama = ' + sqlUtama)
+            var sqlUtama = "SELECT  *, (@nomors := @nomors+1) as nomor FROM (" +query+ ") A , (select @nomors := 0) r " + where + order + limit 
+            console.log('sqlUtama = ' + sqlUtama)
             this.execQuery(sqlUtama, bindings).then( (res) => {
                 // console.log(res)
                 // Data set length after filtering
@@ -213,7 +219,7 @@ module.exports = class ssp extends crud_model {
                         * Output
                         */
                        var outputs = {	
-                            "draw"            : ( 'draw' in request ) ? parseInt( request['draw'] ) : 1,
+                            "draw"            : ( 'draw' in request.query ) ? parseInt( request.query['draw'] ) : 0,
                             "recordsTotal"    : parseInt( recordsTotal ),
                             "recordsFiltered" : parseInt( recordsFiltered ),
                             "data"            : this.data_output( columns, res )

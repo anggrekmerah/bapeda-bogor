@@ -1,0 +1,64 @@
+extends ../layout
+
+block content
+    
+    if 'id_menu' in dataUpdate 
+        - var action = "update?id="+ dataUpdate.id_menu
+        - var buttonAction = 'Update'
+    else 
+        - var action = "save"
+        - var buttonAction = 'Save'
+
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+            div(class="col-md-4")
+                | !{alert}
+                form(class="row g-3" action=action method="post" id="formMenu")
+                    
+                    div(class="mb-3")
+                        label(for="menuName" class="form-label") Menu Name 
+                        input(type="text" class="form-control" id="menuName" name="menuName" placeholder="Menu Name" value=dataUpdate.menu_name  )
+
+                    div(class="mb-3")
+                        label(for="menuUrl" class="form-label") Menu Url 
+                        input(type="text" class="form-control" id="menuUrl" name="menuUrl" placeholder="Menu Url" value=dataUpdate.menu_url  )
+
+                    div(class="mb-3")
+                        label(for="icon" class="form-label") Menu Icon 
+                        input(type="text" class="form-control" id="icon" name="icon" placeholder="Menu Icon" value=dataUpdate.icon  )
+                    
+                    div(class="mb-3")
+                            label(for="parentId" class="form-label") Parent Menu
+                            select(class="form-control" id="parentId" name="parentId" )
+                                each val, index in menuList
+
+                                    case menuList[index].id_menu
+                                        when  dataUpdate.parent_id
+                                             option(value=menuList[index].id_menu selected) #{menuList[index].menu_name}
+                                        default 
+                                             option(value=menuList[index].id_menu ) #{menuList[index].menu_name}
+
+                    div(class="mb-3")
+                        label(for="menuDesc" class="form-label") Menu Description 
+                        input(type="text" class="form-control" id="menuDesc" name="menuDesc" placeholder="Menu Description" value=dataUpdate.menu_desc  )
+
+                    div(class="mb-3")
+                        label(for="orderMenu" class="form-label") Menu Order 
+                        input(type="text" class="form-control" id="orderMenu" name="orderMenu" placeholder="Menu Order" value=dataUpdate.order_menu  )
+
+
+                    div(class="mb-3")
+                        button(type="submit" class="btn btn-primary float-end") #{buttonAction}
+                        a( class="btn btn-primary float-end me-2" href="/menu" ) List
+                        button(type="button" class="btn btn-danger float-end me-2" id="discard") Discard
+            
+            div(class="col-md-4")
+                label(class="fw-bold") Notes : 
+                p this menu form to create a dynamic sidebar menu
+                p(class="text-danger") - Menu Name Mandatory
+                p(class="text-danger") - Menu Url Mandatory
+                p(class="text-danger") - Icon Optional
+                p(class="text-danger") - Menu Order Mandatory
+                p(class="text-danger") - Parent Menu Mandatory
+            

@@ -3,6 +3,7 @@ var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const menuModel = require('../models/menu/menuModel');
+const helper = require('../config/helper')
 
 var controllerName = 'menu'
 var menuModels = new menuModel()
@@ -20,7 +21,7 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:menuId',  async (req, res, next) => {
 
-    var inActiveGroup = await menuModels.inActiveGroup(req.params)
+    var inActiveGroup = await menuModels.inActive(req.params)
 
     res.redirect('/menu');
 
@@ -77,145 +78,73 @@ router.get('/datatable',  async (req, res, next) => {
     ]
 
     var data = await menuModels.datatable(req, cols)
-    console.log(data)
+
     res.status(200).send(data)
 
 });
 
+
 router.get('/add',  async (req, res, next) => {
-    
-
-    var q = req.query
-
-    if('id' in q){
-        var d = await menuModels.getMenuById(q.id)  
-        if(d) {
-            
-            req.renderObjects.dataUpdate = d[0]
-        }
-    } else {
-        req.renderObjects.dataUpdate = { menu_name : '', menu_desc : '', menu_url : '', icon : '', active : '' }
-    }
+  
+    let flashMessage = await helper.flashMessage(req, menuModels, { menu_name : '', menu_desc : '', menu_url : '', parent_id : '', icon : '', order_menu : '' } )
+    let menus = await menuModels.getAllData()
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Add Menu'
+    req.renderObjects.alert = flashMessage
 
-    var resultMessage = (req.session.resultMessage) ? req.session.resultMessage : '' 
-
-    delete req.session.resultMessage
-
-    var alert = ''
-    if (resultMessage != '') {
-
-        for (const key in resultMessage) {
-            
-            if (resultMessage[key].param == 'success') {
-              
-                alert += '<div class="alert alert-success d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-check me-1"></i>'
-                alert += '<div>'
-                alert += resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-              
-            } else {
-                alert += '<div class="alert alert-danger d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-exclamation-triangle me-1"></i>'
-                alert += '<div>'
-                alert +=  resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-            }
-
-        }
-
-    }
-
-    req.renderObjects.alert = alert
+    delete menus.meta
+    req.renderObjects.menuList = menus
 
     res.render('menu/add-menu', req.renderObjects );
   
 });
 
-router.post('/save',
-    body('menuName').not().isEmpty().withMessage('Menu name required').isLength({min:3, max:100}).withMessage('Group name length min:3 max:100'),
-    body('menuDesc').not().isEmpty().withMessage('Descrition Menu required').isLength({min:3, max:100}).withMessage('Descrition Menu length min:3 max:100'),
-    body('menuUrl').not().isEmpty().withMessage('Url Menu required').isLength({min:3, max:255}).withMessage('Descrition Menu length min:3 max:255')
+router.post('/save',  
+    body('menuName').not().isEmpty().withMessage('Menu name required'), 
+    body('menuUrl').not().isEmpty().withMessage('Menu url required'), 
+    body('parentId').not().isEmpty().withMessage('Parent required'), 
+    body('icon').not().isEmpty().withMessage('Icon required'), 
+    body('orderMenu').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
+        res.redirect('/menu/add');
         return false
     }
 
-    var saveGroup = await menuModels.saveGroup(req.body)
+    var savemenu = await menuModels.insertData(req.body)
 
-    if(saveGroup) {
+    req.session.resultMessage = (savemenu) ? helper.MessageSuccess('Success save menu') : helper.MessageFailed('Failed save menu')
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success save group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed save group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+    res.redirect('/menu/add');
 
 });
 
 router.post('/update',  
-    body('menuName')
-        .not().isEmpty()
-        .withMessage('Group name required')
-        .isLength({min:3, max:100})
-        .withMessage('Group name length min:3 max:50')
+    body('menuName').not().isEmpty().withMessage('Menu name required'), 
+    body('menuUrl').not().isEmpty().withMessage('Menu url required'), 
+    body('parentId').not().isEmpty().withMessage('Parent required'), 
+    body('icon').not().isEmpty().withMessage('Icon required'), 
+    body('orderMenu').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
+        res.redirect('/menu/add');
         return false
     }
     
-    var saveGroup = await menuModels.updateGroup({ ...req.body, ...req.query})
+    var savemenu = await menuModels.update_data({ ...req.body, ...req.query})
 
-    if(saveGroup) {
+    req.session.resultMessage = (savemenu) ? helper.MessageSuccess('Success update menu') : helper.MessageFailed('Failed update menu')
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success update group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed update group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+    res.redirect('/menu/add');
 
 });
 
