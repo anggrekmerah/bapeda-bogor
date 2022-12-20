@@ -3,6 +3,7 @@ var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const phoneBookModel = require('../models/phone_book/phoneBookModel');
+const helper = require('../config/helper')
 
 var controllerName = 'phone_book'
 var phoneBookModels = new phoneBookModel()
@@ -18,11 +19,19 @@ router.get('/',  async (req, res, next) => {
 
 });
 
-router.get('/delete/:groupId',  async (req, res, next) => {
+router.get('/delete/:phoneId',  async (req, res, next) => {
 
-    var inActiveGroup = await phoneBookModels.inActiveGroup(req.params)
+    var inActiveGroup = await phoneBookModels.inActive(req.params)
 
-    res.redirect('/group');
+    res.redirect('/phone-book');
+
+});
+
+router.get('/activate/:phoneId',  async (req, res, next) => {
+
+    var inActiveGroup = await phoneBookModels.activate(req.params)
+
+    res.redirect('/black-list');
 
 });
 
@@ -67,7 +76,7 @@ router.get('/datatable',  async (req, res, next) => {
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
                     html += '    <a href="/phone-book/add?id='+row.id_phone_book+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/phone-book/delete/'+row.id_phone_book+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
+                    html += '    <a href="/phone-book/delete/'+row.id_phone_book+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Black List"><i class="fas fa-phone-slash"></i></a> '
                     html += '</div>'
                 
                 return html;
@@ -83,131 +92,57 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
-    var q = req.query
-
-    if('id' in q){
-        var d = await phoneBookModels.getGroupById(q.id)  
-        if(d) {
-            
-            req.renderObjects.dataUpdate = d[0]
-        }
-    } else {
-        req.renderObjects.dataUpdate = { group_name : '', group_desc : '' }
-    }
-
+    let flashMessage = await helper.flashMessage(req, phoneBookModels, { phone_name : '', phone_number : '', notes : ''} )
+    
     req.renderObjects.controller = controllerName
-    req.renderObjects.title = 'Add Group'
+    req.renderObjects.title = 'Add Phone Book'
+    req.renderObjects.alert = flashMessage
 
-    var resultMessage = (req.session.resultMessage) ? req.session.resultMessage : '' 
-
-    delete req.session.resultMessage
-
-    var alert = ''
-    if (resultMessage != '') {
-
-        for (const key in resultMessage) {
-            
-            if (resultMessage[key].param == 'success') {
-              
-                alert += '<div class="alert alert-success d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-check me-1"></i>'
-                alert += '<div>'
-                alert += resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-              
-            } else {
-                alert += '<div class="alert alert-danger d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-exclamation-triangle me-1"></i>'
-                alert += '<div>'
-                alert +=  resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-            }
-
-        }
-
-    }
-
-    req.renderObjects.alert = alert
-
-    res.render('group/add-group', req.renderObjects );
+    res.render('phone_book/add-phone-book', req.renderObjects );
   
 });
 
 router.post('/save',  
-    body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
+    body('phoneName').not().isEmpty().withMessage('Phone name required').isLength({min:3, max:100}).withMessage('Phone name length min:3 max:100'),
+    body('phoneNumber').not().isEmpty().withMessage('Phone number required').isLength({min:10, max:15}).withMessage('Phone number length min:10 max:15'),
+    body('notes').isLength({min:10, max:255}).withMessage('Phone notes length min:10 max:255')
 ,async (req, res, next) => {
   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
+        res.redirect('/phone-book/add');
         return false
     }
 
-    var saveGroup = await phoneBookModels.saveGroup(req.body)
+    var savePhone = await phoneBookModels.insertData(req.body)
 
-    if(saveGroup) {
+    req.session.resultMessage = (savePhone) ? helper.MessageSuccess('Success save phone book') : helper.MessageFailed('Failed save phone book')
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success save group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed save group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+    res.redirect('/phone-book/add');
 
 });
 
 router.post('/update',  
-    body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
+    body('phoneName').not().isEmpty().withMessage('Phone name required').isLength({min:3, max:100}).withMessage('Phone name length min:3 max:100'),
+    body('phoneNumber').not().isEmpty().withMessage('Phone number required').isLength({min:10, max:15}).withMessage('Phone number length min:10 max:15'),
+    body('notes').isLength({min:10, max:255}).withMessage('Phone notes length min:10 max:255')
 ,async (req, res, next) => {
   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
+        res.redirect('/phone_book/add');
         return false
     }
     
-    var saveGroup = await phoneBookModels.updateGroup({ ...req.body, ...req.query})
+    var updatePhone = await phoneBookModels.update_data({ ...req.body, ...req.query})
 
-    if(saveGroup) {
+    req.session.resultMessage = (updatePhone) ? helper.MessageSuccess('Success update phone book') : helper.MessageFailed('Failed update phone book')
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success update group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed update group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+    res.redirect('/phone-book/add');
 
 });
 

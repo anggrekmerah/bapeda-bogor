@@ -3,7 +3,7 @@ var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const extensionModel = require('../models/extension/extensionModel');
-
+const helper = require('../config/helper')
 
 var controllerName = 'extension'
 var extensionModels = new extensionModel()
@@ -19,11 +19,11 @@ router.get('/',  async (req, res, next) => {
 
 });
 
-router.get('/delete/:groupId',  async (req, res, next) => {
+router.get('/delete/:extensionId',  async (req, res, next) => {
 
-    var inActiveGroup = await extensionModels.inActiveGroup(req.params)
+    var inActiveextension = await extensionModels.inActive(req.params)
 
-    res.redirect('/group');
+    res.redirect('/extension');
 
 });
 
@@ -82,131 +82,53 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
-    var q = req.query
-
-    if('id' in q){
-        var d = await extensionModels.getGroupById(q.id)  
-        if(d) {
-            
-            req.renderObjects.dataUpdate = d[0]
-        }
-    } else {
-        req.renderObjects.dataUpdate = { group_name : '', group_desc : '' }
-    }
-
+    let flashMessage = await helper.flashMessage(req, extensionModels, { extension : '' } )
+    
     req.renderObjects.controller = controllerName
-    req.renderObjects.title = 'Add Group'
+    req.renderObjects.title = 'Add Extension'
+    req.renderObjects.alert = flashMessage
 
-    var resultMessage = (req.session.resultMessage) ? req.session.resultMessage : '' 
-
-    delete req.session.resultMessage
-
-    var alert = ''
-    if (resultMessage != '') {
-
-        for (const key in resultMessage) {
-            
-            if (resultMessage[key].param == 'success') {
-              
-                alert += '<div class="alert alert-success d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-check me-1"></i>'
-                alert += '<div>'
-                alert += resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-              
-            } else {
-                alert += '<div class="alert alert-danger d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-exclamation-triangle me-1"></i>'
-                alert += '<div>'
-                alert +=  resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-            }
-
-        }
-
-    }
-
-    req.renderObjects.alert = alert
-
-    res.render('group/add-group', req.renderObjects );
+    res.render('extension/add-extension', req.renderObjects );
   
 });
 
 router.post('/save',  
-    body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
+    body('extension').not().isEmpty().withMessage('Extension required').isLength({min:3, max:5}).withMessage('Extension length min:3 max:5')
 ,async (req, res, next) => {
   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
+        res.redirect('/extension/add');
         return false
     }
 
-    var saveGroup = await extensionModels.saveGroup(req.body)
+    var savePhone = await extensionModels.insertData(req.body)
 
-    if(saveGroup) {
+    req.session.resultMessage = (savePhone) ? helper.MessageSuccess('Success save extension') : helper.MessageFailed('Failed save extension')
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success save group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed save group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+    res.redirect('/extension/add');
 
 });
 
 router.post('/update',  
-    body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
+    body('extension').not().isEmpty().withMessage('Extension required').isLength({min:3, max:5}).withMessage('Extension length min:3 max:5')
 ,async (req, res, next) => {
   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
+        res.redirect('/extension/add');
         return false
     }
     
-    var saveGroup = await extensionModels.updateGroup({ ...req.body, ...req.query})
+    var updatePhone = await extensionModels.update_data({ ...req.body, ...req.query})
 
-    if(saveGroup) {
+    req.session.resultMessage = (updatePhone) ? helper.MessageSuccess('Success update extension') : helper.MessageFailed('Failed update extension')
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success update group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed update group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+    res.redirect('/extension/add');
 
 });
 

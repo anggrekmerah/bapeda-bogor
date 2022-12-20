@@ -3,6 +3,10 @@ var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const sitemapModel = require('../models/sitemap/sitemapModel');
+const groupModel = require('../models/group/groupModel');
+const helper = require('../config/helper')
+
+var groupModels = new groupModel()
 
 var controllerName = 'sitemap'
 var sitemapModels = new sitemapModel()
@@ -18,11 +22,11 @@ router.get('/',  async (req, res, next) => {
 
 });
 
-router.get('/delete/:groupId',  async (req, res, next) => {
+router.get('/delete/:sitemapId',  async (req, res, next) => {
 
-    var inActiveGroup = await sitemapModels.inActiveGroup(req.params)
+    var inActiveGroup = await sitemapModels.inActive(req.params)
 
-    res.redirect('/group');
+    res.redirect('/sitemap');
 
 });
 
@@ -38,7 +42,7 @@ router.get('/datatable',  async (req, res, next) => {
 
             }
         }
-        ,{ 'db': 'id_group', 'dt' : 1 }
+        ,{ 'db': 'group_name', 'dt' : 1 }
         ,{ 'db': 'hirarcy_ordered', 'dt' : 2 }
         ,{ 
             'db': 'user_created', 
@@ -80,133 +84,63 @@ router.get('/datatable',  async (req, res, next) => {
 
 });
 
+
 router.get('/add',  async (req, res, next) => {
   
-    var q = req.query
-
-    if('id' in q){
-        var d = await sitemapModels.getGroupById(q.id)  
-        if(d) {
-            
-            req.renderObjects.dataUpdate = d[0]
-        }
-    } else {
-        req.renderObjects.dataUpdate = { group_name : '', group_desc : '' }
-    }
-
+    let flashMessage = await helper.flashMessage(req, sitemapModels, { id_group : '', hirarcy_ordered : '' } )
+    
+    var dataGroups = await groupModels.execQuery('select a.id_group, a.group_name from bapenda.m_group a left join bapenda.m_sitemap b on a.id_group = b.id_group AND b.active = "Y" where ((a.active = "Y" AND b.id_group IS NULL) OR b.active = "N")')
+    
+    delete dataGroups.meta
+    req.renderObjects.groupList = dataGroups
+    
     req.renderObjects.controller = controllerName
-    req.renderObjects.title = 'Add Group'
+    req.renderObjects.title = 'Add Sitemap'
+    req.renderObjects.alert = flashMessage
 
-    var resultMessage = (req.session.resultMessage) ? req.session.resultMessage : '' 
-
-    delete req.session.resultMessage
-
-    var alert = ''
-    if (resultMessage != '') {
-
-        for (const key in resultMessage) {
-            
-            if (resultMessage[key].param == 'success') {
-              
-                alert += '<div class="alert alert-success d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-check me-1"></i>'
-                alert += '<div>'
-                alert += resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-              
-            } else {
-                alert += '<div class="alert alert-danger d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-exclamation-triangle me-1"></i>'
-                alert += '<div>'
-                alert +=  resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-            }
-
-        }
-
-    }
-
-    req.renderObjects.alert = alert
-
-    res.render('group/add-group', req.renderObjects );
+    res.render('sitemap/add-sitemap', req.renderObjects );
   
 });
 
 router.post('/save',  
-    body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
+    body('groupId').not().isEmpty().withMessage('Group required'),
+    body('order').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
+        res.redirect('/sitemap/add');
         return false
     }
 
-    var saveGroup = await sitemapModels.saveGroup(req.body)
+    var savesitemapModels = await sitemapModels.insertData(req.body)
 
-    if(saveGroup) {
+    req.session.resultMessage = (savesitemapModels) ? helper.MessageSuccess('Success save sitemap') : helper.MessageFailed('Failed save sitemap')
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success save group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed save group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+    res.redirect('/sitemap/add');
 
 });
 
 router.post('/update',  
-    body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
+    body('groupId').not().isEmpty().withMessage('Group required'),
+    body('order').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
+        res.redirect('/sitemap/add');
         return false
     }
     
-    var saveGroup = await sitemapModels.updateGroup({ ...req.body, ...req.query})
+    var update_data = await sitemapModels.update_data({ ...req.body, ...req.query})
 
-    if(saveGroup) {
+    req.session.resultMessage = (update_data) ? helper.MessageSuccess('Success update sitemap') : helper.MessageFailed('Failed update sitemap')
 
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success update group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed update group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
+    res.redirect('/sitemap/add');
 
 });
 

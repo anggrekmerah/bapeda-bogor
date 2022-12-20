@@ -19,7 +19,31 @@ module.exports = class sitemapModel extends crud_model  {
 
     }
 
-    getMenuById(id) {
+    getAllData(){
+
+        return new Promise((resolve, reject) => {
+        
+            var params = {
+                 table : this.tableName
+                ,id_field : this.prmaryKey
+                ,order : 'asc'
+            }
+
+            this.getAll(params).then( (res) => {
+            
+                resolve( res )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+
+    }
+
+    getDataById(id) {
         
         return new Promise((resolve, reject) => {
         
@@ -43,14 +67,14 @@ module.exports = class sitemapModel extends crud_model  {
 
     }
 
-    saveMenu( body ) {
+    insertData( body ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.menuName, body.menuDesc, body.menuUrl, body.parentId, body.icon, body.orderMenu, 1, new Date()]
-                , table : 'bapenda.m_menu'
-                , fields : 'menu_name, menu_desc, menu_url, parent_id, icon, order_menu, user_created, created_datetime'
+                  values : [body.groupId, body.order, 1, new Date()]
+                , table : this.tableName
+                , fields : 'id_group, hirarcy_ordered, user_created, created_datetime'
             }
 
             this.saveData(params).then( (res) => {
@@ -59,7 +83,7 @@ module.exports = class sitemapModel extends crud_model  {
         
             }).catch( (err) => {
                 
-                reject (false)
+                reject (err)
         
             })
 
@@ -68,7 +92,7 @@ module.exports = class sitemapModel extends crud_model  {
 
     }
 
-    inActiveMenu( body ) {
+    inActive( body ) {
 
         return new Promise((resolve, reject) => {
 
@@ -78,7 +102,7 @@ module.exports = class sitemapModel extends crud_model  {
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.menuId
+                , id_val : body.sitemapId
             }
 
             this.updateData(params).then( (res) => {
@@ -96,19 +120,42 @@ module.exports = class sitemapModel extends crud_model  {
 
     }
 
-    updateMenu( body ) {
+    activate( body ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
-                    
-                     'menu_name' : body.menuName
-                    ,'menu_desc' : body.menuDesc
-                    ,'menu_url' : body.menuUrl
-                    ,'parent_id' : body.parentId
-                    ,'icon' : body.icon
-                    ,'order_menu' : body.orderMenu
+                    'active' : 'Y'
+                  }
+                , table : this.tableName
+                , id_key : this.prmaryKey
+                , id_val : body.sitemapId
+            }
+
+            this.updateData(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
+    update_data( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                  sets : {
+                     'id_group' : body.groupId
+                    ,'hirarcy_ordered' : body.order
                     ,'update_datetime' : new Date()
                     ,'user_updated' : 1
                   }
@@ -132,9 +179,11 @@ module.exports = class sitemapModel extends crud_model  {
 
     }
 
-    datatable(req, cols) {
+    datatable(req, cols, active = 'Y') {
 
-        const query = 'select * from '+this.tableName+' where active = "Y" order by '+this.prmaryKey+' desc'
+        var query = 'select a.id_group, b.group_name, a.hirarcy_ordered, a.id_sitemap, a.user_created, a.user_updated, a.update_datetime, a.created_datetime from '+this.tableName+' a '
+                query += ' left join bapenda.m_group b on a.id_group = b.id_group' 
+                query += ' where a.active = "'+active+'" order by a.'+this.prmaryKey+' desc'
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
-const blackListModel = require('../models/black_list/blackListModel');
+const phoneBookModel = require('../models/phone_book/phoneBookModel');
 
+var phoneBookModels = new phoneBookModel()
 
 var controllerName = 'black_list'
-var blackListModels = new blackListModel()
 
 
 /* GET home page. */
@@ -19,196 +19,60 @@ router.get('/',  async (req, res, next) => {
 
 });
 
-router.get('/delete/:groupId',  async (req, res, next) => {
-
-    var inActiveGroup = await blackListModels.inActiveGroup(req.params)
-
-    res.redirect('/group');
-
-});
 
 router.get('/datatable',  async (req, res, next) => {
 
     var cols = [
-         { 
-            'db': 'id_black_list', 
-            'dt' : 0,
-            'formatter' : function( d, row ) {
- 
-                return Number(row.nomor)
- 
-            }
-        }
-        ,{ 'db': 'phone_number', 'dt' : 1 }
-        ,{ 'db': 'notes', 'dt' : 2 }
-        ,{ 
-            'db': 'user_created', 
-            'dt' : 3,
-            'formatter' : function( d, row ) {
-                var created_datetime = new Date(row.created_datetime).toISOString().split('T')
-                return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
-            }
-        }
-        ,{ 
-            'db': 'user_updated', 
-            'dt' : 4,
-            'formatter' : function( d, row ) {
+        { 
+           'db': 'id_phone_book', 
+           'dt' : 0,
+           'formatter' : function( d, row ) {
 
-                var update_datetime = new Date(row.update_datetime).toISOString().split('T')
-                return row.user_updated + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
- 
-            }
-        }
-        ,{ 
-            'db': 'update_datetime', 
-            'dt' : 5, 
-            'formatter' : function( d, row ) {
-                
-                var html = ''
-                    html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                    html += '    <a href="/black-list/add?id='+row.id_black_list+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/black-list/delete/'+row.id_black_list+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
-                    html += '</div>'
-                
-                return html;
-            }
-        }
-    ]
+               return Number(row.nomor)
 
-    var data = await blackListModels.datatable(req, cols)
+           }
+       }
+       ,{ 'db': 'phone_name', 'dt' : 1 }
+       ,{ 'db': 'phone_number', 'dt' : 2 }
+       ,{ 'db': 'notes', 'dt' : 3 }
+       ,{ 
+           'db': 'user_created', 
+           'dt' : 4,
+           'formatter' : function( d, row ) {
+               var created_datetime = new Date(row.created_datetime).toISOString().split('T')
+               return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
+           }
+       }
+       ,{ 
+           'db': 'user_updated', 
+           'dt' : 5,
+           'formatter' : function( d, row ) {
+
+               var update_datetime = new Date(row.update_datetime).toISOString().split('T')
+               return row.user_updated + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
+
+           }
+       }
+       ,{ 
+           'db': 'update_datetime', 
+           'dt' : 6, 
+           'formatter' : function( d, row ) {
+               
+               var html = ''
+                   html += '<div class="btn-group" role="group" aria-label="Basic example">'
+                   html += '    <a href="/phone-book/activate/'+row.id_phone_book+'" class="btn btn-success btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Activate"><i class="fas fa-check"></i></a> '
+                   html += '</div>'
+               
+               return html;
+           }
+       }
+   ]
+
+   var data = await phoneBookModels.datatable(req, cols, 'N')
     
     res.status(200).send(data)
 
 });
 
-router.get('/add',  async (req, res, next) => {
-  
-    var q = req.query
-
-    if('id' in q){
-        var d = await blackListModels.getGroupById(q.id)  
-        if(d) {
-            
-            req.renderObjects.dataUpdate = d[0]
-        }
-    } else {
-        req.renderObjects.dataUpdate = { group_name : '', group_desc : '' }
-    }
-
-    req.renderObjects.controller = controllerName
-    req.renderObjects.title = 'Add Group'
-
-    var resultMessage = (req.session.resultMessage) ? req.session.resultMessage : '' 
-
-    delete req.session.resultMessage
-
-    var alert = ''
-    if (resultMessage != '') {
-
-        for (const key in resultMessage) {
-            
-            if (resultMessage[key].param == 'success') {
-              
-                alert += '<div class="alert alert-success d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-check me-1"></i>'
-                alert += '<div>'
-                alert += resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-              
-            } else {
-                alert += '<div class="alert alert-danger d-flex align-items-center" role="alert">'
-                alert += '<i class="fas fa-exclamation-triangle me-1"></i>'
-                alert += '<div>'
-                alert +=  resultMessage[key].msg
-                alert += '</div>'
-                alert += '</div>'
-            }
-
-        }
-
-    }
-
-    req.renderObjects.alert = alert
-
-    res.render('group/add-group', req.renderObjects );
-  
-});
-
-router.post('/save',  
-    body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
-,async (req, res, next) => {
-  
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
-        return false
-    }
-
-    var saveGroup = await blackListModels.saveGroup(req.body)
-
-    if(saveGroup) {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success save group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed save group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
-
-});
-
-router.post('/update',  
-    body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
-,async (req, res, next) => {
-  
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        req.session.resultMessage = errors.array()
-        res.redirect('/group/add');
-        return false
-    }
-    
-    var saveGroup = await blackListModels.updateGroup({ ...req.body, ...req.query})
-
-    if(saveGroup) {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Success update group'
-           ,param:'success'
-           ,location:''
-       }]
-
-    } else {
-
-        req.session.resultMessage = [{
-            value:''
-           ,msg:'Failed update group'
-           ,param:'failed'
-           ,location:''
-       }]
-
-    }
-
-    res.redirect('/group/add');
-
-});
 
 module.exports = router;

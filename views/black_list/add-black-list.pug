@@ -1,0 +1,39 @@
+extends ../layout
+
+block content
+    
+    if 'id_black_list' in dataUpdate 
+        - var action = "update?id="+ dataUpdate.id_black_list
+        - var buttonAction = 'Update'
+    else 
+        - var action = "save"
+        - var buttonAction = 'Save'
+
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+            div(class="col-md-4")
+                | !{alert}
+                form(class="row g-3" action=action method="post" id="formPhoneBook")
+                    
+                    div(class="mb-3")
+                        label(for="phoneNumber" class="form-label") Phone Number 
+                        input(type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" value=dataUpdate.phone_number  )
+
+                    div(class="mb-3")
+                        label(for="notes" class="form-label") Description
+                        textarea(class="form-control" id="notes" name="notes" rows="3")
+                            | #{dataUpdate.notes}
+                    
+                    div(class="mb-3")
+                        button(type="submit" class="btn btn-primary float-end") #{buttonAction}
+                        a( class="btn btn-primary float-end me-2" href="/phone-book" ) List
+                        button(type="button" class="btn btn-danger float-end me-2" id="discard") Discard
+            
+            div(class="col-md-4")
+                label(class="fw-bold") Notes : 
+                p This phone book menu is used to record a phone number with its name and description, so when there is an incoming phone number that has been registered, its name will appear
+                p(class="text-danger") - Phone Name Mandatory
+                p(class="text-danger") - Phone Number Mandatory
+                p(class="text-danger") - Description Optional
+            
