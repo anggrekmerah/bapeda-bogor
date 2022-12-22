@@ -89,8 +89,22 @@ router.get('/add',  async (req, res, next) => {
   
     let flashMessage = await helper.flashMessage(req, sitemapModels, { id_group : '', hirarcy_ordered : '' } )
     
-    var dataGroups = await groupModels.execQuery('select a.id_group, a.group_name from bapenda.m_group a left join bapenda.m_sitemap b on a.id_group = b.id_group AND b.active = "Y" where ((a.active = "Y" AND b.id_group IS NULL) OR b.active = "N")')
+    var q = req.query
+
+    if('id' in q){
+        
+        var dataUpdate = req.renderObjects.dataUpdate
+        var dataGroups = await groupModels.getDataById(dataUpdate.id_group)
+
+    } else {
+        
+        var sql = 'select a.id_group, a.group_name from bapenda.m_group a '
+            sql += 'left join bapenda.m_sitemap b on a.id_group = b.id_group AND b.active = "Y" where ((a.active = "Y" AND b.id_group IS NULL) OR b.active = "N")'
+            
+        var dataGroups = await groupModels.execQuery()
     
+    }
+
     delete dataGroups.meta
     req.renderObjects.groupList = dataGroups
     

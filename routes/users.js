@@ -6,6 +6,22 @@ const userModel = require('../models/user/userModels');
 const helper = require('../config/helper')
 const groupModel = require('../models/group/groupModel');
 const extensionModel = require('../models/extension/extensionModel');
+var bcrypt = require('bcryptjs');
+const multer  = require('multer')
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '/images/user-photo/')
+  },
+  size: function (req, file, cb) {
+    cb(null, 500000)
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname.replaceAll(' ','-') )
+  }
+})
+
+const upload = multer({ storage: storage })
 
 var controllerName = 'users'
 var userModels = new userModel()
@@ -34,12 +50,12 @@ router.get('/datatable',  async (req, res, next) => {
                 return Number(row.nomor)
             }
         }
-        ,{ 'db': 'id_group', 'dt' : 1 }
+        ,{ 'db': 'group_name', 'dt' : 1 }
         ,{ 'db': 'id_extension', 'dt' : 2 }
         ,{ 'db': 'first_name', 'dt' : 3 }
         ,{ 'db': 'last_name', 'dt' : 4 }
         ,{ 'db': 'parent_user', 'dt' : 5 }
-        ,{ 'db': 'age', 'dt' : 6 }
+        ,{ 'db': 'ages', 'dt' : 6 }
         ,{ 'db': 'last_login', 'dt' : 7 }
         ,{ 'db': 'last_logout', 'dt' : 8 }
         ,{ 
@@ -128,22 +144,34 @@ router.get('/add',  async (req, res, next) => {
 });
 
 router.post('/save',  
-  body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
+  upload.single('photo'),
+  body('firstName').not().isEmpty().withMessage('First name required').isLength({min:3, max:100}).withMessage('First name length min:3 max:100'),
+  body('lastName').not().isEmpty().withMessage('Last name required').isLength({min:3, max:100}).withMessage('Last name length min:3 max:100'),
+  body('ages').not().isEmpty().withMessage('Age required'),
+  body('username').not().isEmpty().withMessage('Username required').isLength({min:8, max:30}).withMessage('Username length min:8 max:30'),
+  body('password').not().isEmpty().withMessage('Password required').isLength({min:8, max:30}).withMessage('Username length min:8 max:30'),
+  body('groupId').not().isEmpty().withMessage('Group required')
 ,async (req, res, next) => {
 
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
       req.session.resultMessage = errors.array()
-      res.redirect('/group/add');
+      res.redirect('/users/add');
       return false
   }
 
-  var saveGroup = await userModels.insertData(req.body)
+  var salt = bcrypt.genSaltSync(10);
+  var hash = bcrypt.hashSync(req.body.password, salt);
+  console.log(hash)
+  req.body.passHash = hash
+  req.body.fileName = req.file.originalname.replaceAll(' ','-')
 
-  req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success save group') : helper.MessageFailed('Failed save group')
+  var save = await userModels.insertData(req.body)
 
-  res.redirect('/group/add');
+  req.session.resultMessage = (save) ? helper.MessageSuccess('Success save user') : helper.MessageFailed('Failed save group')
+
+  res.redirect('/users/add');
 
 });
 

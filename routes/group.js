@@ -12,6 +12,12 @@ var groupModels = new groupModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
+    if(!req.session.loggedin) {
+                
+        res.render('error')
+
+    }
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Group'
 

@@ -10,6 +10,7 @@ var black_listRouter = require('./routes/black_list');
 var extensionRouter = require('./routes/extension');
 var dashboardRouter = require('./routes/dashboard');
 var dashboard_agentRouter = require('./routes/dashboard-agent');
+var authRouter = require('./routes/auth');
 
 
 module.exports ={
@@ -25,5 +26,6 @@ module.exports ={
         app.use('/extension', extensionRouter);
         app.use('/dashboard', dashboardRouter);
         app.use('/dashboard-agent', dashboard_agentRouter);
+        app.use('/auth', authRouter);
     }
 } 

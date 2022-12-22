@@ -84,24 +84,6 @@ module.exports = class navbar_model extends crud_model  {
           
           if(menus[key].submenu) {
       
-            // html += '<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages' + menus[key].id_menu + '" aria-expanded="false" aria-controls="collapsePages">'
-            // html += '<div class="sb-nav-link-icon"> <i class="' + menus[key].icon + '"></i></div>'
-            // html += menus[key].menu_name
-            // html += '<div class="sb-sidenav-collapse-arrow"> <i class="fas fa-angle-down"></i></div>'
-            // html += '</a>'
-            
-
-            // html += '<div class="collapse" id="collapsePages' + menus[key].id_menu + '" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion' + menus[key].parent_id + '" >'
-            //     html += '<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages' + menus[key].id_menu + '" >'
-                    
-            //         html += this.bikinMenu(menus[key].submenu, true) 
-                       
-                    
-            //     html += '</nav>'
-            // html += '</div>'
-
-            
-
             html += '<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts' + menus[key].id_menu + '" aria-expanded="false" aria-controls="collapseLayouts' + menus[key].id_menu + '">'
             
                 html += '<div class="sb-nav-link-icon"> <i class="' + menus[key].icon + '"></i></div>' 
@@ -127,12 +109,6 @@ module.exports = class navbar_model extends crud_model  {
                         html += menus[key].menu_name
                         html += '<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>'
                     html += '</a>'
-
-                    // html += '<div class="collapse" id="pagesCollapse' + menus[key].id_menu + '" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages' + menus[key].id_menu + '" >'
-                    //     html += '<nav class="sb-sidenav-menu-nested nav">'
-                    //         html += this.bikinMenu(menus[key].submenu, true) 
-                    //     html += '</nav>'
-                    // html += '</div>'
                     
                 } else {
                     html += '<a class="nav-link" href="'+menus[key].menu_url+'">' + menus[key].menu_name + '</a>'
@@ -151,7 +127,57 @@ module.exports = class navbar_model extends crud_model  {
       
         return html
       
-      }
+    }
+
+    bikinGroupMenu(menus, isSub = false) {
+  
+        var html = ''
+                        
+        for (var key in menus) {
+          
+            var ischecked = (menus[key].checklist == 'Y') ? 'checked' : ''
+
+          if(menus[key].submenu) {
+      
+            html += '<li class="list-group-item">'
+            
+                html += '<div class="form-check">'
+                html +=    '<input class="form-check-input" '+ischecked+' name="menu[]" onclick="autoSelect(this, '+menus[key].id_menu+')" type="checkbox" value="'+menus[key].id_menu+'" id="parent_'+menus[key].id_menu+'">'
+                html +=    '<label class="form-check-label" for="flexCheckDefault">'
+                html +=    menus[key].menu_name
+                html +=    '</label>'
+                html += '</div>'
+
+                html += '<ul>'
+                html += this.bikinGroupMenu(menus[key].submenu, true) 
+                html += '</ul>'
+
+            html += '</li>'
+            
+            
+
+          } else {
+      
+            var name = (isSub) ? 'child' : 'parent'
+            var autoSelect = (isSub) ? 'onclick="checkSelect('+menus[key].parent_id+')"' : 'onclick="autoSelect(this, '+menus[key].id_menu+')"'
+            
+            html += '<li class="list-group-item">' 
+            html += '<div class="form-check">'
+            html +=    '<input class="form-check-input '+name+'_'+menus[key].parent_id+'" '+ischecked+' '+autoSelect+'  type="checkbox" name="menu[]" value="'+menus[key].id_menu+'" id="flexCheckDefault">'
+            html +=    '<label class="form-check-label" for="flexCheckDefault">'
+            html +=    menus[key].menu_name
+            html +=    '</label>'
+            html += '</div>'
+            html += '</li>'
+      
+          }
+      
+      
+        }
+      
+        return html
+      
+    }
     
     refactorMenu( ) {
 

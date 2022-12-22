@@ -2,8 +2,8 @@ extends ../layout
 
 block content
     
-    if 'id_group' in dataUpdate 
-        - var action = "update?id="+ dataUpdate.id_group
+    if 'id_user' in dataUpdate 
+        - var action = "update?id="+ dataUpdate.id_user
         - var buttonAction = 'Update'
     else 
         - var action = "save"
@@ -14,7 +14,7 @@ block content
         div(class="row")
             div(class="col-md-6")
                 | !{alert}
-                form(class="row g-3" action=action method="post" id="formUser")
+                form(class="row g-3" action=action method="post" id="formUser" enctype="multipart/form-data")
                     div(class="col-md-6")
                         div(class="mb-3")
                             label(for="firstName" class="form-label") First Name 
@@ -29,12 +29,12 @@ block content
                             input(type="text" class="form-control" id="ages" name="ages" placeholder="Ages" value=dataUpdate.ages  )
 
                         div(class="mb-3")
-                            label(for="username" class="form-label") Username 
+                            label(for="username" class="form-label") E-mail 
                             input(type="text" class="form-control" id="username" name="username" placeholder="Username" value=dataUpdate.username  )
 
                         div(class="mb-3")
                             label(for="password" class="form-label") Password 
-                            input(type="text" class="form-control" id="password" name="password" placeholder="Password"  )
+                            input(type="password" class="form-control" id="password" name="password" placeholder="Password"  )
 
                         div(class="mb-3")
                             label(for="Photo" class="form-label") Photo
@@ -54,21 +54,28 @@ block content
                             select(class="form-control" id="extensionId" name="extensionId" )
                                 each val, index in extList
                                     option(value=extList[index].id_extension) #{extList[index].extension}
-
+ 
                         div(class="mb-3")
                             label(for="parentUser" class="form-label") Parent User
                             select(class="form-control" id="parentUser" name="parentUser" )
+                                option(value="") ---Select---
                                 each val, index in userList
                                     option(value=userList[index].id_user) #{userList[index].first_name} + #{userList[index].last_name}
 
                         div(class="mb-3")
                             button(type="submit" class="btn btn-primary float-end") #{buttonAction}
-                            a( class="btn btn-primary float-end me-2" href="/group" ) List
+                            a( class="btn btn-primary float-end me-2" href="/users" ) List
                             button(type="button" class="btn btn-danger float-end me-2" id="discard") Discard
         
             div(class="col-md-6")
                 label(class="fw-bold") Notes : 
-                p This group form serves to create a user group, so the user can be directed to the group to which it is going
-                p(class="text-danger") - Group Name Mandatory
-                p(class="text-danger") - Group Description Optional
+                p this user form is used to add a new user
+                p(class="text-danger") - First Name Mandatory
+                p(class="text-danger") - Last Name Mandatory
+                p(class="text-danger") - Ages Mandatory
+                p(class="text-danger") - Username Mandatory
+                p(class="text-danger") - Password Mandatory
+                p(class="text-danger") - Group Mandatory
+                p(class="text-success") - Photo Optional
+                p(class="text-success") - Extension Optional
             

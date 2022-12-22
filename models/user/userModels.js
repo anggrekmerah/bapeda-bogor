@@ -71,21 +71,23 @@ module.exports = class userModel extends crud_model  {
 
         return new Promise((resolve, reject) => {
 
+            console.log(body)
+
             var params = {
                   values : [
+                    body.parentUser,
+                    body.passHash, 
                     body.groupId, 
+                    body.fileName,
                     body.extensionId, 
                     body.username, 
-                    body.password, 
                     body.firstName, 
                     body.lastName,
-                    body.photo,
-                    body.age,
-                    body.parentUser,
+                    body.ages,
                     1,
                     new Date()]
                 , table : this.tableName
-                , fields : 'id_group, id_extension, username, password, first_name, last_name, photo, ages, parent_user, user_creatd, created_datetime'
+                , fields : 'parent_user, password, id_group, photo, id_extension, username, first_name, last_name, ages, user_created, created_datetime'
             }
 
             this.saveData(params).then( (res) => {
@@ -94,7 +96,7 @@ module.exports = class userModel extends crud_model  {
         
             }).catch( (err) => {
                 
-                reject (false)
+                reject (err)
         
             })
 
@@ -113,7 +115,7 @@ module.exports = class userModel extends crud_model  {
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.menuId
+                , id_val : body.userId
             }
 
             this.updateData(params).then( (res) => {
@@ -169,7 +171,7 @@ module.exports = class userModel extends crud_model  {
 
     datatable(req, cols) {
 
-        const query = 'select * from '+this.tableName+' where active = "Y" order by '+this.prmaryKey+' desc'
+        const query = 'select a.*, b.group_name from '+this.tableName+' a left join bapenda.m_group b on a.id_group = b.id_group  where a.active = "Y" order by '+this.prmaryKey+' desc'
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

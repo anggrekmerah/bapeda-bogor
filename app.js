@@ -10,6 +10,7 @@ var session = require('express-session');
 var menuMids = require('./middleware/menuMid');
 var renderObject = require('./middleware/renderObject');
 
+
 // routes
 var routers = require('./routers');
 
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use(menuMids.menuMiddleware)
 app.use(renderObject.renderObjectMiddleware)
 
@@ -36,6 +38,7 @@ app.use(session({
   secret: '!!@@#@$@#!$',
   cookie: { secure: false }
 }));
+
 
 routers.routes(app)
 
