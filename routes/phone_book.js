@@ -12,6 +12,9 @@ var phoneBookModels = new phoneBookModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.render('error')
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Phone Book'
 
@@ -21,6 +24,9 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:phoneId',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var inActiveGroup = await phoneBookModels.inActive(req.params)
 
     res.redirect('/phone-book');
@@ -29,6 +35,9 @@ router.get('/delete/:phoneId',  async (req, res, next) => {
 
 router.get('/activate/:phoneId',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var inActiveGroup = await phoneBookModels.activate(req.params)
 
     res.redirect('/black-list');
@@ -36,6 +45,9 @@ router.get('/activate/:phoneId',  async (req, res, next) => {
 });
 
 router.get('/datatable',  async (req, res, next) => {
+
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
 
     var cols = [
          { 
@@ -92,6 +104,9 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.render('error')
+
     let flashMessage = await helper.flashMessage(req, phoneBookModels, { phone_name : '', phone_number : '', notes : ''} )
     
     req.renderObjects.controller = controllerName
@@ -108,6 +123,9 @@ router.post('/save',
     body('notes').isLength({min:10, max:255}).withMessage('Phone notes length min:10 max:255')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -130,6 +148,9 @@ router.post('/update',
     body('notes').isLength({min:10, max:255}).withMessage('Phone notes length min:10 max:255')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {

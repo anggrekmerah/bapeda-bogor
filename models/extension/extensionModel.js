@@ -14,7 +14,7 @@ module.exports = class extensionModel extends crud_model  {
     constructor() {
         super()
 
-        this.tableName = 'bapenda.m_extension'
+        this.tableName = 'm_extension'
         this.prmaryKey = 'id_extension'
 
     }

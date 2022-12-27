@@ -15,6 +15,9 @@ var sitemapModels = new sitemapModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.render('error')
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Sitemap'
 
@@ -24,6 +27,9 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:sitemapId',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var inActiveGroup = await sitemapModels.inActive(req.params)
 
     res.redirect('/sitemap');
@@ -31,6 +37,9 @@ router.get('/delete/:sitemapId',  async (req, res, next) => {
 });
 
 router.get('/datatable',  async (req, res, next) => {
+
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
 
     var cols = [
          { 
@@ -87,6 +96,9 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.render('error')
+
     let flashMessage = await helper.flashMessage(req, sitemapModels, { id_group : '', hirarcy_ordered : '' } )
     
     var q = req.query
@@ -98,8 +110,8 @@ router.get('/add',  async (req, res, next) => {
 
     } else {
         
-        var sql = 'select a.id_group, a.group_name from bapenda.m_group a '
-            sql += 'left join bapenda.m_sitemap b on a.id_group = b.id_group AND b.active = "Y" where ((a.active = "Y" AND b.id_group IS NULL) OR b.active = "N")'
+        var sql = 'select a.id_group, a.group_name from m_group a '
+            sql += 'left join m_sitemap b on a.id_group = b.id_group AND b.active = "Y" where ((a.active = "Y" AND b.id_group IS NULL) OR b.active = "N")'
             
         var dataGroups = await groupModels.execQuery()
     
@@ -121,6 +133,9 @@ router.post('/save',
     body('order').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -142,6 +157,9 @@ router.post('/update',
     body('order').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {

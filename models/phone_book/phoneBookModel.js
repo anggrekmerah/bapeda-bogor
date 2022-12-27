@@ -14,7 +14,7 @@ module.exports = class phoneBookModel extends crud_model  {
     constructor() {
         super()
 
-        this.tableName = 'bapenda.m_phone_book'
+        this.tableName = 'm_phone_book'
         this.prmaryKey = 'id_phone_book'
 
     }

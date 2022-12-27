@@ -18,6 +18,9 @@ var navbar_models = new navbar_model()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.render('error')
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Group Menu'
 
@@ -27,6 +30,9 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:groupMenuId',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var inActiveGroup = await groupMenuModels.inActive(req.params)
 
     res.redirect('/menu');
@@ -35,6 +41,9 @@ router.get('/delete/:groupMenuId',  async (req, res, next) => {
 
 router.get('/datatable',  async (req, res, next) => {
     
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var cols = [
         { 
            'db': 'id_group', 
@@ -77,12 +86,15 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.render('error')
+
     let flashMessage = await helper.flashMessage(req, groupModels, { id_group : '', id_menu : '' } )
     
     var q = req.query
 
-    var sql = 'SELECT a.id_menu, a.menu_name, a.parent_id, b.id_menu as menu_id, if(b.id_menu IS NULL , "N", "Y") AS checklist FROM bapenda.m_menu a'
-        sql += ' LEFT JOIN bapenda.m_group_menu b ON a.id_menu = b.id_menu AND b.id_group = ?'
+    var sql = 'SELECT a.id_menu, a.menu_name, a.parent_id, b.id_menu as menu_id, if(b.id_menu IS NULL , "N", "Y") AS checklist FROM m_menu a'
+        sql += ' LEFT JOIN m_group_menu b ON a.id_menu = b.id_menu AND b.id_group = ?'
         sql += ' where a.active = "Y" order by a.order_menu asc'
         
     var dataMenu = await groupMenuModels.execQuery(sql, [q.id])
@@ -104,13 +116,16 @@ router.get('/add',  async (req, res, next) => {
 
 router.post('/save', async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var menus = req.body['menu[]']
     var groupId = req.body.groupId
 
     var save = false
     if(menus.length > 0) {
 
-        var deleteGroup = await groupMenuModels.execQuery('delete from bapenda.m_group_menu where id_group = ?', [groupId]) 
+        var deleteGroup = await groupMenuModels.execQuery('delete from m_group_menu where id_group = ?', [groupId]) 
 
         for (const key in menus) {
             var b = { 'groupId' :  groupId, 'menuId' : menus[key]}
@@ -130,6 +145,9 @@ router.post('/update',
     body('order').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {

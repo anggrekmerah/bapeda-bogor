@@ -1,22 +1,19 @@
 const mariadb = require('mariadb');
 
 const crud_model = require('../../config/crud_model');
-const ssp = require('../../config/ssp');
 
-const datatable = new ssp();
 
-module.exports = class groupModel extends crud_model  {
+module.exports = class websocketModel extends crud_model  {
 
     tableName
 
     prmaryKey
 
     constructor() {
-
         super()
 
-        this.tableName = 'm_group'
-        this.prmaryKey = 'id_group' 
+        this.tableName = 't_counter'
+        this.prmaryKey = 'id_counter'
 
     }
 
@@ -50,7 +47,7 @@ module.exports = class groupModel extends crud_model  {
         
             var params = {
                 table : this.tableName
-                ,id_key : this.prmaryKey
+                ,id_key :  this.prmaryKey
                 ,id_value : id
             }
 
@@ -72,10 +69,23 @@ module.exports = class groupModel extends crud_model  {
 
         return new Promise((resolve, reject) => {
 
+            console.log(body)
+
             var params = {
-                  values : [body.groupName, body.groupDesc, 1, new Date()]
+                  values : [
+                    body.parentUser,
+                    body.passHash, 
+                    body.groupId, 
+                    body.fileName,
+                    body.extensionId, 
+                    body.username, 
+                    body.firstName, 
+                    body.lastName,
+                    body.ages,
+                    1,
+                    new Date()]
                 , table : this.tableName
-                , fields : 'group_name, group_desc, user_created, created_datetime'
+                , fields : 'parent_user, password, id_group, photo, id_extension, email, first_name, last_name, ages, user_created, created_datetime'
             }
 
             this.saveData(params).then( (res) => {
@@ -84,7 +94,7 @@ module.exports = class groupModel extends crud_model  {
         
             }).catch( (err) => {
                 
-                reject (false)
+                reject (err)
         
             })
 
@@ -93,20 +103,23 @@ module.exports = class groupModel extends crud_model  {
 
     }
 
-    inActive( body ) {
+
+    update_counter( id_counter ) {
 
         return new Promise((resolve, reject) => {
 
-            var params = {
-                  sets : {
-                    'active' : 'N'
-                  }
-                , table : this.tableName
-                , id_key : this.prmaryKey
-                , id_val : body.groupId
-            }
+            var sql = 'UPDATE ( '
+	
+            sql += 'select id_counter, if(update_date < CURDATE() , 1, call_counter+1) AS call_counter'
+            
+            sql += ' FROM t_counter '
+            
+            sql += ' ) a'
+            sql += ' JOIN t_counter b ON b.id_counter = a.id_counter '
+            sql += ' set b.call_counter = a.call_counter, b.update_date = CURDATE() '
+            sql += ' WHERE b.id_counter = ? '
 
-            this.updateData(params).then( (res) => {
+            this.execQuery(sql, [ id_counter ]).then( (res) => {
             
                 resolve( true )
         
@@ -121,25 +134,13 @@ module.exports = class groupModel extends crud_model  {
 
     }
 
-    update_data( body ) {
+    check_phone_number( phoneNumber ) {
 
         return new Promise((resolve, reject) => {
 
-            var params = {
-                  sets : {
-                    'group_name' : body.groupName
-                    ,'group_desc' : body.groupDesc
-                    ,'update_datetime' : new Date()
-                    ,'user_updated' : 1
-                  }
-                , table : this.tableName
-                , id_key : this.prmaryKey
-                , id_val : body.id
-            }
-
-            this.updateData(params).then( (res) => {
+            this.execQuery('select * from m_phone_book where phone_number = ? ', [ phoneNumber ]).then( (res) => {
             
-                resolve( true )
+                resolve( res )
         
             }).catch( (err) => {
                 
@@ -149,14 +150,6 @@ module.exports = class groupModel extends crud_model  {
 
         })
         
-
-    }
-
-    datatable(req, cols) {
-
-        const query = 'select * from m_group where active = "Y" order by id_group desc'
-
-        return datatable.simple(query, req, this.prmaryKey, cols)
 
     }
 

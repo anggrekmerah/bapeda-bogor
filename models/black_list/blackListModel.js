@@ -14,7 +14,7 @@ module.exports = class blackListModel extends crud_model  {
     constructor() {
         super()
 
-        this.tableName = 'bapenda.m_black_list'
+        this.tableName = 'm_black_list'
         this.prmaryKey = 'id_black_list'
 
     }

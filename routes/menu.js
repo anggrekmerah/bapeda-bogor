@@ -12,6 +12,9 @@ var menuModels = new menuModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.render('error')
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Menus'
 
@@ -21,6 +24,9 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:menuId',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var inActiveGroup = await menuModels.inActive(req.params)
 
     res.redirect('/menu');
@@ -29,6 +35,9 @@ router.get('/delete/:menuId',  async (req, res, next) => {
 
 router.get('/datatable',  async (req, res, next) => {
     
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var cols = [
          { 
             'db': 'id_menu', 
@@ -86,6 +95,9 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.render('error')
+
     let flashMessage = await helper.flashMessage(req, menuModels, { menu_name : '', menu_desc : '', menu_url : '', parent_id : '', icon : '', order_menu : '' } )
     let menus = await menuModels.getAllData()
 
@@ -102,12 +114,12 @@ router.get('/add',  async (req, res, next) => {
 
 router.post('/save',  
     body('menuName').not().isEmpty().withMessage('Menu name required'), 
-    body('menuUrl').not().isEmpty().withMessage('Menu url required'), 
-    body('parentId').not().isEmpty().withMessage('Parent required'), 
-    body('icon').not().isEmpty().withMessage('Icon required'), 
     body('orderMenu').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -126,12 +138,12 @@ router.post('/save',
 
 router.post('/update',  
     body('menuName').not().isEmpty().withMessage('Menu name required'), 
-    body('menuUrl').not().isEmpty().withMessage('Menu url required'), 
-    body('parentId').not().isEmpty().withMessage('Parent required'), 
-    body('icon').not().isEmpty().withMessage('Icon required'), 
     body('orderMenu').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {

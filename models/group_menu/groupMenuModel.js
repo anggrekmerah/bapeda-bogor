@@ -14,7 +14,7 @@ module.exports = class groupMenuModel extends crud_model  {
     constructor() {
         super()
 
-        this.tableName = 'bapenda.m_group_menu'
+        this.tableName = 'm_group_menu'
         this.prmaryKey = 'id_group_menu'
 
     }
@@ -181,7 +181,7 @@ module.exports = class groupMenuModel extends crud_model  {
 
     datatable(req, cols, active = 'Y') {
 
-        var query = 'select id_group, group_name, user_created, created_datetime from bapenda.m_group where active = "Y"'
+        var query = 'select id_group, group_name, user_created, created_datetime from m_group where active = "Y"'
               
         return datatable.simple(query, req, this.prmaryKey, cols)
 

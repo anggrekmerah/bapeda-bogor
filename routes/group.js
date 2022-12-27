@@ -12,11 +12,9 @@ var groupModels = new groupModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-    if(!req.session.loggedin) {
-                
+    if(!req.session.loggedin)                
         res.render('error')
 
-    }
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Group'
@@ -27,6 +25,9 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:groupId',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var inActiveGroup = await groupModels.inActive(req.params)
 
     res.redirect('/group');
@@ -34,6 +35,9 @@ router.get('/delete/:groupId',  async (req, res, next) => {
 });
 
 router.get('/datatable',  async (req, res, next) => {
+
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
 
     var cols = [
          { 
@@ -88,6 +92,9 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.render('error')
+
     let flashMessage = await helper.flashMessage(req, groupModels, { group_name : '', group_desc : '' } )
     
     req.renderObjects.controller = controllerName
@@ -102,6 +109,9 @@ router.post('/save',
     body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -122,6 +132,9 @@ router.post('/update',
     body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {

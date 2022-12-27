@@ -12,6 +12,9 @@ var controllerName = 'black_list'
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.render('error')
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Number Black List'
 
@@ -21,6 +24,9 @@ router.get('/',  async (req, res, next) => {
 
 
 router.get('/datatable',  async (req, res, next) => {
+
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
 
     var cols = [
         { 

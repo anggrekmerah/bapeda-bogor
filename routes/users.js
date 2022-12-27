@@ -32,6 +32,9 @@ var extensionModels = new extensionModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
+  if(!req.session.loggedin)                
+        res.render('error')
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'User'
 
@@ -41,6 +44,9 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/datatable',  async (req, res, next) => {
     
+  if(!req.session.loggedin)                
+   res.redirect('/auth')
+
     var cols = [
          { 
             'db': 'id_user', 
@@ -100,12 +106,19 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/delete/:groupId',  async (req, res, next) => {
 
+  if(!req.session.loggedin)                
+    res.redirect('/auth')
+
   var inActiveGroup = await userModels.inActive(req.params)
 
   res.redirect('/group');
 
 });
+
 router.get('/add',  async (req, res, next) => {
+
+  if(!req.session.loggedin)                
+        res.render('error')
 
   let flashMessage = await helper.flashMessage(req, userModels, { 
 
@@ -153,6 +166,9 @@ router.post('/save',
   body('groupId').not().isEmpty().withMessage('Group required')
 ,async (req, res, next) => {
 
+  if(!req.session.loggedin)                
+        res.redirect('/auth')
+
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -178,6 +194,9 @@ router.post('/save',
 router.post('/update',  
   body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
 ,async (req, res, next) => {
+
+  if(!req.session.loggedin)                
+    res.redirect('/auth')
 
   const errors = validationResult(req);
 

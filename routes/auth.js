@@ -5,6 +5,11 @@ const { body, validationResult } = require('express-validator');
 const helper = require('../config/helper');
 const userModel = require('../models/user/userModels');
 var bcrypt = require('bcryptjs');
+var amis = require('asterisk-manager')
+
+require('dotenv').config({path:'.env'})
+
+const env = process.env;
 
 var userModels = new userModel()
 
@@ -19,30 +24,89 @@ router.get('/',  async (req, res, next) => {
 
 });
 
+router.get('/logout',  async (req, res, next) => {
+
+    var amiManager = new amis(env.AMI_PORT, env.AMI_HOST, env.AMI_USER, env.AMI_PASS, true);
+
+    var queueOut  ={
+        'action':'QueueRemove',
+        "queue": 'qbapenda',
+        "interface": 'SIP/'+req.session.extension
+    }
+    
+    console.log(queueOut)
+    
+    amiManager.action(queueOut, async (err, ress) => {
+        
+        if(ress.response == 'Success'){
+            
+            var update_users = await userModels.execQuery("update m_users set last_logout = ? , active_login = ? where email = ? ",[new Date(), 'N', req.session.email])
+
+            req.session.destroy()
+
+            res.redirect('/auth')
+
+        }
+        
+    });
+
+});
+
 router.post('/authenticate', body('username').not().isEmpty(), body('password').not().isEmpty(), async (req, res, next) => {
 
-    var users = await userModels.execQuery("select * from bapenda.m_users where email = ? and active = ?",[req.body.username, 'Y'])
+    var amiManager = new amis(env.AMI_PORT, env.AMI_HOST, env.AMI_USER, env.AMI_PASS, true);
+
+    var users = await userModels.execQuery("select a.*, b.extension from m_users a left join m_extension b on a.id_extension = b.id_extension where a.email = ? and a.active = ?",[req.body.username, 'Y'])
      
     if( '0' in users) {
 
         delete users.meta
 
         var data_user = users[0]
-
+       
         var validate = bcrypt.compareSync(req.body.password, data_user.password); // true
 
         if(validate) {
 
-            req.session.loggedin = true
-            req.session.groupId = data_user.id_group
-            req.session.extensionId = data_user.id_extension
-            req.session.email = data_user.email
-            req.session.firstName = data_user.first_name
-            req.session.lastName = data_user.last_name
-            req.session.ages = data_user.ages
-            req.session.parentUser = data_user.parent_user
+            var queueIn  ={
+                'action':'QueueAdd',
+                'queue': 'qbapenda',
+                'interface': 'SIP/'+data_user.extension,
+                'penalty': 1,
+                'paused': 'no',
+                'membername' : 'Bapenda CC',
+                'stateinterface' : 'SIP/'+data_user.extension
+            }
+            console.log(queueIn)
             
-            res.redirect('/dashboard');
+            amiManager.action(queueIn, async (err, ress) => {
+               
+                console.log(ress)
+
+                if(ress.response == 'Success') {
+
+                    req.session.loggedin = true
+                    req.session.groupId = data_user.id_group
+                    req.session.extension = data_user.extension
+                    req.session.email = data_user.email
+                    req.session.firstName = data_user.first_name
+                    req.session.lastName = data_user.last_name
+                    req.session.ages = data_user.ages
+                    req.session.parentUser = data_user.parent_user
+                    
+                    var update_users = await userModels.execQuery("update m_users set last_login = ? , active_login = ? where email = ? ",[new Date(), 'Y', req.body.username])
+
+                    res.redirect('/dashboard');
+                    
+                } else {
+
+                    req.session.resultMessage = helper.MessageFailed(ress.message)
+
+                    res.redirect('/auth');
+
+                }
+
+            });
 
         } else {
 

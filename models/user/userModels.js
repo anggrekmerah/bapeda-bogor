@@ -14,7 +14,7 @@ module.exports = class userModel extends crud_model  {
     constructor() {
         super()
 
-        this.tableName = 'bapenda.m_users'
+        this.tableName = 'm_users'
         this.prmaryKey = 'id_user'
 
     }
@@ -87,7 +87,7 @@ module.exports = class userModel extends crud_model  {
                     1,
                     new Date()]
                 , table : this.tableName
-                , fields : 'parent_user, password, id_group, photo, id_extension, username, first_name, last_name, ages, user_created, created_datetime'
+                , fields : 'parent_user, password, id_group, photo, id_extension, email, first_name, last_name, ages, user_created, created_datetime'
             }
 
             this.saveData(params).then( (res) => {
@@ -171,7 +171,7 @@ module.exports = class userModel extends crud_model  {
 
     datatable(req, cols) {
 
-        const query = 'select a.*, b.group_name from '+this.tableName+' a left join bapenda.m_group b on a.id_group = b.id_group  where a.active = "Y" order by '+this.prmaryKey+' desc'
+        const query = 'select a.*, b.group_name from '+this.tableName+' a left join m_group b on a.id_group = b.id_group  where a.active = "Y" order by '+this.prmaryKey+' desc'
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

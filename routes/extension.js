@@ -12,6 +12,9 @@ var extensionModels = new extensionModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.render('error')
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Extension'
 
@@ -21,6 +24,9 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:extensionId',  async (req, res, next) => {
 
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     var inActiveextension = await extensionModels.inActive(req.params)
 
     res.redirect('/extension');
@@ -28,6 +34,9 @@ router.get('/delete/:extensionId',  async (req, res, next) => {
 });
 
 router.get('/datatable',  async (req, res, next) => {
+
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
 
     var cols = [
          { 
@@ -82,6 +91,9 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.render('error')
+
     let flashMessage = await helper.flashMessage(req, extensionModels, { extension : '' } )
     
     req.renderObjects.controller = controllerName
@@ -96,6 +108,9 @@ router.post('/save',
     body('extension').not().isEmpty().withMessage('Extension required').isLength({min:3, max:5}).withMessage('Extension length min:3 max:5')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -116,6 +131,9 @@ router.post('/update',
     body('extension').not().isEmpty().withMessage('Extension required').isLength({min:3, max:5}).withMessage('Extension length min:3 max:5')
 ,async (req, res, next) => {
   
+    if(!req.session.loggedin)                
+        res.redirect('/auth')
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {

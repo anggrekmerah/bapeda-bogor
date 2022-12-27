@@ -14,7 +14,7 @@ module.exports = class sitemapModel extends crud_model  {
     constructor() {
         super()
 
-        this.tableName = 'bapenda.m_sitemap'
+        this.tableName = 'm_sitemap'
         this.prmaryKey = 'id_sitemap'
 
     }
@@ -182,7 +182,7 @@ module.exports = class sitemapModel extends crud_model  {
     datatable(req, cols, active = 'Y') {
 
         var query = 'select a.id_group, b.group_name, a.hirarcy_ordered, a.id_sitemap, a.user_created, a.user_updated, a.update_datetime, a.created_datetime from '+this.tableName+' a '
-                query += ' left join bapenda.m_group b on a.id_group = b.id_group' 
+                query += ' left join m_group b on a.id_group = b.id_group' 
                 query += ' where a.active = "'+active+'" order by a.'+this.prmaryKey+' desc'
 
         return datatable.simple(query, req, this.prmaryKey, cols)

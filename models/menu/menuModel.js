@@ -14,7 +14,7 @@ module.exports = class menuModel extends crud_model  {
     constructor() {
         super()
 
-        this.tableName = 'bapenda.m_menu'
+        this.tableName = 'm_menu'
         this.prmaryKey = 'id_menu'
 
     }
