@@ -7,7 +7,7 @@ function incomnigBox(params) {
     
     var ext = document.getElementById('extension').value
 
-    var incomingBox = '<div class="col-md-2 my-1" id="incomingCall_'+ext+'">'
+    var incomingBox = '<div class="col-md-2 my-1" id="incomingCall_'+ext+'" card-incoming="card-'+params.caller.caller.number+'">'
         incomingBox += '    <div class="card">'
         incomingBox += '        <div class="card-header blinking-in">'
         incomingBox += '            <i class="fa fa-phone me-2"></i>'
@@ -53,7 +53,13 @@ ioSocket.on("responseRinging", (res) => {
     
     var incoming = incomnigBox(res)
 
-    $('#rowIncoming').append(incoming)
+    if(document.body.contains(document.getElementById('counterIncoming')))
+        document.getElementById('counterIncoming').innerHTML = res.callCounter
+
+    console.log(document.querySelector("div[card-incoming='card-"+res.caller.caller.number+"']"))
+
+    if(document.querySelector("div[card-incoming='card-"+res.caller.caller.number+"']") == undefined)
+        $('#rowIncoming').append(incoming)
 
 });
 
@@ -63,9 +69,13 @@ ioSocket.on("responseAnswer", (res) => {
     console.log(res)
     
     var ext = res.peer.caller.number
+    var ext_actual = document.getElementById('extension').value
+
+    if(document.body.contains(document.getElementById('counterReceive')))
+        document.getElementById('counterReceive').innerHTML = res.callCounter
 
     if(!document.body.contains(document.getElementById('incomingCall_'+ext)))
-        document.getElementById('incomingCall_'+ext).remove()
+        document.getElementById('incomingCall_'+ext_actual).remove()
 
 });
 
@@ -75,6 +85,9 @@ ioSocket.on("responseNoanswer", (res) => {
     console.log(res)
 
     var ext = document.getElementById('extension').value
+
+    if(document.body.contains(document.getElementById('counterAbandon')))
+        document.getElementById('counterAbandon').innerHTML = res.callCounter
 
     if(document.body.contains(document.getElementById('incomingCall_'+ext)))
         document.getElementById('incomingCall_'+ext).remove()

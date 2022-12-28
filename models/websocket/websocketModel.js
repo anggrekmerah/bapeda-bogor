@@ -110,7 +110,7 @@ module.exports = class websocketModel extends crud_model  {
 
             var sql = 'UPDATE ( '
 	
-            sql += 'select id_counter, if(update_date < CURDATE() , 1, call_counter+1) AS call_counter'
+            sql += ' select id_counter, if(update_date < CURDATE() , 1, call_counter+1) AS call_counter'
             
             sql += ' FROM t_counter '
             
