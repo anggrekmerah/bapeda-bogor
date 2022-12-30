@@ -108,16 +108,12 @@ module.exports = class websocketModel extends crud_model  {
 
         return new Promise((resolve, reject) => {
 
-            var sql = 'UPDATE ( '
+            var sql = 'UPDATE t_counter '
 	
-            sql += ' select id_counter, if(update_date < CURDATE() , 1, call_counter+1) AS call_counter'
-            
-            sql += ' FROM t_counter '
-            
-            sql += ' ) a'
-            sql += ' JOIN t_counter b ON b.id_counter = a.id_counter '
-            sql += ' set b.call_counter = a.call_counter, b.update_date = CURDATE() '
-            sql += ' WHERE b.id_counter = ? '
+                sql += ' set call_counter = if(update_date < CURDATE() , 1, call_counter + 1), update_date = CURDATE() '
+                sql += ' WHERE id_counter = ? '
+
+            console.log(sql)
 
             this.execQuery(sql, [ id_counter ]).then( (res) => {
             

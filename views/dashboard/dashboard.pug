@@ -5,14 +5,18 @@ block content
 
     div(class="container-fluid overflow-hidden" style="margin-top : 35px;")
         div(class="row bg-light px-0 py-2")
-            div(class="col")
-                div(class="card")
-                    div(class="row")
-                        div(class="col-md-3 text-center pt-1" )
-                            h1: i(class="fas fa-phone")
-                        div(class="col-md-8")
-                            span Incoming Calls
-                            span: h4(id="counterIncoming") 0
+
+            each val, index in counters
+                div(class="col")
+                    div(class="card")
+                        div(class="row")
+                            div(class="col-md-3 text-center pt-1" )
+                                h1: i(class=counters[index].icon)
+                            div(class="col-md-8")
+                                span #{counters[index].call_type} Calls
+                                - var idCounter = 'counter' + counters[index].call_type 
+                                span: h4(id=idCounter) #{counters[index].call_counter} 
+
             //- div(class="col")
             //-     div(class="card")
             //-         div(class="row")
@@ -21,14 +25,7 @@ block content
             //-             div(class="col-md-8")
             //-                 span Outgoing Calls
             //-                 span: h4 5
-            div(class="col")
-                div(class="card")
-                    div(class="row")
-                        div(class="col-md-3 text-center pt-1 " )
-                            h1: i(class="fas fa-phone-volume")
-                        div(class="col-md-8")
-                            span Receive Calls
-                            span: h4(id="counterReceive") 0
+            
             //- div(class="col")
             //-     div(class="card")
             //-         div(class="row")
@@ -37,14 +34,7 @@ block content
             //-             div(class="col-md-8")
             //-                 span Hold Calls
             //-                 span: h4 5
-            div(class="col")
-                div(class="card")
-                    div(class="row")
-                        div(class="col-md-3 text-center pt-1 " )
-                            h1: i(class="fas fa-phone-slash")
-                        div(class="col-md-8")
-                            span Abandon Calls
-                            span: h4(id="counterAbandon") 0
+            
         div(class="row mt-1")
             
             div(class="col-md-8 p-0 pe-1")

@@ -5,6 +5,9 @@ const ioSocket = io('http://localhost:3000',{
 
 function incomnigBox(params) {
     
+    if(!document.body.contains(document.getElementById('extension')))
+        return ''
+
     var ext = document.getElementById('extension').value
 
     var incomingBox = '<div class="col-md-2 my-1" id="incomingCall_'+ext+'" card-incoming="card-'+params.caller.caller.number+'">'
@@ -51,15 +54,19 @@ ioSocket.on("responseRinging", (res) => {
     console.log('dapet pesan dari server ringing' )
     console.log( res )
     
-    var incoming = incomnigBox(res)
-
     if(document.body.contains(document.getElementById('counterIncoming')))
         document.getElementById('counterIncoming').innerHTML = res.callCounter
 
-    console.log(document.querySelector("div[card-incoming='card-"+res.caller.caller.number+"']"))
 
-    if(document.querySelector("div[card-incoming='card-"+res.caller.caller.number+"']") == undefined)
+    if(document.querySelector("div[card-incoming='card-"+res.caller.caller.number+"']") == undefined && 
+        document.body.contains(document.getElementById('extension'))) {
+
+        var incoming = incomnigBox(res)
+
         $('#rowIncoming').append(incoming)
+
+    }
+        
 
 });
 
@@ -68,14 +75,18 @@ ioSocket.on("responseAnswer", (res) => {
     console.log("responseAnswer")
     console.log(res)
     
-    var ext = res.peer.caller.number
-    var ext_actual = document.getElementById('extension').value
-
     if(document.body.contains(document.getElementById('counterReceive')))
         document.getElementById('counterReceive').innerHTML = res.callCounter
 
-    if(!document.body.contains(document.getElementById('incomingCall_'+ext)))
-        document.getElementById('incomingCall_'+ext_actual).remove()
+    if(document.body.contains(document.getElementById('extension'))) {
+
+        var ext = res.peer.caller.number
+        var ext_actual = document.getElementById('extension').value
+
+        if(!document.body.contains(document.getElementById('incomingCall_'+ext)))
+            document.getElementById('incomingCall_'+ext_actual).remove()
+
+    }
 
 });
 
@@ -84,24 +95,32 @@ ioSocket.on("responseNoanswer", (res) => {
     console.log("responseNoanswer")
     console.log(res)
 
-    var ext = document.getElementById('extension').value
-
     if(document.body.contains(document.getElementById('counterAbandon')))
         document.getElementById('counterAbandon').innerHTML = res.callCounter
 
-    if(document.body.contains(document.getElementById('incomingCall_'+ext)))
-        document.getElementById('incomingCall_'+ext).remove()
+    if(document.body.contains(document.getElementById('extension'))) {
 
+        var ext = document.getElementById('extension').value
+
+        if(document.body.contains(document.getElementById('incomingCall_'+ext)))
+            document.getElementById('incomingCall_'+ext).remove()
+
+    }
+    
 });
 
 ioSocket.on("responseDestroy", (res) => {
 
     console.log("responseDestroy")
 
-    var ext = document.getElementById('extension').value
+    if(document.body.contains(document.getElementById('extension'))) {
 
-    if(document.body.contains(document.getElementById('incomingCall_'+ext)))
-        document.getElementById('incomingCall_'+ext).remove()
+        var ext = document.getElementById('extension').value
+
+        if(document.body.contains(document.getElementById('incomingCall_'+ext)))
+            document.getElementById('incomingCall_'+ext).remove()
+            
+    }
 
 });
 

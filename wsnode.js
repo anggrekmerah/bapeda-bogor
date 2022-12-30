@@ -25,10 +25,14 @@ ws.on('open', function open() {
 	console.log('Connected Asterisk Rest Interface')
 
 });
+
+let tmp_incall = {}
+let tmp_abandoncall = {}
+let tmp_busy = {}
  
 ws.on('message', async (data) => {
   // console.log(data)
-  var res = JSON.parse(data)
+  	var res = JSON.parse(data)
 
   	switch(res.type){
 	 
@@ -60,6 +64,10 @@ ws.on('message', async (data) => {
 
 				case 'RINGING':
 					
+						if(res.caller.caller.number in tmp_incall)
+							return false
+
+						tmp_incall[res.caller.caller.number] = res.caller.caller.number
 						
 						var phone = await websocketModels.check_phone_number(res.caller.caller.number)
 							
@@ -122,6 +130,7 @@ ws.on('message', async (data) => {
 							}
 
 						}
+
 						
 					break;
 			
@@ -138,6 +147,12 @@ ws.on('message', async (data) => {
 					break;
 
 				case 'NOANSWER':
+					
+					if(res.caller.caller.number in tmp_abandoncall)
+						return false
+
+					tmp_abandoncall[res.caller.caller.number] = res.caller.caller.number
+
 					var updatecounter = await websocketModels.update_counter(3)
 					var currentcounter = await websocketModels.getDataById(3)
 					delete currentcounter.meta
@@ -145,10 +160,18 @@ ws.on('message', async (data) => {
 
 					res.callCounter = currentcounter[0]['call_counter']
 
+					
+
 					socket.emit('noanswer', res)
 					break;
 
 				case 'BUSY':
+
+					if(res.caller.caller.number in tmp_busy)
+						return false
+					
+					tmp_busy[res.caller.caller.number] = res.caller.caller.number
+
 					var updatecounter = await websocketModels.update_counter(3)
 					var currentcounter = await websocketModels.getDataById(3)
 					delete currentcounter.meta
@@ -164,16 +187,27 @@ ws.on('message', async (data) => {
 	  	break;
 
 	  	case'ChannelHold':
-		  console.log(res)
+			console.log(res)
+
 		  socket.emit('hold', res)
 	  	break;
 
 	  	case'ChannelDestroyed' :
 		  console.log(res)
 		  
-		  if(res.channel.dialplan.context == 'Bapeda_in_open' || res.channel.dialplan.context == 'Bapenda_in'){
-			socket.emit('destroy', res)
-		  }	
+			if(res.channel.caller.number in tmp_incall)
+				delete tmp_incall[res.channel.caller.number]
+
+			if(res.channel.caller.number in tmp_abandoncall)
+				delete tmp_abandoncall[res.channel.caller.number]
+
+			if(res.channel.caller.number in tmp_busy)
+				delete tmp_busy[res.channel.caller.number]
+
+			
+			if(res.channel.dialplan.context == 'Bapeda_in_open' || res.channel.dialplan.context == 'Bapenda_in'){
+				socket.emit('destroy', res)
+			}	
 
 	  	break;
 
