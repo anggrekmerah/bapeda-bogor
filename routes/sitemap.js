@@ -113,7 +113,7 @@ router.get('/add',  async (req, res, next) => {
         var sql = 'select a.id_group, a.group_name from m_group a '
             sql += 'left join m_sitemap b on a.id_group = b.id_group AND b.active = "Y" where ((a.active = "Y" AND b.id_group IS NULL) OR b.active = "N")'
             
-        var dataGroups = await groupModels.execQuery()
+        var dataGroups = await groupModels.execQuery(sql)
     
     }
 
