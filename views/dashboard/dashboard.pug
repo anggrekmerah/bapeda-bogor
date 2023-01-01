@@ -44,113 +44,114 @@ block content
             div(class="col-md-4 bg-light p-2")
             
                 div(class="card border")
-                    div(class="card-header  text-dark") Agent List
-                        div(class="row border pt-2 mt-1")
-                            div(class="col-md-3 d-flex justify-content-center pb-2")
-                                div(class="rounded-circle overflow-hidden border border-primary  border-5" style="width:80px; height: 80px")
-                                    img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px")
+                    div(class="card-header  text-dark" id="agentList") Agent List
+                        | !{agentList}
+                        //- div(class="row border pt-2 mt-1")
+                        //-     div(class="col-md-3 d-flex justify-content-center pb-2")
+                        //-         div(class="rounded-circle overflow-hidden border border-primary  border-5" style="width:80px; height: 80px")
+                        //-             img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px")
                         
-                            div(class="col-md-9 ps-2")
-                                table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
-                                    tr
-                                        td Maisaroh
-                                            span(class="badge bg-primarys float-end") AVAILABLE
+                        //-     div(class="col-md-9 ps-2")
+                        //-         table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+                        //-             tr
+                        //-                 td Maisaroh
+                        //-                     span(class="badge bg-primarys float-end") AVAILABLE
                                         
-                                    tr 
-                                        td ( Extension ) 9957
-                                            span(class="badge bg-primarys ms-1 float-end") Calls taken 
-                                                span(class="badge bg-warning text-dark") 1
+                        //-             tr 
+                        //-                 td ( Extension ) 9957
+                        //-                     span(class="badge bg-primarys ms-1 float-end") Calls taken 
+                        //-                         span(class="badge bg-warning text-dark") 1
                             
-                            div(class="col-md-12 bg-dark d-flex bd-highlight ")
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="badge rounded-pill bg-warning text-dark") IDLE
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="ms-1 text-light") 00:00:00
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="ms-1 text-light") 082122071292
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    button(class="btn btn-warning btn-sm ms-1") Barge
-                                    button(class="btn btn-warning btn-sm ms-1") Wishp
-                                    button(class="btn btn-warning btn-sm ms-1") Spy 
-                        div(class="row border pt-2 mt-1")
-                            div(class="col-md-3 d-flex justify-content-center pb-2")
-                                div(class="rounded-circle overflow-hidden border border-primary  border-5" style="width:80px; height: 80px")
-                                    img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px")
+                        //-     div(class="col-md-12 bg-dark d-flex bd-highlight ")
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="badge rounded-pill bg-warning text-dark") IDLE
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="ms-1 text-light") 00:00:00
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="ms-1 text-light") 082122071292
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             button(class="btn btn-warning btn-sm ms-1") Barge
+                        //-             button(class="btn btn-warning btn-sm ms-1") Wishp
+                        //-             button(class="btn btn-warning btn-sm ms-1") Spy 
+                        //- div(class="row border pt-2 mt-1")
+                        //-     div(class="col-md-3 d-flex justify-content-center pb-2")
+                        //-         div(class="rounded-circle overflow-hidden border border-primary  border-5" style="width:80px; height: 80px")
+                        //-             img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px")
                         
-                            div(class="col-md-9 ps-2")
-                                table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
-                                    tr
-                                        td Maisaroh
-                                            span(class="badge bg-primarys float-end") AVAILABLE
+                        //-     div(class="col-md-9 ps-2")
+                        //-         table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+                        //-             tr
+                        //-                 td Maisaroh
+                        //-                     span(class="badge bg-primarys float-end") AVAILABLE
                                         
-                                    tr 
-                                        td ( Extension ) 9957
-                                            span(class="badge bg-primarys ms-1 float-end") Calls taken 
-                                                span(class="badge bg-warning text-dark") 1
+                        //-             tr 
+                        //-                 td ( Extension ) 9957
+                        //-                     span(class="badge bg-primarys ms-1 float-end") Calls taken 
+                        //-                         span(class="badge bg-warning text-dark") 1
                             
-                            div(class="col-md-12 bg-dark d-flex bd-highlight ")
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="badge rounded-pill bg-warning text-dark") IDLE
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="ms-1 text-light") 00:00:00
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="ms-1 text-light") 082122071292
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    button(class="btn btn-warning btn-sm float-end ms-1") Barge
-                                    button(class="btn btn-warning btn-sm float-end ms-1") Wishp
-                                    button(class="btn btn-warning btn-sm float-end ms-1") Spy 
-                        div(class="row border pt-2 mt-1")
-                            div(class="col-md-3 d-flex justify-content-center pb-2")
-                                div(class="rounded-circle overflow-hidden border border-disable  border-5" style="width:80px; height: 80px")
-                                    img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px; -webkit-filter: grayscale(100%); filter: grayscale(100%);")
+                        //-     div(class="col-md-12 bg-dark d-flex bd-highlight ")
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="badge rounded-pill bg-warning text-dark") IDLE
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="ms-1 text-light") 00:00:00
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="ms-1 text-light") 082122071292
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             button(class="btn btn-warning btn-sm float-end ms-1") Barge
+                        //-             button(class="btn btn-warning btn-sm float-end ms-1") Wishp
+                        //-             button(class="btn btn-warning btn-sm float-end ms-1") Spy 
+                        //- div(class="row border pt-2 mt-1")
+                        //-     div(class="col-md-3 d-flex justify-content-center pb-2")
+                        //-         div(class="rounded-circle overflow-hidden border border-disable  border-5" style="width:80px; height: 80px")
+                        //-             img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px; -webkit-filter: grayscale(100%); filter: grayscale(100%);")
                             
-                            div(class="col-md-9 ps-2")
-                                table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
-                                    tr
-                                        td Maisaroh
-                                            span(class="badge bg-secondary float-end") UNAVAILABLE
+                        //-     div(class="col-md-9 ps-2")
+                        //-         table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+                        //-             tr
+                        //-                 td Maisaroh
+                        //-                     span(class="badge bg-secondary float-end") UNAVAILABLE
                                         
-                                    tr 
-                                        td ( Extension ) 9957
-                                            span(class="badge bg-secondary ms-1 float-end") Calls taken 
-                                                span(class="badge bg-warning text-dark") 1
+                        //-             tr 
+                        //-                 td ( Extension ) 9957
+                        //-                     span(class="badge bg-secondary ms-1 float-end") Calls taken 
+                        //-                         span(class="badge bg-warning text-dark") 1
                             
-                            div(class="col-md-12 bg-disable d-flex bd-highlight ")
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="badge rounded-pill bg-secondary") OFF
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="ms-1 text-light") 00:00:00
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="ms-1 text-light") 082122071292
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Barge
-                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Wishp
-                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Spy 
-                        div(class="row border pt-2 mt-1")
-                            div(class="col-md-3 d-flex justify-content-center pb-2")
-                                div(class="rounded-circle overflow-hidden border border-disable  border-5" style="width:80px; height: 80px")
-                                    img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px; -webkit-filter: grayscale(100%); filter: grayscale(100%);")
+                        //-     div(class="col-md-12 bg-disable d-flex bd-highlight ")
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="badge rounded-pill bg-secondary") OFF
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="ms-1 text-light") 00:00:00
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="ms-1 text-light") 082122071292
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Barge
+                        //-             button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Wishp
+                        //-             button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Spy 
+                        //- div(class="row border pt-2 mt-1")
+                        //-     div(class="col-md-3 d-flex justify-content-center pb-2")
+                        //-         div(class="rounded-circle overflow-hidden border border-disable  border-5" style="width:80px; height: 80px")
+                        //-             img(src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="img-cover" style="width:80px; height: 80px; -webkit-filter: grayscale(100%); filter: grayscale(100%);")
                             
-                            div(class="col-md-9 ps-2")
-                                table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
-                                    tr
-                                        td Maisaroh
-                                            span(class="badge bg-secondary float-end") UNAVAILABLE
+                        //-     div(class="col-md-9 ps-2")
+                        //-         table(class="table table-borderless table-sm" cellspacing="0" cellpadding="0")
+                        //-             tr
+                        //-                 td Maisaroh
+                        //-                     span(class="badge bg-secondary float-end") UNAVAILABLE
                                         
-                                    tr 
-                                        td ( Extension ) 9957
-                                            span(class="badge bg-secondary ms-1 float-end") Calls taken 
-                                                span(class="badge bg-warning text-dark") 1
+                        //-             tr 
+                        //-                 td ( Extension ) 9957
+                        //-                     span(class="badge bg-secondary ms-1 float-end") Calls taken 
+                        //-                         span(class="badge bg-warning text-dark") 1
                             
-                            div(class="col-md-12 bg-disable d-flex bd-highlight ")
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="badge rounded-pill bg-secondary") OFF
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="ms-1 text-light") 00:00:00
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    span(class="ms-1 text-light") 082122071292
-                                div(class="p-2 flex-fill bd-highlight") 
-                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Barge
-                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Wishp
-                                    button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Spy
+                        //-     div(class="col-md-12 bg-disable d-flex bd-highlight ")
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="badge rounded-pill bg-secondary") OFF
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="ms-1 text-light") 00:00:00
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             span(class="ms-1 text-light") 082122071292
+                        //-         div(class="p-2 flex-fill bd-highlight") 
+                        //-             button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Barge
+                        //-             button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Wishp
+                        //-             button(class="btn btn-secondary btn-sm float-end ms-1" disabled="disabled") Spy
                         

@@ -71,6 +71,17 @@ ws.on('message', async (data) => {
 						
 						var phone = await websocketModels.check_phone_number(res.caller.caller.number)
 							
+						var valueRinging = [
+						 	 res.caller.id
+							,''
+							,res.dialstatus
+							,res.timestamp
+							,res.caller.caller.number
+							,''
+						]
+						
+						var inserLog = await websocketModels.insertData(valueRinging)
+
 						delete phone.meta
 
 						console.log('hasil query phone book')
@@ -137,6 +148,19 @@ ws.on('message', async (data) => {
 				case 'ANSWER':
 					var updatecounter = await websocketModels.update_counter(2)
 					var currentcounter = await websocketModels.getDataById(2)
+
+
+					var valueAnswer = [
+                        res.caller.id
+						,res.peer.id
+						,res.dialstatus
+						,res.timestamp
+						,res.caller.caller.number
+						,res.peer.caller.number
+                    ]
+
+					var inserLog = await websocketModels.insertData(valueAnswer)
+
 					delete currentcounter.meta
 					
 					console.log(currentcounter)
@@ -155,7 +179,20 @@ ws.on('message', async (data) => {
 
 					var updatecounter = await websocketModels.update_counter(3)
 					var currentcounter = await websocketModels.getDataById(3)
+					
+					var valueNoanswer = [
+                        res.caller.id
+						,res.peer.id
+						,res.dialstatus
+						,res.timestamp
+						,res.caller.caller.number
+						,res.peer.caller.number
+                    ]
+					
+					var inserLog = await websocketModels.insertData(valueNoanswer)
+
 					delete currentcounter.meta
+
 					console.log(currentcounter)
 
 					res.callCounter = currentcounter[0]['call_counter']
@@ -174,6 +211,18 @@ ws.on('message', async (data) => {
 
 					var updatecounter = await websocketModels.update_counter(3)
 					var currentcounter = await websocketModels.getDataById(3)
+
+					var valueBusy = [
+                        res.caller.id
+						,res.peer.id
+						,res.dialstatus
+						,res.timestamp
+						,res.caller.caller.number
+						,res.peer.caller.number
+                    ]
+					
+					var inserLog = await websocketModels.insertData(valueBusy)
+
 					delete currentcounter.meta
 					console.log(currentcounter)
 
@@ -205,7 +254,7 @@ ws.on('message', async (data) => {
 				delete tmp_busy[res.channel.caller.number]
 
 			
-			if(res.channel.dialplan.context == 'Bapeda_in_open' || res.channel.dialplan.context == 'Bapenda_in'){
+			if(res.channel.dialplan.context == 'bapeda'){
 				socket.emit('destroy', res)
 			}	
 

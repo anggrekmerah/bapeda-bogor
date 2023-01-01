@@ -1,5 +1,3 @@
-const mariadb = require('mariadb');
-
 const crud_model = require('./crud_model');
 
 module.exports = class navbar_model extends crud_model  {

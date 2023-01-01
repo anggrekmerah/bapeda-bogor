@@ -11,7 +11,7 @@ const multer  = require('multer')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '/images/user-photo/')
+    cb(null, 'public/images/user-photo/')
   },
   size: function (req, file, cb) {
     cb(null, 500000)
@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({ storage: storage })
+const upload = multer({storage })
 
 var controllerName = 'users'
 var userModels = new userModel()
@@ -57,7 +57,7 @@ router.get('/datatable',  async (req, res, next) => {
             }
         }
         ,{ 'db': 'group_name', 'dt' : 1 }
-        ,{ 'db': 'id_extension', 'dt' : 2 }
+        ,{ 'db': 'extension', 'dt' : 2 }
         ,{ 'db': 'first_name', 'dt' : 3 }
         ,{ 'db': 'last_name', 'dt' : 4 }
         ,{ 'db': 'parent_user', 'dt' : 5 }
@@ -104,14 +104,14 @@ router.get('/datatable',  async (req, res, next) => {
 
 });
 
-router.get('/delete/:groupId',  async (req, res, next) => {
+router.get('/delete/:userId',  async (req, res, next) => {
 
   if(!req.session.loggedin)                
     res.redirect('/auth')
 
   var inActiveGroup = await userModels.inActive(req.params)
 
-  res.redirect('/group');
+  res.redirect('/users');
 
 });
 
@@ -132,6 +132,7 @@ router.get('/add',  async (req, res, next) => {
         ,ages : ''
         ,parent_user : ''
         ,active : ''
+        ,is_agent : ''
         
       })
   
@@ -167,7 +168,7 @@ router.post('/save',
 ,async (req, res, next) => {
 
   if(!req.session.loggedin)                
-        res.redirect('/auth')
+    res.render('error')
 
   const errors = validationResult(req);
 
@@ -202,7 +203,7 @@ router.post('/update',
 
   if (!errors.isEmpty()) {
       req.session.resultMessage = errors.array()
-      res.redirect('/group/add');
+      res.redirect('/users/add');
       return false
   }
   
@@ -210,7 +211,7 @@ router.post('/update',
 
   req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success update group') : helper.MessageFailed('Failed update group')
 
-  res.redirect('/group/add');
+  res.redirect('/users/add');
 
 });
 

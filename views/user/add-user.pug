@@ -63,6 +63,12 @@ block content
                                     option(value=userList[index].id_user) #{userList[index].first_name} + #{userList[index].last_name}
 
                         div(class="mb-3")
+                            label(for="parentUser" class="form-label") Is Agent
+                            select(class="form-control" id="isAgent" name="isAgent" )
+                                option(value='Y') Yes
+                                option(value='N') No
+
+                        div(class="mb-3")
                             button(type="submit" class="btn btn-primary float-end") #{buttonAction}
                             a( class="btn btn-primary float-end me-2" href="/users" ) List
                             button(type="button" class="btn btn-danger float-end me-2" id="discard") Discard

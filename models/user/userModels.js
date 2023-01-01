@@ -84,10 +84,11 @@ module.exports = class userModel extends crud_model  {
                     body.firstName, 
                     body.lastName,
                     body.ages,
+                    body.isAgent,
                     1,
                     new Date()]
                 , table : this.tableName
-                , fields : 'parent_user, password, id_group, photo, id_extension, email, first_name, last_name, ages, user_created, created_datetime'
+                , fields : 'parent_user, password, id_group, photo, id_extension, email, first_name, last_name, ages, is_agent, user_created, created_datetime'
             }
 
             this.saveData(params).then( (res) => {
@@ -146,6 +147,7 @@ module.exports = class userModel extends crud_model  {
                     ,'parent_id' : body.parentId
                     ,'icon' : body.icon
                     ,'order_menu' : body.orderMenu
+                    ,'is_agent':body.isAgent
                     ,'update_datetime' : new Date()
                     ,'user_updated' : 1
                   }
@@ -171,7 +173,11 @@ module.exports = class userModel extends crud_model  {
 
     datatable(req, cols) {
 
-        const query = 'select a.*, b.group_name from '+this.tableName+' a left join m_group b on a.id_group = b.id_group  where a.active = "Y" order by '+this.prmaryKey+' desc'
+        const query = `select a.*, b.group_name , c.extension
+        from ${this.tableName} a 
+        left join m_group b on a.id_group = b.id_group  
+        left join m_extension c on c.id_extension = a.id_extension
+        where a.active = "Y" order by ${this.prmaryKey} asc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

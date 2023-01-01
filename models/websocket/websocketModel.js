@@ -65,27 +65,16 @@ module.exports = class websocketModel extends crud_model  {
 
     }
 
-    insertData( body ) {
+    insertData( value ) {
 
         return new Promise((resolve, reject) => {
 
-            console.log(body)
+            console.log(value)
 
             var params = {
-                  values : [
-                    body.parentUser,
-                    body.passHash, 
-                    body.groupId, 
-                    body.fileName,
-                    body.extensionId, 
-                    body.username, 
-                    body.firstName, 
-                    body.lastName,
-                    body.ages,
-                    1,
-                    new Date()]
-                , table : this.tableName
-                , fields : 'parent_user, password, id_group, photo, id_extension, email, first_name, last_name, ages, user_created, created_datetime'
+                  values : value
+                , table : 't_incoming_call_log'
+                , fields : 'caller_id, peer_id, call_event, call_date, call_number, call_receive_number'
             }
 
             this.saveData(params).then( (res) => {

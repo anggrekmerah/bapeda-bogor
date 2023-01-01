@@ -1,4 +1,49 @@
+function dial(e, ext, id, type) {
+        
+    e.innerHTML = 'Loading...'
+    
+    $.ajax({
+    
+        url:"/dashboard/"+type,
+        method:"POST", //First change type to method here
+        data:{
+            ext: ext,
+            channel: id
+        },
+        success:function(response) {
             
+            if(response.err){
+               alert('System error')
+               return false 
+            }
+
+            switch (type) {
+        
+                case 'barge':
+                    e.innerHTML = 'Barge'
+                    break;
+            
+                case 'whisp':
+                    e.innerHTML = 'Wishp'
+                    break;
+    
+                case 'spy':
+                    e.innerHTML = 'Spy'        
+                    break;
+            }
+            
+            
+            e.classList.remove("btn-warning");
+            e.classList.add("btn-success");
+        },
+        error:function(){
+            alert("Sorry cannot " + type );
+        }
+    
+    });
+
+}            
+
 window.onload = function () {
 
     var chart = new CanvasJS.Chart("chartContainer", {
