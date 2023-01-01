@@ -129,7 +129,7 @@ ioSocket.on("responseAnswer", (res) => {
         
         if(document.body.contains(document.getElementById('btnWishpAgent_'+res.peer.caller.number))){
             document.getElementById('btnWishpAgent_'+res.peer.caller.number).removeAttribute('disabled')
-            document.getElementById('btnWishpAgent_'+res.peer.caller.number).setAttribute('onclick','dial(this,\''+res.peer.caller.number+'\',\''+res.peer.id+'\',\'wishp\')')
+            document.getElementById('btnWishpAgent_'+res.peer.caller.number).setAttribute('onclick','dial(this,\''+res.peer.caller.number+'\',\''+res.peer.id+'\',\'whisp\')')
         }
             
         

@@ -49,8 +49,8 @@ router.post('/spy',  async (req, res, next) => {
 
 router.post('/whisp',  async (req, res, next) => {
 
-  if(!req.session.loggedin)                
-    res.render('error')
+  // if(!req.session.loggedin)                
+  //   res.render('error')
 
     axios.post('http://'+env.ARI_USER+':'+env.ARI_PASS+'@'+env.ARI_HOST+':'+env.ARI_PORT+'/ari/channels/'+req.body.channel+'/snoop?spy=none&whisper=out&app=Voipstasis')
     .then(function (response) {
@@ -66,8 +66,8 @@ router.post('/whisp',  async (req, res, next) => {
 
 router.post('/barge',  async (req, res, next) => {
 
-  if(!req.session.loggedin)                
-    res.render('error')
+  // if(!req.session.loggedin)                
+  //   res.render('error')
 
     axios.post('http://'+env.ARI_USER+':'+env.ARI_PASS+'@'+env.ARI_HOST+':'+env.ARI_PORT+'/ari/channels/'+req.body.channel+'/snoop?spy=both&whisper=both&app=Voipstasis')
     .then(function (response) {
