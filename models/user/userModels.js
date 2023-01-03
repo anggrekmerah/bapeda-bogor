@@ -78,7 +78,7 @@ module.exports = class userModel extends crud_model  {
                     body.parentUser,
                     body.passHash, 
                     body.groupId, 
-                    body.fileName,
+                    ('fileName' in body) ? body.fileName : '',
                     body.extensionId, 
                     body.username, 
                     body.firstName, 

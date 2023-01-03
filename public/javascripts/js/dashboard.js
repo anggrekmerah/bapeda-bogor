@@ -6,6 +6,7 @@ function dial(e, ext, id, type) {
     
         url:"/dashboard/"+type,
         method:"POST", //First change type to method here
+        contentType: 'json',
         data:{
             ext: ext,
             channel: id

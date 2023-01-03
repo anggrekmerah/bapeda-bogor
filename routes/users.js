@@ -182,7 +182,9 @@ router.post('/save',
   var hash = bcrypt.hashSync(req.body.password, salt);
   console.log(hash)
   req.body.passHash = hash
-  req.body.fileName = req.file.originalname.replaceAll(' ','-')
+
+  if('file' in req)
+    req.body.fileName = req.file.originalname.replaceAll(' ','-')
 
   var save = await userModels.insertData(req.body)
 

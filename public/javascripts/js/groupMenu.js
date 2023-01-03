@@ -11,13 +11,20 @@ function autoSelect(e, id) {
 function checkSelect(id) {
     $('#parent_'+id).prop('checked', true)
     
+    var is_parent_check = false
+    
     $('input:checkbox.child_'+id).each(function () {
-
-        if(this.checked){
-            return false
-        } else 
-            $('#parent_'+id).prop('checked', false) 
+        console.log('input:checkbox.child_'+ id +' = '+ this.checked)
+        
+        if(this.checked) {
+            is_parent_check = this.checked
+            return false    
+        }
+        
+         
     });
+
+    $('#parent_'+id).prop('checked', is_parent_check)
         
 
 }

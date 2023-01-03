@@ -64,8 +64,14 @@ ws.on('message', async (data) => {
 
 				case 'RINGING':
 					
-						if(res.caller.caller.number in tmp_incall)
-							return false
+					if(!('caller' in res) )
+						return false
+						
+					if(res.caller.dialplan.context != 'Bapeda_in_open')
+						return false
+
+					if(res.caller.caller.number in tmp_incall)
+						return false
 
 						tmp_incall[res.caller.caller.number] = res.caller.caller.number
 						
@@ -146,6 +152,10 @@ ws.on('message', async (data) => {
 					break;
 			
 				case 'ANSWER':
+
+					if(res.caller.dialplan.context != 'Bapeda_in_open')
+						return false
+
 					var updatecounter = await websocketModels.update_counter(2)
 					var currentcounter = await websocketModels.getDataById(2)
 

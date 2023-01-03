@@ -35,7 +35,15 @@ router.post('/spy',  async (req, res, next) => {
   // if(!req.session.loggedin)                
   //   res.render('error')
 
-  axios.post('http://'+env.ARI_USER+':'+env.ARI_PASS+'@'+env.ARI_HOST+':'+env.ARI_PORT+'/ari/channels/'+req.body.channel+'/snoop?spy=out&whisper=none&app=Voipstasis')
+  var config = {
+    method: 'post',
+    url: 'http://'+env.ARI_HOST+':'+env.ARI_PORT+'/ari/channels?endpoint=SIP/'+req.session.extension+'&extension=222'+req.body.ext+'&context=bapeda&priority=1',
+    headers: { 
+      'Authorization': 'Basic QmFwZW5kYTpCYXBlbmRh'
+    }
+  };
+
+  axios(config)
     .then(function (response) {
       // handle success)
       res.status(200).json({err:false , msg: 'sucess', data:response.data})
@@ -52,7 +60,15 @@ router.post('/whisp',  async (req, res, next) => {
   // if(!req.session.loggedin)                
   //   res.render('error')
 
-    axios.post('http://'+env.ARI_USER+':'+env.ARI_PASS+'@'+env.ARI_HOST+':'+env.ARI_PORT+'/ari/channels/'+req.body.channel+'/snoop?spy=none&whisper=out&app=Voipstasis')
+  var config = {
+    method: 'post',
+    url: 'http://'+env.ARI_HOST+':'+env.ARI_PORT+'/ari/channels?endpoint=SIP/'+req.session.extension+'&extension=223'+req.body.ext+'&context=bapeda&priority=1',
+    headers: { 
+      'Authorization': 'Basic QmFwZW5kYTpCYXBlbmRh'
+    }
+  };
+
+  axios(config)
     .then(function (response) {
       // handle success)
       res.status(200).json({err:false , msg: 'sucess', data:response.data})
@@ -69,7 +85,15 @@ router.post('/barge',  async (req, res, next) => {
   // if(!req.session.loggedin)                
   //   res.render('error')
 
-    axios.post('http://'+env.ARI_USER+':'+env.ARI_PASS+'@'+env.ARI_HOST+':'+env.ARI_PORT+'/ari/channels/'+req.body.channel+'/snoop?spy=both&whisper=both&app=Voipstasis')
+  var config = {
+    method: 'post',
+    url: 'http://'+env.ARI_HOST+':'+env.ARI_PORT+'/ari/channels?endpoint=SIP/'+req.session.extension+'&extension=224'+req.body.ext+'&context=bapeda&priority=1',
+    headers: { 
+      'Authorization': 'Basic QmFwZW5kYTpCYXBlbmRh'
+    }
+  };
+
+  axios(config)
     .then(function (response) {
       // handle success)
       res.status(200).json({err:false , msg: 'sucess', data:response.data})

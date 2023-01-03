@@ -27,7 +27,7 @@ router.get('/delete/:extensionId',  async (req, res, next) => {
     if(!req.session.loggedin)                
         res.redirect('/auth')
 
-    var inActiveextension = await extensionModels.inActive(req.params)
+    var inActiveextension = await extensionModels.inActive(req)
 
     res.redirect('/extension');
 
@@ -50,20 +50,20 @@ router.get('/datatable',  async (req, res, next) => {
         }
         ,{ 'db': 'extension', 'dt' : 1 }
         ,{ 
-            'db': 'user_created', 
+            'db': 'created_by', 
             'dt' : 2,
             'formatter' : function( d, row ) {
                 var created_datetime = new Date(row.created_datetime).toISOString().split('T')
-                return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.created_by + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
             }
         }
         ,{ 
-            'db': 'user_updated', 
+            'db': 'updated_by', 
             'dt' : 3,
             'formatter' : function( d, row ) {
 
                 var update_datetime = new Date(row.update_datetime).toISOString().split('T')
-                return row.user_updated + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.updated_by + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
  
             }
         }
@@ -119,7 +119,7 @@ router.post('/save',
         return false
     }
 
-    var savePhone = await extensionModels.insertData(req.body)
+    var savePhone = await extensionModels.insertData(req)
 
     req.session.resultMessage = (savePhone) ? helper.MessageSuccess('Success save extension') : helper.MessageFailed('Failed save extension')
 
@@ -142,7 +142,7 @@ router.post('/update',
         return false
     }
     
-    var updatePhone = await extensionModels.update_data({ ...req.body, ...req.query})
+    var updatePhone = await extensionModels.update_data(req)
 
     req.session.resultMessage = (updatePhone) ? helper.MessageSuccess('Success update extension') : helper.MessageFailed('Failed update extension')
 

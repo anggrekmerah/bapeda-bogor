@@ -47,7 +47,8 @@ block content
                             label(for="Group" class="form-label") Group
                             select(class="form-control" id="groupId" name="groupId" )
                                 each val, index in groupList
-                                    option(value=groupList[index].id_group) #{groupList[index].group_name}
+                                    if groupList[index].id_group != 7
+                                        option(value=groupList[index].id_group) #{groupList[index].group_name}
 
                         div(class="mb-3")
                             label(for="Extension" class="form-label") Extension
@@ -60,7 +61,7 @@ block content
                             select(class="form-control" id="parentUser" name="parentUser" )
                                 option(value="") ---Select---
                                 each val, index in userList
-                                    option(value=userList[index].id_user) #{userList[index].first_name} + #{userList[index].last_name}
+                                    option(value=userList[index].id_user) #{userList[index].first_name} #{userList[index].last_name}
 
                         div(class="mb-3")
                             label(for="parentUser" class="form-label") Is Agent

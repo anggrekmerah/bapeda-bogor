@@ -67,12 +67,12 @@ module.exports = class extensionModel extends crud_model  {
 
     }
 
-    insertData( body ) {
+    insertData( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.extension, 1, new Date()]
+                  values : [req.body.extension, req.session.id_user, new Date()]
                 , table : this.tableName
                 , fields : 'extension, user_created, created_datetime'
             }
@@ -92,20 +92,20 @@ module.exports = class extensionModel extends crud_model  {
 
     }
 
-    inActive( body ) {
+    inActive( req ) {
 
         return new Promise((resolve, reject) => {
 
-            var params = {
+            var param = {
                   sets : {
                     'active' : 'N'
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.extensionId
+                , id_val : req.params.extensionId
             }
 
-            this.updateData(params).then( (res) => {
+            this.updateData(param).then( (res) => {
             
                 resolve( true )
         
@@ -148,20 +148,20 @@ module.exports = class extensionModel extends crud_model  {
 
     }
 
-    update_data( body ) {
+    update_data( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     
-                     'extension' : body.extension
+                     'extension' : req.body.extension
                     ,'update_datetime' : new Date()
-                    ,'user_updated' : 1
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.id
+                , id_val : req.query.id
             }
 
             this.updateData(params).then( (res) => {
@@ -181,7 +181,11 @@ module.exports = class extensionModel extends crud_model  {
 
     datatable(req, cols, active = 'Y') {
 
-        const query = 'select * from '+this.tableName+' where active = "'+active+'" order by '+this.prmaryKey+' desc'
+        const query = `select a.* , concat(b.first_name,' ', b.last_name) as created_by, concat(c.first_name,' ', c.last_name) as updated_by
+            from `+this.tableName+` as a 
+            left join m_users b on b.id_user = a.user_created
+            left join m_users c on c.id_user = a.user_updated 
+            where a.active = "`+active+`" order by `+this.prmaryKey+` desc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

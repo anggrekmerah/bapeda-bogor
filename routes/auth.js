@@ -119,6 +119,7 @@ router.post('/authenticate', body('username').not().isEmpty(), body('password').
                         req.session.ages = data_user.ages
                         req.session.photo = data_user.photo
                         req.session.parentUser = data_user.parent_user
+                        req.session.id_user = data_user.id_user
                         
                         socket.emit('userLogin', {element : helper.dashboardAgent({
                              active_login : 'Y'
@@ -155,6 +156,7 @@ router.post('/authenticate', body('username').not().isEmpty(), body('password').
                 req.session.ages = data_user.ages
                 req.session.photo = data_user.photo
                 req.session.parentUser = data_user.parent_user
+                req.session.id_user = data_user.id_user
                 
                 socket.emit('userLogin', {element : helper.dashboardAgent({
                         active_login : 'Y'
