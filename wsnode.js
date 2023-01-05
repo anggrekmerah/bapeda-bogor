@@ -153,15 +153,11 @@ ws.on('message', async (data) => {
 			
 				case 'ANSWER':
 
-					if(!('caller' in res))
+					if(!('caller' in res) && !('peer' in res))
 						return false
 					
-					if(res.caller.dialplan.context != 'Bapeda_in_open')
-						return false
-
 					var updatecounter = await websocketModels.update_counter(2)
 					var currentcounter = await websocketModels.getDataById(2)
-
 
 					var valueAnswer = [
                         res.caller.id
