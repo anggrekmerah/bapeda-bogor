@@ -6,11 +6,12 @@ function dial(e, ext, id, type) {
     
         url:"/dashboard/"+type,
         method:"POST", //First change type to method here
-        contentType: 'json',
-        data:{
-            ext: ext,
-            channel: id
-        },
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify({
+            'ext': ext,
+            'channel': id
+        }),
         success:function(response) {
             
             if(response.err){
