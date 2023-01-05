@@ -43,8 +43,31 @@ ws.on('message', async (data) => {
 			switch (channel.state) {
 				
 				case 'Ring':
+
 					console.log(res)
 					
+					var phone = await websocketModels.check_phone_number(res.channel.caller.number)
+
+					if(phone.length != 0 ) {
+
+						for (const key in phone) {
+							
+							if(phone[key].active == 'N') {
+
+								amiManager.action({
+									'action':'Hangup',
+									'channel':res.channel.name
+								}, function(err, res) { });
+
+								amiManager.on('response', function(evt) { });
+
+								break;
+
+							} 
+
+						}
+
+					}
 
 					break;
 			
