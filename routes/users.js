@@ -161,9 +161,8 @@ router.post('/save',
   upload.single('photo'),
   body('firstName').not().isEmpty().withMessage('First name required').isLength({min:3, max:100}).withMessage('First name length min:3 max:100'),
   body('lastName').not().isEmpty().withMessage('Last name required').isLength({min:3, max:100}).withMessage('Last name length min:3 max:100'),
-  body('ages').not().isEmpty().withMessage('Age required'),
-  body('username').not().isEmpty().withMessage('Username required').isLength({min:8, max:30}).withMessage('Username length min:8 max:30'),
-  body('password').not().isEmpty().withMessage('Password required').isLength({min:8, max:30}).withMessage('Username length min:8 max:30'),
+  body('username').not().isEmpty().withMessage('Username required').isLength({min:8, max:30}).withMessage('Email length min:8 max:30'),
+  body('password').not().isEmpty().withMessage('Password required').isLength({min:8, max:30}).withMessage('Password length min:8 max:30'),
   body('groupId').not().isEmpty().withMessage('Group required')
 ,async (req, res, next) => {
 

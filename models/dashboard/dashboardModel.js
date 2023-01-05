@@ -41,31 +41,54 @@ module.exports = class dashboardModel extends crud_model  {
 
     }
 
-    getUsers(){
+    getUsers(params){
 
         return new Promise((resolve, reject) => {
-        
-            var sql = `select a.*, b.extension,
-            (
-                SELECT COUNT(*) FROM t_incoming_call_log WHERE call_receive_number = b.extension AND call_date BETWEEN CONCAT (DATE(NOW()),' 00:00:00') AND CONCAT (DATE(NOW()),' 23:59:59') 
-            ) AS total_receive  
-            from m_users a 
-            left join m_extension b on a.id_extension = b.id_extension and b.active = ? 
-            where a.active = ? `
-
-            this.execQuery(sql, ['Y','Y']).then( (res) => {
             
+            if(params.id == 2){
+
+                var sql = `select a.*, b.extension,
+                (
+                    SELECT COUNT(*) FROM t_incoming_call_log WHERE call_receive_number = b.extension AND call_date BETWEEN CONCAT (DATE(NOW()),' 00:00:00') AND CONCAT (DATE(NOW()),' 23:59:59') 
+                ) AS total_receive  
+                from m_users a 
+                left join m_extension b on a.id_extension = b.id_extension and b.active = ? 
+                where a.active = ? and a.is_agent = ?`
+                
+                var bindings = ['Y','Y','Y']
+            } else {
+
+                var i = (params.id == undefined) ? 0 : params.id
+                var sql = 'CALL bapenda.agent_dashboard_role('+i+')'
+                
+                var bindings = []
+
+            }
+
+            this.execQuery(sql, bindings).then( (res) => {
+                
                 delete res.meta
 
                 var html = ''
 
-                for (const key in res) {
+                if(0 in res) {
+
+                    delete res[0].meta
+
+                    for (const key in res[0]) {
                     
-                    html += helper.dashboardAgent(res[key])
+                        html += helper.dashboardAgent(res[0][key])
+    
+                    }
+                    
+                    resolve( html )
+
+                } else {
+
+                    resolve( html )
 
                 }
                 
-                resolve( html )
         
             }).catch( (err) => {
                 

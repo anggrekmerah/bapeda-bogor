@@ -153,6 +153,9 @@ ws.on('message', async (data) => {
 			
 				case 'ANSWER':
 
+					if(!('caller' in res))
+						return false
+					
 					if(res.caller.dialplan.context != 'Bapeda_in_open')
 						return false
 

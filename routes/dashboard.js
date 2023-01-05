@@ -17,7 +17,7 @@ router.get('/',  async (req, res, next) => {
 
   var counter = await dashboardModels.getAllData()
 
-  var users = await dashboardModels.getUsers()
+  var users = await dashboardModels.getUsers({ 'id' : req.session.id_user }) 
 
   delete counter.meta
 

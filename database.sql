@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               10.4.27-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win64
+-- Host:                         192.168.101.127
+-- Server version:               5.5.68-MariaDB - MariaDB Server
+-- Server OS:                    Linux
 -- HeidiSQL Version:             12.2.0.6576
 -- --------------------------------------------------------
 
@@ -16,197 +16,155 @@
 
 
 -- Dumping database structure for bapenda
-CREATE DATABASE IF NOT EXISTS `bapenda` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+CREATE DATABASE IF NOT EXISTS `bapenda` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `bapenda`;
 
--- Dumping structure for table bapenda.m_extension
-CREATE TABLE IF NOT EXISTS `m_extension` (
-  `id_extension` int(11) NOT NULL AUTO_INCREMENT,
-  `extension` varchar(10) NOT NULL,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `created_datetime` datetime NOT NULL,
-  `user_created` int(11) NOT NULL,
-  `update_datetime` datetime NOT NULL,
-  `user_updated` int(11) NOT NULL,
-  PRIMARY KEY (`id_extension`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Dumping structure for table bapenda.t_incoming_call_log
+CREATE TABLE IF NOT EXISTS `t_incoming_call_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `caller_id` varchar(255) NOT NULL DEFAULT '0',
+  `peer_id` varchar(255) NOT NULL DEFAULT '0',
+  `call_event` varchar(50) NOT NULL DEFAULT '0',
+  `call_date` datetime NOT NULL,
+  `call_number` varchar(15) NOT NULL DEFAULT '0',
+  `call_receive_number` varchar(15) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `call_receive_number` (`call_receive_number`),
+  KEY `caller_id` (`caller_id`),
+  KEY `peer_id` (`peer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=latin1;
 
--- Dumping data for table bapenda.m_extension: ~2 rows (approximately)
-INSERT IGNORE INTO `m_extension` (`id_extension`, `extension`, `active`, `created_datetime`, `user_created`, `update_datetime`, `user_updated`) VALUES
-	(1, '8001', 'Y', '2022-12-20 21:50:31', 1, '2022-12-20 21:50:57', 1),
-	(2, '31001', 'Y', '2022-12-29 00:01:18', 1, '0000-00-00 00:00:00', 0);
-
--- Dumping structure for table bapenda.m_group
-CREATE TABLE IF NOT EXISTS `m_group` (
-  `id_group` int(11) NOT NULL AUTO_INCREMENT,
-  `group_name` varchar(50) NOT NULL DEFAULT '0',
-  `group_desc` varchar(100) NOT NULL,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `created_datetime` datetime NOT NULL,
-  `user_created` int(11) NOT NULL,
-  `update_datetime` datetime NOT NULL,
-  `user_updated` int(11) NOT NULL,
-  PRIMARY KEY (`id_group`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table bapenda.m_group: ~5 rows (approximately)
-INSERT IGNORE INTO `m_group` (`id_group`, `group_name`, `group_desc`, `active`, `created_datetime`, `user_created`, `update_datetime`, `user_updated`) VALUES
-	(2, 'test', 'test', 'N', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(3, 'test12', 'test12', 'Y', '2022-12-18 01:48:06', 0, '2022-12-18 11:19:33', 1),
-	(4, 'test3', 'test', 'Y', '2022-12-18 11:24:32', 1, '0000-00-00 00:00:00', 0),
-	(5, 'test3', 'test3', 'Y', '2022-12-20 00:32:22', 1, '2022-12-20 00:55:44', 1),
-	(6, 'testt23', 'testst23', 'N', '2022-12-20 00:35:12', 1, '2022-12-20 00:40:02', 1);
-
--- Dumping structure for table bapenda.m_group_menu
-CREATE TABLE IF NOT EXISTS `m_group_menu` (
-  `id_group_menu` int(11) NOT NULL AUTO_INCREMENT,
-  `id_group` int(11) NOT NULL,
-  `id_menu` int(11) NOT NULL,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `created_datetime` datetime NOT NULL,
-  `user_created` int(11) NOT NULL,
-  PRIMARY KEY (`id_group_menu`),
-  KEY `id_group` (`id_group`),
-  KEY `id_menu` (`id_menu`)
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table bapenda.m_group_menu: ~12 rows (approximately)
-INSERT IGNORE INTO `m_group_menu` (`id_group_menu`, `id_group`, `id_menu`, `active`, `created_datetime`, `user_created`) VALUES
-	(72, 3, 11, 'Y', '2022-12-21 23:25:54', 1),
-	(73, 3, 12, 'Y', '2022-12-21 23:25:54', 1),
-	(74, 3, 1, 'Y', '2022-12-21 23:25:54', 1),
-	(75, 3, 2, 'Y', '2022-12-21 23:25:54', 1),
-	(76, 3, 3, 'Y', '2022-12-21 23:25:54', 1),
-	(77, 3, 4, 'Y', '2022-12-21 23:25:54', 1),
-	(78, 3, 5, 'Y', '2022-12-21 23:25:54', 1),
-	(79, 3, 6, 'Y', '2022-12-21 23:25:54', 1),
-	(80, 3, 7, 'Y', '2022-12-21 23:25:54', 1),
-	(81, 3, 8, 'Y', '2022-12-21 23:25:54', 1),
-	(82, 3, 9, 'Y', '2022-12-21 23:25:54', 1),
-	(83, 3, 10, 'Y', '2022-12-21 23:25:54', 1);
-
--- Dumping structure for table bapenda.m_menu
-CREATE TABLE IF NOT EXISTS `m_menu` (
-  `id_menu` int(11) NOT NULL AUTO_INCREMENT,
-  `menu_name` varchar(100) NOT NULL,
-  `menu_desc` varchar(100) NOT NULL,
-  `menu_url` varchar(255) NOT NULL,
-  `parent_id` int(11) NOT NULL,
-  `icon` varchar(100) NOT NULL,
-  `order_menu` int(11) NOT NULL DEFAULT 0,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `created_datetime` datetime NOT NULL,
-  `user_created` int(11) NOT NULL,
-  `update_datetime` datetime NOT NULL,
-  `user_updated` int(11) NOT NULL,
-  PRIMARY KEY (`id_menu`),
-  KEY `parent_id` (`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table bapenda.m_menu: ~19 rows (approximately)
-INSERT IGNORE INTO `m_menu` (`id_menu`, `menu_name`, `menu_desc`, `menu_url`, `parent_id`, `icon`, `order_menu`, `active`, `created_datetime`, `user_created`, `update_datetime`, `user_updated`) VALUES
-	(1, 'Settings', 'Menu setting', '', 0, 'fa-solid fa-gear', 2, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(2, 'Group', 'Group', '/group', 1, 'fa-solid fa-bars-sort', 4, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(3, 'Users', 'Users', '/users', 1, 'fa-solid fa-user', 5, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(4, 'Menus', 'Menus', '/menu', 1, 'fa-solid fa-bars', 6, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(5, 'Group Menus', 'Group Menus', '/group-menu', 1, 'fa-solid fa-bars-filter', 7, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(6, 'Sitemap', 'Sitemap', '/sitemap', 1, 'fa-solid fa-sitemap', 8, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(7, 'Phone', 'Phone', '', 0, 'fa-solid fa-phone', 3, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(8, 'Phone Book', 'Phone Book', '/phone-book', 7, 'fa-solid fa-book', 9, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(9, 'Black List', 'Black List', '/black-list', 7, 'fa-duotone fa-book-skull', 10, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(10, 'Extension', 'Extension', '/extension', 7, 'fa-solid fa-puzzle-piece', 11, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(11, 'Dashboard', 'Dashboard', '/dashboard', 0, 'fa-solid fa-gauge', 0, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(12, 'Dashboard Agent', 'Dashboard Agent', '/dashboard-agent', 0, 'fa-solid fa-gauge', 1, 'Y', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-	(13, 'test1', 'test', '/test1', 1, 'fas fa-check', 1, 'N', '2022-12-21 00:06:12', 1, '2022-12-21 00:07:15', 1),
-	(14, 'Report', 'report parent', '', 0, 'fa-solid fa-book', 4, 'Y', '2022-12-23 23:06:57', 1, '0000-00-00 00:00:00', 0),
-	(15, 'Receive', 'report Receive', '/report/receive', 14, '', 0, 'Y', '2022-12-23 23:08:30', 1, '0000-00-00 00:00:00', 0),
-	(16, 'Abandon', 'report Abandon', '/report/abandon', 14, '', 1, 'Y', '2022-12-23 23:08:57', 1, '0000-00-00 00:00:00', 0),
-	(17, 'Outgoing', 'report Outgoing', '/report/outgoing', 14, '', 2, 'Y', '2022-12-23 23:09:24', 1, '0000-00-00 00:00:00', 0),
-	(18, 'User Activity', 'report User Activity', '/report/user-activity', 14, '', 3, 'Y', '2022-12-23 23:09:51', 1, '0000-00-00 00:00:00', 0),
-	(19, 'KPI Call Frequency', 'report KPI Call Frequency', '/report/kpi-call', 14, '', 4, 'Y', '2022-12-23 23:10:14', 1, '0000-00-00 00:00:00', 0);
-
--- Dumping structure for table bapenda.m_phone_book
-CREATE TABLE IF NOT EXISTS `m_phone_book` (
-  `id_phone_book` bigint(20) NOT NULL AUTO_INCREMENT,
-  `phone_name` varchar(100) NOT NULL DEFAULT '0',
-  `phone_number` varchar(15) NOT NULL,
-  `notes` varchar(255) NOT NULL,
-  `created_datetime` datetime NOT NULL,
-  `user_created` int(11) NOT NULL,
-  `update_datetime` datetime NOT NULL,
-  `user_updated` int(11) NOT NULL,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  PRIMARY KEY (`id_phone_book`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table bapenda.m_phone_book: ~0 rows (approximately)
-INSERT IGNORE INTO `m_phone_book` (`id_phone_book`, `phone_name`, `phone_number`, `notes`, `created_datetime`, `user_created`, `update_datetime`, `user_updated`, `active`) VALUES
-	(1, 'test12', '082122071291', 'teststeststsetset232342', '2022-12-20 20:45:04', 1, '2022-12-20 20:45:54', 1, 'Y');
-
--- Dumping structure for table bapenda.m_sitemap
-CREATE TABLE IF NOT EXISTS `m_sitemap` (
-  `id_sitemap` int(11) NOT NULL AUTO_INCREMENT,
-  `id_group` int(11) NOT NULL,
-  `hirarcy_ordered` int(11) NOT NULL,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `created_datetime` datetime NOT NULL,
-  `user_created` int(11) NOT NULL,
-  `update_datetime` datetime NOT NULL,
-  `user_updated` int(11) NOT NULL,
-  PRIMARY KEY (`id_sitemap`) USING BTREE,
-  KEY `id_group` (`id_group`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table bapenda.m_sitemap: ~2 rows (approximately)
-INSERT IGNORE INTO `m_sitemap` (`id_sitemap`, `id_group`, `hirarcy_ordered`, `active`, `created_datetime`, `user_created`, `update_datetime`, `user_updated`) VALUES
-	(4, 3, 1, 'N', '2022-12-20 22:25:48', 1, '0000-00-00 00:00:00', 0),
-	(5, 3, 1, 'Y', '2022-12-20 22:28:14', 1, '0000-00-00 00:00:00', 0),
-	(6, 4, 2, 'Y', '2022-12-20 22:37:51', 1, '0000-00-00 00:00:00', 0);
-
--- Dumping structure for table bapenda.m_users
-CREATE TABLE IF NOT EXISTS `m_users` (
-  `id_user` int(11) NOT NULL DEFAULT 0,
-  `id_group` int(11) NOT NULL,
-  `id_extension` int(11) NOT NULL,
-  `email` varchar(30) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) NOT NULL,
-  `photo` varchar(255) DEFAULT NULL,
-  `ages` int(11) NOT NULL,
-  `last_login` datetime NOT NULL,
-  `last_logout` datetime NOT NULL,
-  `created_datetime` datetime NOT NULL,
-  `user_created` int(11) NOT NULL,
-  `update_datetime` datetime NOT NULL,
-  `user_updated` int(11) NOT NULL,
-  `parent_user` int(11) DEFAULT NULL,
-  `active` enum('Y','N') DEFAULT 'Y',
-  `active_login` enum('Y','N') DEFAULT 'N',
-  PRIMARY KEY (`id_user`),
-  KEY `id_group` (`id_group`),
-  KEY `id_extension` (`id_extension`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table bapenda.m_users: ~2 rows (approximately)
-INSERT IGNORE INTO `m_users` (`id_user`, `id_group`, `id_extension`, `email`, `password`, `first_name`, `last_name`, `photo`, `ages`, `last_login`, `last_logout`, `created_datetime`, `user_created`, `update_datetime`, `user_updated`, `parent_user`, `active`, `active_login`) VALUES
-	(1, 4, 2, 'admin-test@m.com', '$2a$10$gUkrLx./Fno7YccWe93WKewGTt0vN4/gP5Wz/R8dlMKzH.pRIiP7m', 'test', 'test', 'Logo-Resmi-Bapenda-Kota-Bogor.png', 21, '2022-12-29 21:36:57', '2022-12-29 21:54:36', '2022-12-23 23:54:53', 1, '0000-00-00 00:00:00', 0, 8, 'Y', 'N'),
-	(8, 3, 1, 'admin@m.com', '$2a$10$PxrZP0OrugMnCEA70LHOl.AyugABDyuqk6rnBNW0bwfAjCSoMQ7Ce', 'test', 'test', 'Logo-Resmi-Bapenda-Kota-Bogor.png', 21, '2022-12-29 21:37:09', '2022-12-29 21:54:32', '2022-12-22 22:17:50', 1, '0000-00-00 00:00:00', 0, 0, 'Y', 'N');
-
--- Dumping structure for table bapenda.t_counter
-CREATE TABLE IF NOT EXISTS `t_counter` (
-  `id_counter` int(11) NOT NULL AUTO_INCREMENT,
-  `call_type` varchar(50) NOT NULL DEFAULT '0',
-  `call_counter` int(11) NOT NULL DEFAULT 0,
-  `update_date` date DEFAULT NULL,
-  PRIMARY KEY (`id_counter`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table bapenda.t_counter: ~2 rows (approximately)
-INSERT IGNORE INTO `t_counter` (`id_counter`, `call_type`, `call_counter`, `update_date`) VALUES
-	(1, 'incoming', 4, '2022-12-29'),
-	(2, 'receive', 8, '2022-12-28'),
-	(3, 'abandon', 2, '2022-12-28');
+-- Dumping data for table bapenda.t_incoming_call_log: ~129 rows (approximately)
+INSERT IGNORE INTO `t_incoming_call_log` (`id`, `caller_id`, `peer_id`, `call_event`, `call_date`, `call_number`, `call_receive_number`) VALUES
+	(1, '1672500169.614', '', 'RINGING', '2022-12-31 22:23:00', '+6281389363510', ''),
+	(2, '1672500169.614', '1672500180.615', 'ANSWER', '2022-12-31 22:23:03', '+6281389363510', '31001'),
+	(3, '1672500485.619', '', 'RINGING', '2022-12-31 22:28:15', '+6281389363510', ''),
+	(4, '1672500485.619', '1672500495.620', 'ANSWER', '2022-12-31 22:28:17', '+6281389363510', '31001'),
+	(5, '1672500485.619', '1672500495.620', 'NOANSWER', '2022-12-31 22:28:20', '+6281389363510', '31001'),
+	(6, '1672500855.622', '', 'RINGING', '2022-12-31 22:34:25', '+6281389363510', ''),
+	(7, '1672500855.622', '1672500865.623', 'ANSWER', '2022-12-31 22:34:27', '+6281389363510', '31001'),
+	(8, '1672501128.627', '', 'RINGING', '2022-12-31 22:38:59', '+6281389363510', ''),
+	(9, '1672501128.627', '1672501139.628', 'ANSWER', '2022-12-31 22:39:01', '+6281389363510', '31001'),
+	(10, '1672501298.630', '', 'RINGING', '2022-12-31 22:41:48', '+6281389363510', ''),
+	(11, '1672501298.630', '1672501308.631', 'ANSWER', '2022-12-31 22:41:55', '+6281389363510', '31001'),
+	(12, '1672501570.633', '', 'RINGING', '2022-12-31 22:46:21', '+6281389363510', ''),
+	(13, '1672501570.633', '1672501581.634', 'ANSWER', '2022-12-31 22:46:25', '+6281389363510', '31001'),
+	(14, '1672515821.636', '', 'RINGING', '2023-01-01 02:43:51', '+6281389363510', ''),
+	(15, '1672515821.636', '1672515831.638', 'ANSWER', '2023-01-01 02:43:53', '+6281389363510', '31001'),
+	(16, '1672516067.641', '', 'RINGING', '2023-01-01 02:47:57', '+6281389363510', ''),
+	(17, '1672516067.641', '1672516077.643', 'ANSWER', '2023-01-01 02:47:59', '+6281389363510', '31001'),
+	(18, '1672535568.646', '', 'RINGING', '2023-01-01 08:12:58', '+6281389363510', ''),
+	(19, '1672535568.646', '1672535578.648', 'ANSWER', '2023-01-01 08:13:00', '+6281389363510', '31001'),
+	(20, '1672535906.651', '', 'RINGING', '2023-01-01 08:18:37', '+6281389363510', ''),
+	(21, '1672535906.651', '1672535917.653', 'ANSWER', '2023-01-01 08:18:39', '+6281389363510', '31001'),
+	(22, '1672536097.656', '', 'RINGING', '2023-01-01 08:21:48', '+6281389363510', ''),
+	(23, '1672536097.656', '1672536108.658', 'ANSWER', '2023-01-01 08:21:54', '+6281389363510', '31001'),
+	(24, '1672536318.665', '', 'RINGING', '2023-01-01 08:25:28', '+6281389363510', ''),
+	(25, '1672536318.665', '1672536328.667', 'ANSWER', '2023-01-01 08:25:33', '+6281389363510', '31001'),
+	(26, '1672536444.670', '', 'RINGING', '2023-01-01 08:27:34', '+6281389363510', ''),
+	(27, '1672536444.670', '1672536454.671', 'ANSWER', '2023-01-01 08:27:36', '+6281389363510', '31001'),
+	(28, '1672536903.673', '', 'RINGING', '2023-01-01 08:35:13', '+6281389363510', ''),
+	(29, '1672536903.673', '1672536913.674', 'ANSWER', '2023-01-01 08:35:16', '+6281389363510', '31001'),
+	(30, '1672537070.678', '', 'RINGING', '2023-01-01 08:38:00', '+6281389363510', ''),
+	(31, '1672537070.678', '1672537080.679', 'ANSWER', '2023-01-01 08:38:04', '+6281389363510', '31001'),
+	(32, '1672537126.681', '', 'RINGING', '2023-01-01 08:38:57', '+6281389363510', ''),
+	(33, '1672537126.681', '1672537136.682', 'ANSWER', '2023-01-01 08:38:58', '+6281389363510', '31001'),
+	(34, '1672537282.686', '', 'RINGING', '2023-01-01 08:41:33', '+6281389363510', ''),
+	(35, '1672537282.686', '1672537293.687', 'ANSWER', '2023-01-01 08:41:34', '+6281389363510', '31001'),
+	(36, '1672537415.691', '1672537425.692', 'ANSWER', '2023-01-01 08:43:49', '+6281389363510', '31001'),
+	(37, '1672551383.718', '', 'RINGING', '2023-01-01 12:36:34', '+6281389363510', ''),
+	(38, '1672551383.718', '1672551394.720', 'ANSWER', '2023-01-01 12:36:37', '+6281389363510', '31001'),
+	(39, '1672551453.723', '', 'RINGING', '2023-01-01 12:37:43', '+6281389363510', ''),
+	(40, '1672551453.723', '1672551463.725', 'ANSWER', '2023-01-01 12:37:44', '+6281389363510', '31001'),
+	(41, '1672551648.736', '', 'RINGING', '2023-01-01 12:40:58', '+6281389363510', ''),
+	(42, '1672551648.736', '1672551658.738', 'ANSWER', '2023-01-01 12:41:00', '+6281389363510', '31001'),
+	(43, '1672551753.745', '', 'RINGING', '2023-01-01 12:42:44', '+6281389363510', ''),
+	(44, '1672551753.745', '1672551764.747', 'ANSWER', '2023-01-01 12:42:45', '+6281389363510', '31001'),
+	(45, '1672552227.760', '', 'RINGING', '2023-01-01 12:50:38', '+6281389363510', ''),
+	(46, '1672552227.760', '1672552238.762', 'ANSWER', '2023-01-01 12:50:39', '+6281389363510', '31001'),
+	(47, '1672552373.767', '', 'RINGING', '2023-01-01 12:53:04', '+6281389363510', ''),
+	(48, '1672552373.767', '1672552384.769', 'ANSWER', '2023-01-01 12:53:06', '+6281389363510', '31001'),
+	(49, '1672552494.772', '', 'RINGING', '2023-01-01 12:55:04', '+6281389363510', ''),
+	(50, '1672552494.772', '1672552504.774', 'ANSWER', '2023-01-01 12:55:06', '+6281389363510', '31001'),
+	(51, '1672552772.777', '', 'RINGING', '2023-01-01 12:59:42', '+6281389363510', ''),
+	(52, '1672552772.777', '1672552782.779', 'ANSWER', '2023-01-01 12:59:44', '+6281389363510', '31001'),
+	(53, '1672556679.782', '', 'RINGING', '2023-01-01 14:04:49', '+6281389363510', ''),
+	(54, '1672556679.782', '1672556689.784', 'ANSWER', '2023-01-01 14:04:50', '+6281389363510', '31001'),
+	(55, '1672556997.789', '', 'RINGING', '2023-01-01 14:10:08', '+6281389363510', ''),
+	(56, '1672556997.789', '1672557008.791', 'ANSWER', '2023-01-01 14:10:10', '+6281389363510', '31001'),
+	(57, '1672557184.800', '', 'RINGING', '2023-01-01 14:13:15', '+6281389363510', ''),
+	(58, '1672557184.800', '1672557195.801', 'ANSWER', '2023-01-01 14:13:21', '+6281389363510', '8001'),
+	(59, '1672557304.805', '', 'RINGING', '2023-01-01 14:15:15', '+6281389363510', ''),
+	(60, '1672557304.805', '1672557315.807', 'ANSWER', '2023-01-01 14:15:20', '+6281389363510', '31001'),
+	(61, '1672557457.812', '1672557468.814', 'ANSWER', '2023-01-01 14:17:50', '+6281389363510', '31001'),
+	(62, '1672568363.823', '', 'RINGING', '2023-01-01 17:19:33', '+6281389363510', ''),
+	(63, '1672568363.823', '1672568373.825', 'ANSWER', '2023-01-01 17:19:35', '+6281389363510', '31001'),
+	(64, '1672568470.828', '', 'RINGING', '2023-01-01 17:21:20', '+6281389363510', ''),
+	(65, '1672568470.828', '1672568480.830', 'ANSWER', '2023-01-01 17:21:22', '+6281389363510', '31001'),
+	(66, '1672568598.835', '', 'RINGING', '2023-01-01 17:23:28', '+6281389363510', ''),
+	(67, '1672568598.835', '1672568608.837', 'ANSWER', '2023-01-01 17:23:30', '+6281389363510', '31001'),
+	(68, '1672568761.840', '', 'RINGING', '2023-01-01 17:26:11', '+6281389363510', ''),
+	(69, '1672568761.840', '1672568771.842', 'ANSWER', '2023-01-01 17:26:13', '+6281389363510', '31001'),
+	(70, '1672568899.849', '', 'RINGING', '2023-01-01 17:28:30', '+6281389363510', ''),
+	(71, '1672568899.849', '1672568910.851', 'ANSWER', '2023-01-01 17:28:32', '+6281389363510', '31001'),
+	(72, '1672584339.927', '', 'RINGING', '2023-01-01 21:45:50', '+6281389363510', ''),
+	(73, '1672584409.930', '', 'RINGING', '2023-01-01 21:47:00', '+6281389363510', ''),
+	(74, '1672584409.930', '1672584420.931', 'ANSWER', '2023-01-01 21:47:05', '+6281389363510', '31001'),
+	(75, '1672584423.932', '', 'RINGING', '2023-01-01 21:47:38', '+6289653331436', ''),
+	(76, '1672584423.932', '1672584458.934', 'NOANSWER', '2023-01-01 21:47:53', '+6289653331436', '31001'),
+	(77, '1672584496.936', '', 'RINGING', '2023-01-01 21:48:27', '+6289653331436', ''),
+	(78, '1672584496.936', '1672584507.937', 'ANSWER', '2023-01-01 21:48:31', '+6289653331436', '31001'),
+	(79, '1672584996.943', '', 'RINGING', '2023-01-01 21:56:47', '+6289653331436', ''),
+	(80, '1672584996.943', '1672585007.944', 'ANSWER', '2023-01-01 21:56:52', '+6289653331436', '8001'),
+	(81, '1672637442.962', '', 'RINGING', '2023-01-02 12:30:52', '+6289653331436', ''),
+	(82, '1672637442.962', '1672637452.963', 'ANSWER', '2023-01-02 12:30:59', '+6289653331436', '8001'),
+	(83, '1672637606.969', '', 'RINGING', '2023-01-02 12:33:37', '+6289653331436', ''),
+	(84, '1672637606.969', '1672637617.970', 'ANSWER', '2023-01-02 12:33:40', '+6289653331436', '8001'),
+	(85, '1672637696.976', '', 'RINGING', '2023-01-02 12:35:06', '+6289653331436', ''),
+	(86, '1672637696.976', '1672637706.977', 'ANSWER', '2023-01-02 12:35:13', '+6289653331436', '8001'),
+	(87, '1672637835.981', '', 'RINGING', '2023-01-02 12:37:26', '+6289653331436', ''),
+	(88, '1672637835.981', '1672637846.982', 'ANSWER', '2023-01-02 12:37:29', '+6289653331436', '8001'),
+	(89, '1672671642.1006', '', 'RINGING', '2023-01-02 22:00:53', '+6282299427398', ''),
+	(90, '1672671642.1006', '1672671653.1008', 'ANSWER', '2023-01-02 22:01:01', '+6282299427398', '31001'),
+	(91, '1672671764.1013', '', 'RINGING', '2023-01-02 22:02:55', '+6282299427398', ''),
+	(92, '1672671764.1013', '1672671775.1015', 'ANSWER', '2023-01-02 22:02:56', '+6282299427398', '31001'),
+	(93, '1672672162.1018', '', 'RINGING', '2023-01-02 22:09:33', '+6282299427398', ''),
+	(94, '1672672162.1018', '1672672173.1020', 'ANSWER', '2023-01-02 22:09:34', '+6282299427398', '31001'),
+	(95, '1672672508.1027', '', 'RINGING', '2023-01-02 22:15:18', '+6289653331436', ''),
+	(96, '1672672508.1027', '1672672518.1029', 'ANSWER', '2023-01-02 22:15:22', '+6289653331436', '31001'),
+	(97, '1672672579.1032', '', 'RINGING', '2023-01-02 22:16:29', '+6289653331436', ''),
+	(98, '1672672579.1032', '1672672589.1034', 'BUSY', '2023-01-02 22:16:31', '+6289653331436', '31001'),
+	(99, '1672672934.1049', '', 'RINGING', '2023-01-02 22:22:43', '+6289653331436', ''),
+	(100, '1672672934.1049', '1672672963.1050', 'BUSY', '2023-01-02 22:22:45', '+6289653331436', '31001'),
+	(101, '1672673000.1052', '', 'RINGING', '2023-01-02 22:23:30', '+6289653331436', ''),
+	(102, '1672673000.1052', '1672673010.1054', 'ANSWER', '2023-01-02 22:23:32', '+6289653331436', '31001'),
+	(103, '1672673197.1057', '', 'RINGING', '2023-01-02 22:26:47', '+6289653331436', ''),
+	(104, '1672673197.1057', '1672673207.1059', 'ANSWER', '2023-01-02 22:26:49', '+6289653331436', '31001'),
+	(105, '1672673868.1062', '', 'RINGING', '2023-01-02 22:37:58', '+6289653331436', ''),
+	(106, '1672673868.1062', '1672673878.1064', 'ANSWER', '2023-01-02 22:38:02', '+6289653331436', '31001'),
+	(107, '1672674243.1067', '', 'RINGING', '2023-01-02 22:44:13', '+6289653331436', ''),
+	(108, '1672674243.1067', '1672674253.1069', 'ANSWER', '2023-01-02 22:44:15', '+6289653331436', '31001'),
+	(109, '1672674531.1076', '', 'RINGING', '2023-01-02 22:49:01', '+6289653331436', ''),
+	(110, '1672674531.1076', '1672674541.1077', 'BUSY', '2023-01-02 22:49:10', '+6289653331436', '8001'),
+	(111, '1672674531.1076', '1672674562.1079', 'ANSWER', '2023-01-02 22:49:24', '+6289653331436', '31001'),
+	(112, '1672674758.1083', '', 'RINGING', '2023-01-02 22:52:49', '+6289653331436', ''),
+	(113, '1672674758.1083', '1672674769.1085', 'ANSWER', '2023-01-02 22:52:51', '+6289653331436', '31001'),
+	(114, '1672675883.1092', '', 'RINGING', '2023-01-02 23:11:33', '+6281389363510', ''),
+	(115, '1672675883.1092', '1672675893.1094', 'ANSWER', '2023-01-02 23:11:35', '+6281389363510', '31001'),
+	(116, '1672676069.1097', '', 'RINGING', '2023-01-02 23:14:40', '+6281389363510', ''),
+	(117, '1672676069.1097', '1672676079.1099', 'ANSWER', '2023-01-02 23:14:41', '+6281389363510', '31001'),
+	(118, '1672676374.1102', '', 'RINGING', '2023-01-02 23:19:44', '+6281389363510', ''),
+	(119, '1672676374.1102', '1672676384.1104', 'ANSWER', '2023-01-02 23:19:46', '+6281389363510', '31001'),
+	(120, '1672676537.1107', '', 'RINGING', '2023-01-02 23:22:28', '+6281389363510', ''),
+	(121, '1672676537.1107', '1672676548.1109', 'ANSWER', '2023-01-02 23:22:30', '+6281389363510', '31001'),
+	(122, '1672754169.1139', '1672754179.1141', 'ANSWER', '2023-01-03 20:56:21', '+6281389363510', '31001'),
+	(123, '1672754169.1139', '', 'RINGING', '2023-01-03 20:56:19', '+6281389363510', ''),
+	(124, '1672755214.1149', '', 'RINGING', '2023-01-03 21:13:45', '+6281389363510', ''),
+	(125, '1672755214.1149', '1672755225.1151', 'ANSWER', '2023-01-03 21:13:46', '+6281389363510', '31001'),
+	(126, '1672759098.1171', '', 'RINGING', '2023-01-03 22:18:29', '+6281389363510', ''),
+	(127, '1672759098.1171', '1672759108.1173', 'ANSWER', '2023-01-03 22:18:30', '+6281389363510', '31001'),
+	(128, '1672759894.1177', '', 'RINGING', '2023-01-03 22:31:44', '+6281389363510', ''),
+	(129, '1672759894.1177', '1672759904.1178', 'ANSWER', '2023-01-03 22:31:46', '+6281389363510', '31001');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
