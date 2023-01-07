@@ -112,6 +112,55 @@ module.exports = class crud_model  {
 
     }
 
+    async saveDataIgnore(params) {
+
+      let conn;
+      try {
+          // establish a connection to MariaDB
+          conn = await config.getConnection();
+
+          const val_w = []
+          const val_s = []
+          for (const key in params.search) {
+            val_w.push( key + '=?')
+            val_s.push(params.search[key])
+          }
+
+          var check = await this.execQuery("select * from " + params.table + " where " + val_w.join(" and ") , val_s)
+
+          delete check.meta
+
+          if(check.length == 0) {
+
+            const vals = []
+
+            for (let index = 0; index < params.values.length; index++) {
+
+              vals.push('?')
+              
+            }
+            
+            var sql = "insert into " + params.table + " ( " + params.fields + " ) values ( "+  vals.join(",")  + " ) "
+
+            var data = await conn.query(sql, params.values);
+
+            return data
+          } else {
+            return false
+          }
+            
+      } catch (err) {
+
+          throw err;
+      
+      } finally {
+      
+        if (conn) conn.release();
+      
+      }
+
+    }
+
     async updateData(params) {
 
       let conn;

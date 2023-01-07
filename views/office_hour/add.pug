@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+    
+    if 'id_office_hour' in dataUpdate 
+        - var action = "update?id="+ dataUpdate.id_office_hour
+        - var buttonAction = 'Update'
+    else 
+        - var action = "save"
+        - var buttonAction = 'Save'
+
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+            div(class="col-md-4")
+                | !{alert}
+                form(class="row g-3" action=action method="post" id="formGroup")
+
+                    div(class="mb-3")
+                        label(for="officeDay" class="form-label") Office Day
+                        select(class="form-control" id="officeDay" name="officeDay" )
+                            option(value="") ---Select---
+                            | !{opt}
+
+                    div(class="mb-3")
+                        label(for="officeOpenHour" class="form-label") Office Open Hour 
+                        input(type="time" class="form-control" id="officeOpenHour" name="officeOpenHour" placeholder="Office Open Hour " value=dataUpdate.office_open_hour )
+                        
+                            
+                    div(class="mb-3")
+                        label(for="officeCloseHour" class="form-label") Office Close Hour 
+                        input(type="time" class="form-control" id="officeCloseHour" name="officeCloseHour" placeholder="Office Close Hour " value=dataUpdate.office_close_hour )
+                    
+                    div(class="mb-3")
+                        button(type="submit" class="btn btn-primary float-end") #{buttonAction}
+                        a( class="btn btn-primary float-end me-2" href="/office-hour" ) Back
+                        button(type="button" class="btn btn-danger float-end me-2" id="discard") Reset
+            
+            div(class="col-md-4")
+                label(class="fw-bold") Notes : 
+                p This office hour form serves to create a office hour settings
+                p(class="text-danger") - Office Day Mandatory
+                p(class="text-danger") - Office Open Hour Mandatory
+                p(class="text-danger") - Office Close Hour Optional
+            

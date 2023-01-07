@@ -5,7 +5,37 @@
     */
     // 
 // Scripts
-// 
+//
+var intervalCOunter = {}
+var totalSeconds = 0;
+
+(function($) {
+    $(function() {
+        $("#togglePassword").click(function (e) {
+        
+            e.preventDefault();
+            
+            var type = $('#inputPassword').attr("type");
+            
+            console.log(type);
+            
+            if(type == "password") {
+                $( "#spanEye" ).removeClass("fa-eye-slash");
+                $( "#spanEye" ).addClass("fa-eye");
+                $('#inputPassword').attr("type","text");
+    
+            } else if (type == "text") {
+    
+                $( "#spanEye" ).removeClass("fa-eye");
+                $( "#spanEye" ).addClass("fa-eye-slash");
+                $('#inputPassword').attr("type","password");
+    
+            }
+    
+        });
+    });
+})(jQuery);
+
 
 window.addEventListener('DOMContentLoaded', event => {
 
@@ -29,5 +59,5 @@ window.addEventListener('DOMContentLoaded', event => {
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
     }
-
+    
 });

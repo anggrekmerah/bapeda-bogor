@@ -19,6 +19,50 @@ module.exports = class userModel extends crud_model  {
 
     }
 
+    getListParent(){
+
+        return new Promise((resolve, reject) => {
+        
+            var sql = `SELECT a.id_user, a.first_name, a.last_name, b.group_name FROM m_users a
+            LEFT JOIN m_group b ON a.id_group = b.id_group 
+            where a.active = ? AND b.group_name IS NOT NULL AND b.id_group != ? and a.is_agent = ?`
+
+            this.execQuery(sql,['Y','7','N']).then( (res) => {
+            
+                resolve( res )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+
+    }
+
+    getListExtension(){
+
+        return new Promise((resolve, reject) => {
+        
+            var sql =`SELECT a.extension, a.id_extension FROM m_extension a
+            LEFT JOIN m_users b ON b.id_extension = a.id_extension 
+            WHERE a.active = ? AND b.id_extension IS null`
+
+            this.execQuery(sql,['Y','7','N']).then( (res) => {
+            
+                resolve( res )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+        
+    }
+
     getAllData(){
 
         return new Promise((resolve, reject) => {
@@ -106,6 +150,43 @@ module.exports = class userModel extends crud_model  {
 
     }
 
+    insertDataIgnore( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                values : [
+                  body.parentUser,
+                  body.passHash, 
+                  body.groupId, 
+                  ('fileName' in body) ? body.fileName : '',
+                  body.extensionId, 
+                  body.username, 
+                  body.firstName, 
+                  body.lastName,
+                  body.ages,
+                  body.isAgent,
+                  1,
+                  new Date()]
+              , table : this.tableName
+              , search : {'email' : body.username}
+              , fields : 'parent_user, password, id_group, photo, id_extension, email, first_name, last_name, ages, is_agent, user_created, created_datetime'
+            }
+
+            this.saveDataIgnore(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (false)
+        
+            })
+
+        })
+
+    }
+
     inActive( body ) {
 
         return new Promise((resolve, reject) => {
@@ -134,26 +215,28 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    update_data( body ) {
+    update_data( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
-                    
-                     'menu_name' : body.menuName
-                    ,'menu_desc' : body.menuDesc
-                    ,'menu_url' : body.menuUrl
-                    ,'parent_id' : body.parentId
-                    ,'icon' : body.icon
-                    ,'order_menu' : body.orderMenu
-                    ,'is_agent':body.isAgent
+                     'parent_user':req.body.parentUser
+                    ,'password':req.body.passHash
+                    ,'id_group':req.body.groupId
+                    ,'photo':('fileName' in req.body) ? req.body.fileName : ''
+                    ,'id_extension':req.body.extensionId
+                    ,'email':req.body.username
+                    ,'first_name':req.body.firstName
+                    ,'last_name':req.body.lastName
+                    ,'ages':req.body.ages
+                    ,'is_agent':req.body.isAgent
                     ,'update_datetime' : new Date()
                     ,'user_updated' : 1
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.id
+                , id_val : req.query.id
             }
 
             this.updateData(params).then( (res) => {

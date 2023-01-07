@@ -12,11 +12,14 @@ var phoneBookModels = new phoneBookModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Phone Book'
+    req.renderObjects.sess = req.session
 
   res.render('phone_book/phone_book', req.renderObjects );
 
@@ -24,21 +27,13 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:phoneId',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }             
+        
 
     var inActiveGroup = await phoneBookModels.inActive(req.params)
-
-    res.redirect('/phone-book');
-
-});
-
-router.get('/activate/:phoneId',  async (req, res, next) => {
-
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
-
-    var inActiveGroup = await phoneBookModels.activate(req.params)
 
     res.redirect('/black-list');
 
@@ -46,8 +41,10 @@ router.get('/activate/:phoneId',  async (req, res, next) => {
 
 router.get('/datatable',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var cols = [
          { 
@@ -88,7 +85,8 @@ router.get('/datatable',  async (req, res, next) => {
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
                     html += '    <a href="/phone-book/add?id='+row.id_phone_book+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/phone-book/delete/'+row.id_phone_book+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Black List"><i class="fas fa-phone-slash"></i></a> '
+                    html += '    <a href="/black-list/add?phone_number='+row.phone_number+'" class="btn btn-warning btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Black List"><i class="fas fa-phone-slash"></i></a> '
+                    html += '    <a href="/phone-book/delete/'+row.id_phone_book+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fa-solid fa-trash"></i></a> '
                     html += '</div>'
                 
                 return html;
@@ -104,14 +102,29 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
-    let flashMessage = await helper.flashMessage(req, phoneBookModels, { phone_name : '', phone_number : '', notes : ''} )
+    var n = ('phone_number' in req.query) ? req.query.phone_number : ''
+
+    var data_update = { phone_name : '', phone_number : n, notes : ''}
+    
+    if(req.session.dataUpdate){
+
+        data_update.phone_name = req.session.dataUpdate.phoneName
+        data_update.phone_number = req.session.dataUpdate.phoneNumber
+        data_update.notes = req.session.dataUpdate.notes
+
+    }
+
+    let flashMessage = await helper.flashMessage(req, phoneBookModels,  data_update)
     
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Add Phone Book'
     req.renderObjects.alert = flashMessage
+    req.renderObjects.sess = req.session
 
     res.render('phone_book/add-phone-book', req.renderObjects );
   
@@ -123,18 +136,21 @@ router.post('/save',
     body('notes').isLength({min:10, max:255}).withMessage('Phone notes length min:10 max:255')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
+        req.session.dataUpdate = req.body
         res.redirect('/phone-book/add');
         return false
     }
 
-    var savePhone = await phoneBookModels.insertData(req.body)
+    var savePhone = await phoneBookModels.insertDataIgnore(req.body)
 
     req.session.resultMessage = (savePhone) ? helper.MessageSuccess('Success save phone book') : helper.MessageFailed('Failed save phone book')
 
@@ -148,13 +164,16 @@ router.post('/update',
     body('notes').isLength({min:10, max:255}).withMessage('Phone notes length min:10 max:255')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
+        req.session.dataUpdate = req.body
         res.redirect('/phone_book/add');
         return false
     }

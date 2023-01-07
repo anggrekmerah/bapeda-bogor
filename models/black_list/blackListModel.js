@@ -52,4 +52,54 @@ module.exports = class blackListModel extends crud_model  {
 
     }
 
+    insertData( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                  values : [body.phoneNumber, body.notes, 1, new Date()]
+                , table : this.tableName
+                , fields : 'phone_number, notes, user_created, created_datetime'
+            }
+
+            this.saveData(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
+    insertDataIgnore( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                values : [body.phoneNumber, body.notes, 1, new Date()]
+              , search : {'phone_number' : body.phoneNumber}
+              , table : this.tableName
+              , fields : 'phone_number, notes, user_created, created_datetime'
+            }
+
+            this.saveDataIgnore(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (false)
+        
+            })
+
+        })
+
+    }
+
 }

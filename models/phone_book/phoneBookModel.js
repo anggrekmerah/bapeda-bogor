@@ -92,6 +92,56 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
+    insertDataBlackList( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                  values : ['N', body.phoneNumber, body.notes, 1, new Date()]
+                , table : this.tableName
+                , fields : 'active, phone_number, notes, user_created, created_datetime'
+            }
+
+            this.saveData(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
+    insertDataIgnore( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                values : [body.phoneName, body.phoneNumber, body.notes, 1, new Date()]
+                , search : {'phone_number' : body.phoneNumber}
+                , table : this.tableName
+                , fields : 'phone_name, phone_number, notes, user_created, created_datetime'
+            }
+
+            this.saveDataIgnore(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (false)
+        
+            })
+
+        })
+
+    }
+
     inActive( body ) {
 
         return new Promise((resolve, reject) => {

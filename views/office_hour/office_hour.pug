@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        a(class="btn btn-primary float-end mb-2" href="/office-hour/add") Add Office Hour
+        table(class="table table-sm table-bordered display compact table-striped" id="tableOfficeHour")
+            thead 
+                tr
+                    th(scope="col" class="text-center") No
+                    th(scope="col") Office Day 
+                    th(scope="col") Office Open Hour
+                    th(scope="col") Office Close Hour
+                    th(scope="col") Created By 
+                    th(scope="col") Updated By 
+                    th(scope="col" class="text-center") Action
+            tbody 
+               

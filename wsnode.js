@@ -192,6 +192,7 @@ ws.on('message', async (data) => {
                     ]
 
 					var inserLog = await websocketModels.insertData(valueAnswer)
+					var update_incall = await websocketModels.update_incall( res.peer.caller.number, 'Y' )
 
 					delete currentcounter.meta
 					
@@ -222,6 +223,7 @@ ws.on('message', async (data) => {
                     ]
 					
 					var inserLog = await websocketModels.insertData(valueNoanswer)
+					var update_incall = await websocketModels.update_incall( res.peer.caller.number )
 
 					delete currentcounter.meta
 

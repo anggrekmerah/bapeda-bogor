@@ -67,23 +67,29 @@ module.exports = class dashboardModel extends crud_model  {
 
             this.execQuery(sql, bindings).then( (res) => {
                 
-                delete res.meta
-
                 var html = ''
 
-                if(0 in res) {
+                if(helper.isArray(res[0])) {
 
                     delete res[0].meta
 
                     for (const key in res[0]) {
                     
-                        html += helper.dashboardAgent(res[0][key])
+                        html += helper.dashboardAgent(res[0][key]) 
     
                     }
                     
                     resolve( html )
 
                 } else {
+
+                    delete res.meta
+
+                    for (const key in res) {
+                    
+                        html += helper.dashboardAgent(res[key]) 
+    
+                    }
 
                     resolve( html )
 

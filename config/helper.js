@@ -13,6 +13,10 @@ module.exports={
 
     }
 
+    ,isArray: function(a) {
+        return (!!a) && (a.constructor === Array);
+    }
+
     ,MessageFailed: function (message) {
 
         return [{
@@ -46,6 +50,9 @@ module.exports={
         var resultMessage = (req.session.resultMessage) ? req.session.resultMessage : '' 
 
         delete req.session.resultMessage
+
+        if(req.session.dataUpdate)
+            delete req.session.dataUpdate
 
         var alert = ''
 
@@ -91,7 +98,7 @@ module.exports={
         var image_disable = (params.active_login == 'Y') ? '' : '-webkit-filter: grayscale(100%); filter: grayscale(100%);' 
 
         var lineBotom = (params.active_login == 'Y') ? 'dark' : 'disable'
-        var buttonDisable = 'disabled="disabled"'
+        var buttonDisable = (params.in_call == 'Y') ? '' : 'disabled="disabled"'
         var buttonBg = (params.active_login == 'Y') ? 'warning' : 'secondary'
         var statusBg = (params.active_login == 'Y') ? 'primarys' : 'secondary'
 
@@ -121,9 +128,7 @@ module.exports={
         html += '        </div>'
         html += '        <div class="p-2 flex-fill bd-highlight"> '
         html += '            <span class="ms-1 text-light" id="durationAgent_'+params.extension+'">'
-        html += '               <label id="hours_'+params.extension+'">00</label>:'
-        html += '               <label id="minutes_'+params.extension+'">00</label>:'
-        html += '               <label id="seconds_'+params.extension+'">00</label>'
+        html += '               <label id="hours_'+params.extension+'">00</label>:<label id="minutes_'+params.extension+'">00</label>:<label id="seconds_'+params.extension+'">00</label>'
         html += '            </span> '
         html += '        </div>'
         // html += '        <div class="p-2 flex-fill bd-highlight">'
@@ -135,6 +140,18 @@ module.exports={
         html += '            <button id="btnSpyAgent_'+params.extension+'" class="btn btn-'+buttonBg+' btn-sm float-end ms-1" '+buttonDisable+' >Spy</button> '
         html += '        </div>'
         html += '    </div>'
+        
+        if (params.in_call == 'Y' && 'incall_datetime' in params) {
+
+            var date1 = new Date(); // current date
+            var date2 = new Date(params.incall_datetime); // mm/dd/yyyy format
+            var timeDiff = Math.abs(date2.getTime() - date1.getTime()); // in miliseconds
+            var timeDiffInSecond = Math.ceil(timeDiff / 1000); // in second
+
+
+            html += '<input type="hidden" name="listExtActiveCall[]" value="'+params.extension+'|'+timeDiffInSecond+'">'
+        }
+
         html += '</div>'
 
         return html

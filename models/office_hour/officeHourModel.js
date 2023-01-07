@@ -5,17 +5,18 @@ const ssp = require('../../config/ssp');
 
 const datatable = new ssp();
 
-module.exports = class menuModel extends crud_model  {
+module.exports = class officeHourModel extends crud_model  {
 
     tableName
 
     prmaryKey
 
     constructor() {
+
         super()
 
-        this.tableName = 'm_menu'
-        this.prmaryKey = 'id_menu'
+        this.tableName = 'm_office_hour'
+        this.prmaryKey = 'id_office_hour' 
 
     }
 
@@ -49,7 +50,7 @@ module.exports = class menuModel extends crud_model  {
         
             var params = {
                 table : this.tableName
-                ,id_key :  this.prmaryKey
+                ,id_key : this.prmaryKey
                 ,id_value : id
             }
 
@@ -72,9 +73,9 @@ module.exports = class menuModel extends crud_model  {
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.menuName, body.menuDesc, body.menuUrl, body.parentId, body.icon, body.orderMenu , 1, new Date()]
+                  values : [body.officeDay, body.officeOpenHour, body.officeCloseHour, 1, new Date()]
                 , table : this.tableName
-                , fields : 'menu_name, menu_desc, menu_url, parent_id, icon, order_menu, user_created, created_datetime'
+                , fields : 'office_day, office_open_hour, office_close_hour, user_created, created_datetime'
             }
 
             this.saveData(params).then( (res) => {
@@ -83,7 +84,7 @@ module.exports = class menuModel extends crud_model  {
         
             }).catch( (err) => {
                 
-                reject (err)
+                reject (false)
         
             })
 
@@ -97,10 +98,10 @@ module.exports = class menuModel extends crud_model  {
         return new Promise((resolve, reject) => {
 
             var params = {
-                values : [body.menuName, body.menuDesc, body.menuUrl, body.parentId, body.icon, body.orderMenu , 1, new Date()]
-              , search : {'menu_name' : body.menuName, 'menu_url':body.menuUrl}
+                values : [body.officeDay, body.officeOpenHour, body.officeCloseHour, 1, new Date()]
+              , search : {'office_day' : body.officeDay}
               , table : this.tableName
-              , fields : 'menu_name, menu_desc, menu_url, parent_id, icon, order_menu, user_created, created_datetime'
+              , fields : 'office_day, office_open_hour, office_close_hour, user_created, created_datetime'
             }
 
             this.saveDataIgnore(params).then( (res) => {
@@ -127,35 +128,7 @@ module.exports = class menuModel extends crud_model  {
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.menuId
-            }
-
-            this.updateData(params).then( (res) => {
-            
-                resolve( true )
-        
-            }).catch( (err) => {
-                
-                reject (err)
-        
-            })
-
-        })
-        
-
-    }
-
-    activate( body ) {
-
-        return new Promise((resolve, reject) => {
-
-            var params = {
-                  sets : {
-                    'active' : 'Y'
-                  }
-                , table : this.tableName
-                , id_key : this.prmaryKey
-                , id_val : body.menuId
+                , id_val : body.officeHourId
             }
 
             this.updateData(params).then( (res) => {
@@ -179,14 +152,10 @@ module.exports = class menuModel extends crud_model  {
 
             var params = {
                   sets : {
-
-                      'menu_name' : body.menuName
-                    , 'menu_desc' : body.menuDesc
-                    , 'menu_url' : body.menuUrl
-                    , 'parent_id' : body.parentId
-                    , 'icon' : body.icon
-                    , 'order_menu' : body.orderMenu
-                    ,'update_datetime' : new Date()
+                    'office_day' : body.officeDay
+                    ,'office_open_hour' : body.officeOpenHour
+                    ,'office_close_hour' : body.officeCloseHour
+                    ,'update_datetime':new Date()
                     ,'user_updated' : 1
                   }
                 , table : this.tableName
@@ -209,9 +178,9 @@ module.exports = class menuModel extends crud_model  {
 
     }
 
-    datatable(req, cols, active = 'Y') {
+    datatable(req, cols) {
 
-        const query = 'select * from '+this.tableName+' where active = "'+active+'" order by '+this.prmaryKey+' desc'
+        const query = 'select * from m_office_hour where active = "Y" order by id_office_hour desc'
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

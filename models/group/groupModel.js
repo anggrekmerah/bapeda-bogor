@@ -89,9 +89,35 @@ module.exports = class groupModel extends crud_model  {
             })
 
         })
-        
 
     }
+
+    insertDataIgnore( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                  values : [body.groupName, body.groupDesc, 1, new Date()]
+                , search : {'group_name' : body.groupName}
+                , table  : this.tableName
+                , fields : 'group_name, group_desc, user_created, created_datetime'
+            }
+
+            this.saveDataIgnore(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (false)
+        
+            })
+
+        })
+
+    }
+
+    
 
     inActive( body ) {
 

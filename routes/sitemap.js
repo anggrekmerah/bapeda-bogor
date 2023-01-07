@@ -15,11 +15,14 @@ var sitemapModels = new sitemapModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Sitemap'
+    req.renderObjects.sess = req.session
 
   res.render('sitemap/sitemap', req.renderObjects );
 
@@ -27,8 +30,10 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:sitemapId',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var inActiveGroup = await sitemapModels.inActive(req.params)
 
@@ -38,8 +43,10 @@ router.get('/delete/:sitemapId',  async (req, res, next) => {
 
 router.get('/datatable',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var cols = [
          { 
@@ -96,8 +103,10 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
     let flashMessage = await helper.flashMessage(req, sitemapModels, { id_group : '', hirarcy_ordered : '' } )
     
@@ -123,6 +132,7 @@ router.get('/add',  async (req, res, next) => {
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Add Sitemap'
     req.renderObjects.alert = flashMessage
+    req.renderObjects.sess = req.session
 
     res.render('sitemap/add-sitemap', req.renderObjects );
   
@@ -133,8 +143,10 @@ router.post('/save',
     body('order').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
@@ -144,7 +156,7 @@ router.post('/save',
         return false
     }
 
-    var savesitemapModels = await sitemapModels.insertData(req.body)
+    var savesitemapModels = await sitemapModels.insertDataIgnore(req.body)
 
     req.session.resultMessage = (savesitemapModels) ? helper.MessageSuccess('Success save sitemap') : helper.MessageFailed('Failed save sitemap')
 
@@ -157,8 +169,10 @@ router.post('/update',
     body('order').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 

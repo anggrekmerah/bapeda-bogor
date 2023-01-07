@@ -119,6 +119,32 @@ module.exports = class websocketModel extends crud_model  {
 
     }
 
+    update_incall( ext, isCall = 'N' ) {
+
+        return new Promise((resolve, reject) => {
+
+            var sql = 'UPDATE m_users a'
+                sql += 'INNER JOIN m_extension b ON a.id_extension = b.id_extension'
+                sql += ' set in_call = ?, incall_datetime = now() '
+                sql += ' WHERE extension = ? '
+
+            console.log(sql)
+
+            this.execQuery(sql, [ isCall, ext ]).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
     check_phone_number( phoneNumber ) {
 
         return new Promise((resolve, reject) => {

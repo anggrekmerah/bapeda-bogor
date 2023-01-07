@@ -89,6 +89,30 @@ module.exports = class extensionModel extends crud_model  {
 
         })
         
+    }
+
+    insertDataIgnore( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                    values : [req.body.extension, req.session.id_user, new Date()]
+                , search : {'extension' : req.body.extension}
+                , table : this.tableName
+                , fields : 'extension, user_created, created_datetime'
+            }
+
+            this.saveDataIgnore(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (false)
+        
+            })
+
+        })
 
     }
 

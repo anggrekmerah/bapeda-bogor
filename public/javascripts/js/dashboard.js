@@ -46,6 +46,28 @@ function dial(e, ext, id, type) {
 
 }            
 
+$(function(){
+
+    var listActiveCall = $('input[name="listExtActiveCall[]"]')
+
+    for (var i = 0; i <listActiveCall.length; i++) {
+        
+        var v = listActiveCall[i].value.split('|')
+        var ext = v[0]
+        var seconds = v[1]
+
+        if(ext != '' || ext != null) {
+
+            totalSeconds = seconds
+    
+            intervalCOunter[ext] = setInterval( function(){setTime(ext)} , 1000);
+
+        }
+
+    }
+
+})
+
 window.onload = function () {
 
     var chart = new CanvasJS.Chart("chartContainer", {

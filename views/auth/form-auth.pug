@@ -9,7 +9,133 @@ html
         title Login - SB Admin
         link(href="/stylesheets/css/styles.css" rel="stylesheet")
         script(src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous")
-    
+        script(src="https://code.jquery.com/jquery-3.6.3.slim.min.js" crossorigin="anonymous")
+        style(type="text/css").
+            .input-field {
+                border-radius: 5px;
+                padding: 5px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                color: #38363a
+            }
+
+            input {
+                border: none;
+                outline: none;
+                box-shadow: none;
+                width: 100%;
+                padding: 0px 2px;
+                font-family: 'Poppins', sans-serif
+            }
+
+            .fa-eye-slash.btn {
+                border: none;
+                outline: none;
+                box-shadow: none
+            }
+
+            
+            .option {
+                position: relative;
+                padding-left: 30px;
+                cursor: pointer
+            }
+
+            .option label.text-muted {
+                display: block;
+                cursor: pointer
+            }
+
+            .option input {
+                display: none
+            }
+
+            .checkmark {
+                position: absolute;
+                top: 3px;
+                left: 0;
+                height: 20px;
+                width: 20px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 50%;
+                cursor: pointer
+            }
+
+            .option input:checked~.checkmark:after {
+                display: block
+            }
+
+            .option .checkmark:after {
+                content: "";
+                width: 13px;
+                height: 13px;
+                display: block;
+                background: #400485;
+                position: absolute;
+                top: 48%;
+                left: 53%;
+                border-radius: 50%;
+                transform: translate(-50%, -50%) scale(0);
+                transition: 300ms ease-in-out 0s
+            }
+
+            .option input[type="radio"]:checked~.checkmark {
+                background: #fff;
+                transition: 300ms ease-in-out 0s;
+                border: 1px solid #400485
+            }
+
+            .option input[type="radio"]:checked~.checkmark:after {
+                transform: translate(-50%, -50%) scale(1)
+            }
+
+            .btn.btn-block {
+                border-radius: 20px;
+                background-color: #400485;
+                color: #fff
+            }
+
+            .btn.btn-block:hover {
+                background-color: #55268be0
+            }
+
+            @media(max-width: 575px) {
+                .wrapper {
+                    margin: 10px
+                }
+            }
+
+            @media(max-width:424px) {
+                .wrapper {
+                    padding: 30px 10px;
+                    margin: 5px
+                }
+
+                .option {
+                    position: relative;
+                    padding-left: 22px
+                }
+
+                .option label.text-muted {
+                    font-size: 0.95rem
+                }
+
+                .checkmark {
+                    position: absolute;
+                    top: 2px
+                }
+
+                .option .checkmark:after {
+                    top: 50%
+                }
+
+                #forgot {
+                    font-size: 0.95rem
+                }
+            }
+
     body(class="bg-primary")
         div(id="layoutAuthentication")
             div(id="layoutAuthentication_content")
@@ -25,24 +151,51 @@ html
                                         
                                     div(class="card-body")
                                         form(action="/auth/authenticate" method="post")
-                                            div(class="form-floating mb-3")
-                                                input(class="form-control" id="inputEmail" type="text" name="username" placeholder="name@example.com")
-                                                label(for="inputEmail") Email address
+                                            div(class="form-group py-2")
+                                                div(class="input-field") 
+                                                    span(class="far fa-user p-2")
+                                                    input(type="text" placeholder="Username or Email Address" required class="form-control" name="username" autocomplete="off" value=dataUpdate.username) 
+                                                
+                                            div(class="form-group py-1 pb-2")
+                                                div(class="input-field") 
+                                                    span(class="fas fa-lock p-2") 
+                                                    input(type="password" placeholder="Enter your Password" required class="form-control" id="inputPassword" name="password" autocomplete="off") 
+                                                    button(class="btn bg-white text-muted" id="togglePassword" type="button") 
+                                                        span(class="fa-solid fa-eye-slash" id="spanEye") 
+                                                    
+                                            div(class="d-flex align-items-start")
+                                                div(class="col") 
+                                                    label(class="option text-muted") Remember me 
+                                                        input(type="radio" name="radio") 
+                                                        span(class="checkmark")
+                                                    
+                                                div(class="col") 
+                                                    a(href="#" class="float-end" id="forgot") Forgot Password? 
+                                                
+                                            div(class="form-group py-2")
+                                                button(class="btn btn-primary float-end text-center my-3") Log in
                                             
-                                            div(class="form-floating mb-3")
-                                                input(class="form-control" id="inputPassword" type="password" name="password" placeholder="Password")
-                                                label(for="inputPassword") Password
+                                    //-     form(action="/auth/authenticate" method="post")
+                                    //-         div(class="form-floating mb-3")
+                                    //-             input(class="form-control" id="inputEmail" type="text" name="username" placeholder="name@example.com")
+                                    //-             label(for="inputEmail") Email address
                                             
-                                            div(class="form-check mb-3")
-                                                //- input(class="form-check-input" id="inputRememberPassword" type="checkbox" value="")
-                                                //- label(class="form-check-label" for="inputRememberPassword") Remember Password
+                                    //-         div(class="form-floating mb-3")
+                                    //-             input(class="form-control" id="inputPassword" type="password" name="password" placeholder="Password")
+                                    //-             label(for="inputPassword") Password
+                                    //-                 label(for="a" ): i(class="fa-solid fa-eye-slash" style="cursor: pointer")
+                                                  
                                             
-                                            div(class="d-flex align-items-center justify-content-between mt-4 mb-0")
-                                                a(class="small" href="password.html") Forgot Password?
-                                                button(class="btn btn-primary" type="submit") Login
+                                    //-         //- div(class="form-check mb-3")
+                                    //-             //- input(class="form-check-input" id="inputRememberPassword" type="checkbox" value="")
+                                    //-             //- label(class="form-check-label" for="inputRememberPassword") Remember Password
+                                            
+                                    //-         div(class="d-flex align-items-center justify-content-between mt-4 mb-0")
+                                    //-             a(class="small" href="password.html") Forgot Password?
+                                    //-             button(class="btn btn-primary" type="submit") Login
                                            
-                                    div(class="card-footer text-center py-3")
-                                        div(class="small"): a(href="register.html") Need an account? Sign up!
+                                    //- div(class="card-footer text-center py-3")
+                                    //-     div(class="small"): a(href="register.html") Need an account? Sign up!
                                     
             div(id="layoutAuthentication_footer")
                 footer(class="py-4 bg-light mt-auto")

@@ -9,7 +9,7 @@ block content
     h1(class="mt-4") #{title}
     div(class="container-fluid border p-2" style="margin-top : 35px;")
         div(class="row")
-            div(class="col-md-4")
+            div(class="col-md-8")
                 | !{alert}
                 form(class="row g-3" action=action method="post" id="formGroupMenu")
 
@@ -21,8 +21,8 @@ block content
                     
                     div(class="mb-3")
                         button(type="submit" class="btn btn-primary float-end") #{buttonAction}
-                        a( class="btn btn-primary float-end me-2" href="/group-menu" ) List
-                        button(type="button" class="btn btn-danger float-end me-2" id="discard") Discard
+                        a( class="btn btn-primary float-end me-2" href="/group-menu" ) Back
+                        button(type="button" class="btn btn-danger float-end me-2" id="discard") Reset
             
             div(class="col-md-4")
                 label(class="fw-bold") Notes : 

@@ -20,7 +20,9 @@ const socket = io('http://localhost:3000',{
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-    let flashMessage = await helper.flashMessage(req, userModels, { username : '' } )
+    var u = ('username' in req.query) ? req.query.username : ''
+
+    let flashMessage = await helper.flashMessage(req, userModels, { username : u } )
     
     req.renderObjects.alert = flashMessage
 
@@ -193,16 +195,16 @@ router.post('/authenticate', body('username').not().isEmpty(), body('password').
         } else {
 
             req.session.resultMessage = helper.MessageFailed('Username or Password Failed')
-
-            res.redirect('/auth');
+            
+            res.redirect('/auth?username='+req.body.username);
 
         }
 
     } else {
 
         req.session.resultMessage = helper.MessageFailed('Username Not Found')
-
-        res.redirect('/auth');
+        req.body.dataUpdate = { username : req.body.username }
+        res.redirect('/auth?username='+req.body.username);
 
     }
 

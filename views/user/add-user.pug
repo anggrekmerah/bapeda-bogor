@@ -34,7 +34,10 @@ block content
 
                         div(class="mb-3")
                             label(for="password" class="form-label") Password 
-                            input(type="password" class="form-control" id="password" name="password" placeholder="Password"  )
+                            div(class="input-group")
+                                input(type="password" class="form-control" id="inputPassword" name="password" placeholder="Password"  )
+                                button(class="btn bg-white text-muted input-group-text" id="togglePassword" type="button") 
+                                    span(class="fa-solid fa-eye-slash" id="spanEye")
 
                         div(class="mb-3")
                             label(for="Photo" class="form-label") Photo
@@ -46,22 +49,36 @@ block content
                         div(class="mb-3")
                             label(for="Group" class="form-label") Group
                             select(class="form-control" id="groupId" name="groupId" )
+                                option(value="") ---Select---
                                 each val, index in groupList
                                     if groupList[index].id_group != 7
-                                        option(value=groupList[index].id_group) #{groupList[index].group_name}
+                                        if groupList[index].id_group == dataUpdate.id_group
+                                            option(value=groupList[index].id_group selected) #{groupList[index].group_name}
+                                        else 
+                                            option(value=groupList[index].id_group) #{groupList[index].group_name}
 
                         div(class="mb-3")
                             label(for="Extension" class="form-label") Extension
                             select(class="form-control" id="extensionId" name="extensionId" )
+                                option(value="") ---Select---
                                 each val, index in extList
-                                    option(value=extList[index].id_extension) #{extList[index].extension}
+                                    if extList[index].id_extension == dataUpdate.id_extension
+                                        option(value=extList[index].id_extension selected) #{extList[index].extension}
+                                    else 
+                                        option(value=extList[index].id_extension) #{extList[index].extension}
+
+                                    
  
                         div(class="mb-3")
                             label(for="parentUser" class="form-label") Parent User
                             select(class="form-control" id="parentUser" name="parentUser" )
                                 option(value="") ---Select---
                                 each val, index in userList
-                                    option(value=userList[index].id_user) #{userList[index].first_name} #{userList[index].last_name}
+                                    if userList[index].id_user == dataUpdate.parent_user
+                                        option(value=userList[index].id_user selected) #{userList[index].first_name} #{userList[index].last_name} (#{userList[index].group_name})
+                                    else 
+                                        option(value=userList[index].id_user) #{userList[index].first_name} #{userList[index].last_name} (#{userList[index].group_name})
+                                    
 
                         div(class="mb-3")
                             label(for="parentUser" class="form-label") Is Agent
@@ -71,8 +88,8 @@ block content
 
                         div(class="mb-3")
                             button(type="submit" class="btn btn-primary float-end") #{buttonAction}
-                            a( class="btn btn-primary float-end me-2" href="/users" ) List
-                            button(type="button" class="btn btn-danger float-end me-2" id="discard") Discard
+                            a( class="btn btn-primary float-end me-2" href="/users" ) Back
+                            button(type="button" class="btn btn-danger float-end me-2" id="discard") Reset
         
             div(class="col-md-6")
                 label(class="fw-bold") Notes : 

@@ -29,8 +29,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use(menuMids.menuMiddleware)
-app.use(renderObject.renderObjectMiddleware)
+
+
 
 app.use(session({
   resave: false, // don't save session if unmodified
@@ -39,7 +39,8 @@ app.use(session({
   cookie: { secure: false }
 }));
 
-
+app.use(menuMids.menuMiddleware)
+app.use(renderObject.renderObjectMiddleware)
 routers.routes(app)
 
 

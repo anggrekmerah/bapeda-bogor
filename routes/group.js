@@ -12,12 +12,15 @@ var groupModels = new groupModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Group'
+    req.renderObjects.sess = req.session
 
   res.render('group/group', req.renderObjects );
 
@@ -25,8 +28,10 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:groupId',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var inActiveGroup = await groupModels.inActive(req.params)
 
@@ -36,8 +41,10 @@ router.get('/delete/:groupId',  async (req, res, next) => {
 
 router.get('/datatable',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var cols = [
          { 
@@ -92,14 +99,26 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
-    let flashMessage = await helper.flashMessage(req, groupModels, { group_name : '', group_desc : '' } )
+    var data_update = { group_name : '', group_desc : '' }
+    
+    if(req.session.dataUpdate){
+
+        data_update.group_name = req.session.dataUpdate.groupName
+        data_update.group_desc = req.session.dataUpdate.groupDesc
+
+    }
+    
+    let flashMessage = await helper.flashMessage(req, groupModels, data_update )
     
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Add Group'
     req.renderObjects.alert = flashMessage
+    req.renderObjects.sess = req.session
 
     res.render('group/add-group', req.renderObjects );
   
@@ -109,18 +128,21 @@ router.post('/save',
     body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
+        req.session.dataUpdate = req.body
         res.redirect('/group/add');
         return false
     }
 
-    var saveGroup = await groupModels.insertData(req.body)
+    var saveGroup = await groupModels.insertDataIgnore(req.body)
 
     req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success save group') : helper.MessageFailed('Failed save group')
 
@@ -132,13 +154,16 @@ router.post('/update',
     body('groupName').not().isEmpty().withMessage('Group name required').isLength({min:3, max:50}).withMessage('Group name length min:3 max:50')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
+        req.session.dataUpdate = req.body
         res.redirect('/group/add');
         return false
     }

@@ -72,9 +72,9 @@ module.exports = class groupMenuModel extends crud_model  {
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.groupId, body.menuId, 1, new Date()]
+                  values : [body.groupId, body.menuId, body.can_select, body.can_delete, body.can_insert, body.can_update , 1, new Date()]
                 , table : this.tableName
-                , fields : 'id_group, id_menu, user_created, created_datetime'
+                , fields : 'id_group, id_menu, can_select, can_delete, can_insert, can_update, user_created, created_datetime'
             }
 
             this.saveData(params).then( (res) => {

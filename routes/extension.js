@@ -12,11 +12,14 @@ var extensionModels = new extensionModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Extension'
+    req.renderObjects.sess = req.session
 
   res.render('extension/extension', req.renderObjects );
 
@@ -24,8 +27,10 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:extensionId',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var inActiveextension = await extensionModels.inActive(req)
 
@@ -35,8 +40,10 @@ router.get('/delete/:extensionId',  async (req, res, next) => {
 
 router.get('/datatable',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var cols = [
          { 
@@ -91,14 +98,25 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
-    let flashMessage = await helper.flashMessage(req, extensionModels, { extension : '' } )
+    var data_update = { extension : '' }
+    
+    if(req.session.dataUpdate){
+
+        data_update.extension = req.session.dataUpdate.extension
+
+    }
+
+    let flashMessage = await helper.flashMessage(req, extensionModels,  data_update)
     
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Add Extension'
     req.renderObjects.alert = flashMessage
+    req.renderObjects.sess = req.session
 
     res.render('extension/add-extension', req.renderObjects );
   
@@ -108,18 +126,21 @@ router.post('/save',
     body('extension').not().isEmpty().withMessage('Extension required').isLength({min:3, max:5}).withMessage('Extension length min:3 max:5')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
+        req.session.dataUpdate = req.body
         res.redirect('/extension/add');
         return false
     }
 
-    var savePhone = await extensionModels.insertData(req)
+    var savePhone = await extensionModels.insertDataIgnore(req)
 
     req.session.resultMessage = (savePhone) ? helper.MessageSuccess('Success save extension') : helper.MessageFailed('Failed save extension')
 
@@ -131,13 +152,16 @@ router.post('/update',
     body('extension').not().isEmpty().withMessage('Extension required').isLength({min:3, max:5}).withMessage('Extension length min:3 max:5')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
+        req.session.dataUpdate = req.body
         res.redirect('/extension/add');
         return false
     }

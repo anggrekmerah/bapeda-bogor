@@ -11,6 +11,7 @@ var extensionRouter = require('./routes/extension');
 var dashboardRouter = require('./routes/dashboard');
 var dashboard_agentRouter = require('./routes/dashboard-agent');
 var authRouter = require('./routes/auth');
+var office_hourRouter = require('./routes/office_hour');
 
 
 module.exports ={
@@ -27,5 +28,6 @@ module.exports ={
         app.use('/dashboard', dashboardRouter);
         app.use('/dashboard-agent', dashboard_agentRouter);
         app.use('/auth', authRouter);
+        app.use('/office-hour', office_hourRouter);
     }
 } 

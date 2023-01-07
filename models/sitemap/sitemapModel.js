@@ -92,6 +92,31 @@ module.exports = class sitemapModel extends crud_model  {
 
     }
 
+    insertDataIgnore( body ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                values : [body.groupId, body.order, 1, new Date()]
+              , search : {'id_group' : body.groupId}
+              , table : this.tableName
+              , fields : 'id_group, hirarcy_ordered, user_created, created_datetime'
+            }
+
+            this.saveDataIgnore(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (false)
+        
+            })
+
+        })
+
+    }
+
     inActive( body ) {
 
         return new Promise((resolve, reject) => {

@@ -12,8 +12,10 @@ var dashboardModels = new dashboardModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-  if(!req.session.loggedin)                
+  if(!req.session.loggedin)   {  
     res.render('error')
+    return false
+}
 
   var counter = await dashboardModels.getAllData()
 
@@ -25,7 +27,10 @@ router.get('/',  async (req, res, next) => {
   req.renderObjects.title = 'Dashboard'
   req.renderObjects.counters = counter
   req.renderObjects.agentList = users
+  req.renderObjects.sess = req.session
 
+  console.log(req.renderObjects)
+  
   res.render('dashboard/dashboard', req.renderObjects);
 
 });

@@ -3,10 +3,6 @@ const ioSocket = io('http://'+window.location.hostname+':3000',{
     transports: ["websocket", "polling"] // use WebSocket first, if available
 });
 
-var intervalCOunter = {}
-
-var totalSeconds = 0
-
 function incomnigBox(params) {
     
     if(!document.body.contains(document.getElementById('extension')))
@@ -17,8 +13,25 @@ function incomnigBox(params) {
     var incomingBox = '<div class="col-md-2 my-1" id="incomingCall_'+ext+'" card-incoming="card-'+params.caller.caller.number+'">'
         incomingBox += '    <div class="card">'
         incomingBox += '        <div class="card-header blinking-in">'
-        incomingBox += '            <i class="fa fa-phone me-2"></i>'
-        incomingBox += '            Incoming call'
+        
+        incomingBox += '                <div class="row">'
+        incomingBox += '                    <div class="col-md-10">'
+        incomingBox += '                        <i class="fa fa-phone me-2">Incoming call</i>'
+        incomingBox += '                    </div>'
+        incomingBox += '                    <div class="col-md-2 text-end">'
+        incomingBox += '                        <i class=" fa-solid fa-ellipsis-vertical" id="dropdownMenuButton1" style="cursor:pointer;" data-bs-toggle="dropdown" ></i>'
+        incomingBox += '                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"></ul>'
+        incomingBox += '                            <li>'
+        incomingBox += '                                <a class="dropdown-item" href="/phone-book/add?phone_number='+params.caller.caller.number+'"> Add Phonebook</a>'
+        incomingBox += '                            </li>'
+        incomingBox += '                            <li>'
+        incomingBox += '                                <a class="dropdown-item" href="/black-list/add?phone_number='+params.caller.caller.number+'"> Add Blacklist</a>'
+        incomingBox += '                            </li>'
+        incomingBox += '                    </div>'
+        incomingBox += '                </div>'
+                            
+                            
+
         incomingBox += '        </div>'
         incomingBox += '        <div class="card-body">'
         incomingBox += '            <table class="table" > '  

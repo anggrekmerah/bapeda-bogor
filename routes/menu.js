@@ -12,11 +12,14 @@ var menuModels = new menuModel()
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Menus'
+    req.renderObjects.sess = req.session
 
   res.render('menu/menu', req.renderObjects );
 
@@ -24,8 +27,10 @@ router.get('/',  async (req, res, next) => {
 
 router.get('/delete/:menuId',  async (req, res, next) => {
 
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var inActiveGroup = await menuModels.inActive(req.params)
 
@@ -35,8 +40,10 @@ router.get('/delete/:menuId',  async (req, res, next) => {
 
 router.get('/datatable',  async (req, res, next) => {
     
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     var cols = [
          { 
@@ -95,8 +102,10 @@ router.get('/datatable',  async (req, res, next) => {
 
 router.get('/add',  async (req, res, next) => {
   
-    if(!req.session.loggedin)                
+    if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
 
     let flashMessage = await helper.flashMessage(req, menuModels, { menu_name : '', menu_desc : '', menu_url : '', parent_id : '', icon : '', order_menu : '' } )
     let menus = await menuModels.getAllData()
@@ -104,6 +113,7 @@ router.get('/add',  async (req, res, next) => {
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Add Menu'
     req.renderObjects.alert = flashMessage
+    req.renderObjects.sess = req.session
 
     delete menus.meta
     req.renderObjects.menuList = menus
@@ -117,8 +127,10 @@ router.post('/save',
     body('orderMenu').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
@@ -128,7 +140,7 @@ router.post('/save',
         return false
     }
 
-    var savemenu = await menuModels.insertData(req.body)
+    var savemenu = await menuModels.insertDataIgnore(req.body)
 
     req.session.resultMessage = (savemenu) ? helper.MessageSuccess('Success save menu') : helper.MessageFailed('Failed save menu')
 
@@ -141,8 +153,10 @@ router.post('/update',
     body('orderMenu').not().isEmpty().withMessage('Order required')
 ,async (req, res, next) => {
   
-    if(!req.session.loggedin)                
-        res.redirect('/auth')
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     const errors = validationResult(req);
 
