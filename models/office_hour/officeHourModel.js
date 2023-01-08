@@ -68,12 +68,12 @@ module.exports = class officeHourModel extends crud_model  {
 
     }
 
-    insertData( body ) {
+    insertData( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.officeDay, body.officeOpenHour, body.officeCloseHour, 1, new Date()]
+                  values : [req.body.officeDay, req.body.officeOpenHour, req.body.officeCloseHour, req.session.id_user, new Date()]
                 , table : this.tableName
                 , fields : 'office_day, office_open_hour, office_close_hour, user_created, created_datetime'
             }
@@ -93,13 +93,13 @@ module.exports = class officeHourModel extends crud_model  {
 
     }
 
-    insertDataIgnore( body ) {
+    insertDataIgnore( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                values : [body.officeDay, body.officeOpenHour, body.officeCloseHour, 1, new Date()]
-              , search : {'office_day' : body.officeDay}
+                values : [req.body.officeDay, req.body.officeOpenHour, req.body.officeCloseHour, req.session.id_user, new Date()]
+              , search : {'office_day' : req.body.officeDay, 'active' : 'Y'}
               , table : this.tableName
               , fields : 'office_day, office_open_hour, office_close_hour, user_created, created_datetime'
             }
@@ -118,17 +118,19 @@ module.exports = class officeHourModel extends crud_model  {
 
     }
 
-    inActive( body ) {
+    inActive( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     'active' : 'N'
+                    ,'update_datetime' : new Date()
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.officeHourId
+                , id_val : req.params.officeHourId
             }
 
             this.updateData(params).then( (res) => {
@@ -156,11 +158,11 @@ module.exports = class officeHourModel extends crud_model  {
                     ,'office_open_hour' : body.officeOpenHour
                     ,'office_close_hour' : body.officeCloseHour
                     ,'update_datetime':new Date()
-                    ,'user_updated' : 1
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.id
+                , id_val : req.query.id
             }
 
             this.updateData(params).then( (res) => {
@@ -180,7 +182,11 @@ module.exports = class officeHourModel extends crud_model  {
 
     datatable(req, cols) {
 
-        const query = 'select * from m_office_hour where active = "Y" order by id_office_hour desc'
+        const query = `select a.* , concat(b.first_name,' ', b.last_name) as created_by, concat(c.first_name,' ', c.last_name) as updated_by 
+        from m_office_hour a 
+        left join m_users b on b.id_user = a.user_created
+        left join m_users c on c.id_user = a.user_updated
+        where a.active = "Y" order by a.id_office_hour desc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

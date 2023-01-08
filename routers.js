@@ -13,6 +13,13 @@ var dashboard_agentRouter = require('./routes/dashboard-agent');
 var authRouter = require('./routes/auth');
 var office_hourRouter = require('./routes/office_hour');
 
+var r_abandonRouter = require('./routes/r_abandon');
+var r_incomingRouter = require('./routes/r_incoming');
+var r_kpiRouter = require('./routes/r_kpi');
+var r_outgoingRouter = require('./routes/r_outgoing');
+var r_receiveRouter = require('./routes/r_receive');
+var r_user_activityRouter = require('./routes/r_user_activity');
+
 
 module.exports ={
     routes : function (app) {
@@ -29,5 +36,12 @@ module.exports ={
         app.use('/dashboard-agent', dashboard_agentRouter);
         app.use('/auth', authRouter);
         app.use('/office-hour', office_hourRouter);
+
+        app.use('/report', r_abandonRouter);
+        app.use('/report', r_incomingRouter);
+        app.use('/report', r_kpiRouter);
+        app.use('/report', r_outgoingRouter);
+        app.use('/report', r_receiveRouter);
+        app.use('/report', r_user_activityRouter);
     }
 } 

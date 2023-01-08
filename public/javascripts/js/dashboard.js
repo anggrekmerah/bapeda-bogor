@@ -66,122 +66,132 @@ $(function(){
 
     }
 
-})
+    $.ajax({
+        type: "POST",
+        url: "/dashboard/chart",
+        // data: JSON.stringify({ Markers: markers }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
 
-window.onload = function () {
+            if(data.err){
+                alert(data);
+                return false
+            }
 
-    var chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
-        theme: "light2",
-        title:{
-            text: "Calls Traffic"
-        },
-        axisX:{
-            valueFormatString: "DD MMM",
-            crosshair: {
-                enabled: true,
-                snapToDataPoint: true
+            console.log(data)
+
+            var dataPointsIncoming = []
+            var dataPointsReceive = []
+            var dataPointsAbandon = []
+            var d = data.data
+            var t = ''
+
+            for (let index = 1; index <= 31; index++) {
+                
+                for (const key in d) {
+                    
+                    t = d[key].tahun
+
+                    if(d[key].tanggal == index) {
+
+                        switch (d[key].call_event) {
+
+                        case 'RINGING':
+                            dataPointsIncoming.push({ x: new Date(d[key].tahun, 0, d[key].tanggal), y: Number(d[key].total) })
+                            break;
+                
+                        case 'ANSWER':
+                            dataPointsReceive.push({ x: new Date(d[key].tahun, 0, d[key].tanggal), y: Number(d[key].total) })
+                            break;
+                        
+                        case 'NOANSWER':
+                        case 'BUSY':
+                            dataPointsAbandon.push({ x: new Date(d[key].tahun, 0, d[key].tanggal) , y: Number(d[key].total) })
+                            break;
+                        
+                        }
+
+                    } 
+
+                }
+                
             }
-        },
-        axisY: {
-            title: "",
-            includeZero: true,
-            crosshair: {
-                enabled: true
+              
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                theme: "light2",
+                title:{
+                    text: "Calls Traffic " + t
+                },
+                axisX:{
+                    valueFormatString: "DD MMM",
+                    crosshair: {
+                        enabled: true,
+                        snapToDataPoint: true
+                    }
+                },
+                axisY: {
+                    title: "",
+                    includeZero: true,
+                    crosshair: {
+                        enabled: true
+                    }
+                },
+                toolTip:{
+                    shared:true
+                },  
+                legend:{
+                    cursor:"pointer",
+                    verticalAlign: "bottom",
+                    horizontalAlign: "left",
+                    dockInsidePlotArea: true,
+                    itemclick: toogleDataSeries
+                },
+                data: [{
+                    type: "line",
+                    showInLegend: true,
+                    name: "Incoming",
+                    markerType: "square",
+                    xValueFormatString: "DD MMM, YYYY",
+                    color: "#F08080",
+                    dataPoints: dataPointsIncoming
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Receive",
+                    markerType: "square",
+                    color: "#1da585",
+                    dataPoints: dataPointsReceive
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Abandon",
+                    markerType: "square",
+                    color: "#dfa115",
+                    dataPoints: dataPointsAbandon
+                }]
+            });
+            chart.render();
+            
+            function toogleDataSeries(e){
+                if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else{
+                    e.dataSeries.visible = true;
+                }
+                chart.render();
             }
+        
+            chart.render();
+
         },
-        toolTip:{
-            shared:true
-        },  
-        legend:{
-            cursor:"pointer",
-            verticalAlign: "bottom",
-            horizontalAlign: "left",
-            dockInsidePlotArea: true,
-            itemclick: toogleDataSeries
-        },
-        data: [{
-            type: "line",
-            showInLegend: true,
-            name: "Incoming",
-            markerType: "square",
-            xValueFormatString: "DD MMM, YYYY",
-            color: "#F08080",
-            dataPoints: [
-                { x: new Date(2017, 0, 3), y: 650 },
-                { x: new Date(2017, 0, 4), y: 700 },
-                { x: new Date(2017, 0, 5), y: 710 },
-                { x: new Date(2017, 0, 6), y: 658 },
-                { x: new Date(2017, 0, 7), y: 734 },
-                { x: new Date(2017, 0, 8), y: 963 },
-                { x: new Date(2017, 0, 9), y: 847 },
-                { x: new Date(2017, 0, 10), y: 853 },
-                { x: new Date(2017, 0, 11), y: 869 },
-                { x: new Date(2017, 0, 12), y: 943 },
-                { x: new Date(2017, 0, 13), y: 970 },
-                { x: new Date(2017, 0, 14), y: 869 },
-                { x: new Date(2017, 0, 15), y: 890 },
-                { x: new Date(2017, 0, 16), y: 930 }
-            ]
-        },
-        {
-            type: "line",
-            showInLegend: true,
-            name: "Receive",
-            markerType: "square",
-            color: "#1da585",
-            dataPoints: [
-                { x: new Date(2017, 0, 3), y: 310 },
-                { x: new Date(2017, 0, 4), y: 360 },
-                { x: new Date(2017, 0, 5), y: 340 },
-                { x: new Date(2017, 0, 6), y: 358 },
-                { x: new Date(2017, 0, 7), y: 344 },
-                { x: new Date(2017, 0, 8), y: 393 },
-                { x: new Date(2017, 0, 9), y: 357 },
-                { x: new Date(2017, 0, 10), y: 263 },
-                { x: new Date(2017, 0, 11), y: 239 },
-                { x: new Date(2017, 0, 12), y: 273 },
-                { x: new Date(2017, 0, 13), y: 260 },
-                { x: new Date(2017, 0, 14), y: 262 },
-                { x: new Date(2017, 0, 15), y: 243 },
-                { x: new Date(2017, 0, 16), y: 270 }
-            ]
-        },
-        {
-            type: "line",
-            showInLegend: true,
-            name: "Abandon",
-            markerType: "square",
-            color: "#dfa115",
-            dataPoints: [
-                { x: new Date(2017, 0, 3), y: 150 },
-                { x: new Date(2017, 0, 4), y: 150 },
-                { x: new Date(2017, 0, 5), y: 150 },
-                { x: new Date(2017, 0, 6), y: 158 },
-                { x: new Date(2017, 0, 7), y: 154 },
-                { x: new Date(2017, 0, 8), y: 153 },
-                { x: new Date(2017, 0, 9), y: 157 },
-                { x: new Date(2017, 0, 10), y: 683 },
-                { x: new Date(2017, 0, 11), y: 689 },
-                { x: new Date(2017, 0, 12), y: 683 },
-                { x: new Date(2017, 0, 13), y: 680 },
-                { x: new Date(2017, 0, 14), y: 682 },
-                { x: new Date(2017, 0, 15), y: 683 },
-                { x: new Date(2017, 0, 16), y: 680 }
-            ]
-        }]
-    });
-    chart.render();
-    
-    function toogleDataSeries(e){
-        if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-            e.dataSeries.visible = false;
-        } else{
-            e.dataSeries.visible = true;
+        error: function(errMsg) {
+            alert(errMsg);
         }
-        chart.render();
-    }
+    });
 
-    chart.render();
 
-}
+})

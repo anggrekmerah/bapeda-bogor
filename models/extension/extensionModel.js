@@ -91,13 +91,13 @@ module.exports = class extensionModel extends crud_model  {
         
     }
 
-    insertDataIgnore( body ) {
+    insertDataIgnore( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                     values : [req.body.extension, req.session.id_user, new Date()]
-                , search : {'extension' : req.body.extension}
+                , search : {'extension' : req.body.extension, 'active' : 'Y'}
                 , table : this.tableName
                 , fields : 'extension, user_created, created_datetime'
             }
@@ -123,6 +123,8 @@ module.exports = class extensionModel extends crud_model  {
             var param = {
                   sets : {
                     'active' : 'N'
+                    ,'user_updated' : req.session.id_user
+                    ,'update_datetime' : new Date()
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
@@ -144,17 +146,19 @@ module.exports = class extensionModel extends crud_model  {
 
     }
 
-    activate( body ) {
+    activate( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     'active' : 'Y'
+                    ,'user_updated' : req.session.id_user
+                    ,'update_datetime' : new Date()
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.extensionId
+                , id_val : req.params.extensionId
             }
 
             this.updateData(params).then( (res) => {

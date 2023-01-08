@@ -4,9 +4,12 @@ const { body, validationResult } = require('express-validator');
 
 const menuModel = require('../models/menu/menuModel');
 const helper = require('../config/helper')
+const groupMenuModel = require('../models/group_menu/groupMenuModel');
 
+var groupMenuModels = new groupMenuModel()
 var controllerName = 'menu'
 var menuModels = new menuModel()
+const menuId = 4
 
 
 /* GET home page. */
@@ -17,9 +20,16 @@ router.get('/',  async (req, res, next) => {
         return false
     }
 
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Menus'
     req.renderObjects.sess = req.session
+    req.renderObjects.btnadd = (checkAccessPage.can_insert == 'Y') ? true : false
 
   res.render('menu/menu', req.renderObjects );
 
@@ -32,7 +42,7 @@ router.get('/delete/:menuId',  async (req, res, next) => {
         return false
     }
 
-    var inActiveGroup = await menuModels.inActive(req.params)
+    var inActiveGroup = await menuModels.inActive(req)
 
     res.redirect('/menu');
 
@@ -44,6 +54,8 @@ router.get('/datatable',  async (req, res, next) => {
         res.render('error')
         return false
     }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
 
     var cols = [
          { 
@@ -64,7 +76,7 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 6,
             'formatter' : function( d, row ) {
                 var created_datetime = new Date(row.created_datetime).toISOString().split('T')
-                return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.created_by + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
             }
         }
         ,{ 
@@ -73,7 +85,7 @@ router.get('/datatable',  async (req, res, next) => {
             'formatter' : function( d, row ) {
 
                 var update_datetime = new Date(row.update_datetime).toISOString().split('T')
-                return row.user_updated + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.updated_by + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
  
             }
         }
@@ -82,10 +94,13 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 8, 
             'formatter' : function( d, row ) {
                 
+                var btnEdit =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/menu/add?id='+row.id_menu) : ''
+                var btnDelete =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/menu/delete/'+row.id_menu) : ''
+
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                    html += '    <a href="/menu/add?id='+row.id_menu+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/menu/delete/'+row.id_menu+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
+                    html += btnEdit  
+                    html += btnDelete
                     html += '</div>'
                 
                 return html;
@@ -104,6 +119,12 @@ router.get('/add',  async (req, res, next) => {
   
     if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
         return false
     }
 
@@ -140,7 +161,7 @@ router.post('/save',
         return false
     }
 
-    var savemenu = await menuModels.insertDataIgnore(req.body)
+    var savemenu = await menuModels.insertDataIgnore(req)
 
     req.session.resultMessage = (savemenu) ? helper.MessageSuccess('Success save menu') : helper.MessageFailed('Failed save menu')
 
@@ -166,7 +187,7 @@ router.post('/update',
         return false
     }
     
-    var savemenu = await menuModels.update_data({ ...req.body, ...req.query})
+    var savemenu = await menuModels.update_data(req)
 
     req.session.resultMessage = (savemenu) ? helper.MessageSuccess('Success update menu') : helper.MessageFailed('Failed update menu')
 

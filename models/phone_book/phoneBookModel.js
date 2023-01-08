@@ -67,12 +67,12 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
-    insertData( body ) {
+    insertData( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.phoneName, body.phoneNumber, body.notes, 1, new Date()]
+                  values : [req.body.phoneName, req.body.phoneNumber, req.body.notes, req.session.id_user, new Date()]
                 , table : this.tableName
                 , fields : 'phone_name, phone_number, notes, user_created, created_datetime'
             }
@@ -92,12 +92,12 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
-    insertDataBlackList( body ) {
+    insertDataBlackList( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : ['N', body.phoneNumber, body.notes, 1, new Date()]
+                  values : ['N', req.body.phoneNumber, req.body.notes, req.session.id_user, new Date()]
                 , table : this.tableName
                 , fields : 'active, phone_number, notes, user_created, created_datetime'
             }
@@ -117,13 +117,13 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
-    insertDataIgnore( body ) {
+    insertDataIgnore( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                values : [body.phoneName, body.phoneNumber, body.notes, 1, new Date()]
-                , search : {'phone_number' : body.phoneNumber}
+                values : [req.body.phoneName, req.body.phoneNumber, req.body.notes, req.session.id_user, new Date()]
+                , search : {'phone_number' : req.body.phoneNumber, 'active' : 'Y'}
                 , table : this.tableName
                 , fields : 'phone_name, phone_number, notes, user_created, created_datetime'
             }
@@ -142,17 +142,19 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
-    inActive( body ) {
+    inActive( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     'active' : 'N'
+                    ,'update_datetime' : new Date()
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.phoneId
+                , id_val : req.params.phoneId
             }
 
             this.updateData(params).then( (res) => {
@@ -170,17 +172,19 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
-    activate( body ) {
+    activate( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     'active' : 'Y'
+                    ,'update_datetime' : new Date()
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.phoneId
+                , id_val : req.params.phoneId
             }
 
             this.updateData(params).then( (res) => {
@@ -198,7 +202,7 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
-    update_data( body ) {
+    update_data( req ) {
 
         return new Promise((resolve, reject) => {
 
@@ -209,11 +213,11 @@ module.exports = class phoneBookModel extends crud_model  {
                     ,'phone_number' : body.phoneNumber
                     ,'notes' : body.notes
                     ,'update_datetime' : new Date()
-                    ,'user_updated' : 1
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.id
+                , id_val : req.query.id
             }
 
             this.updateData(params).then( (res) => {
@@ -233,7 +237,11 @@ module.exports = class phoneBookModel extends crud_model  {
 
     datatable(req, cols, active = 'Y') {
 
-        const query = 'select * from '+this.tableName+' where active = "'+active+'" order by '+this.prmaryKey+' desc'
+        const query = `select a.*, concat(b.first_name,' ', b.last_name) as created_by, concat(c.first_name,' ', c.last_name) as updated_by  
+        from `+this.tableName+` a 
+        left join m_users b on b.id_user = a.user_created
+        left join m_users c on c.id_user = a.user_updated
+        where a.active = "`+active+`" order by a.`+this.prmaryKey+` desc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

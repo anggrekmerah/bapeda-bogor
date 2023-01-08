@@ -13,13 +13,19 @@ var controllerName = 'group_menu'
 var groupMenuModels = new groupMenuModel()
 
 var navbar_models = new navbar_model()
-
+const menuId = 5
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
     if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
         return false
     }
 
@@ -31,25 +37,14 @@ router.get('/',  async (req, res, next) => {
 
 });
 
-router.get('/delete/:groupMenuId',  async (req, res, next) => {
-
-    if(!req.session.loggedin)   {  
-        res.render('error')
-        return false
-    }
-
-    var inActiveGroup = await groupMenuModels.inActive(req.params)
-
-    res.redirect('/menu');
-
-});
-
 router.get('/datatable',  async (req, res, next) => {
     
     if(!req.session.loggedin)   {  
         res.render('error')
         return false
     }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
 
     var cols = [
         { 
@@ -66,7 +61,7 @@ router.get('/datatable',  async (req, res, next) => {
            'dt' : 2,
            'formatter' : function( d, row ) {
                var created_datetime = new Date(row.created_datetime).toISOString().split('T')
-               return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
+               return row.created_by + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
            }
        }
        ,{ 
@@ -74,11 +69,15 @@ router.get('/datatable',  async (req, res, next) => {
            'dt' : 3, 
            'formatter' : function( d, row ) {
                
-               var html = ''
-                   html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                   html += '    <a href="/group-menu/add?id='+row.id_group+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                //    html += '    <a href="/group-menu/delete/'+row.id_group+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
-                   html += '</div>'
+                var html = ''
+                    html += '<div class="btn-group" role="group" aria-label="Basic example">'
+
+                    if (checkAccessPage && checkAccessPage.can_update == 'Y')
+                        html += '    <a href="/group-menu/add?id='+row.id_group+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
+                
+                        //    html += '    <a href="/group-menu/delete/'+row.id_group+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
+                
+                    html += '</div>'
                
                return html;
            }
@@ -95,6 +94,12 @@ router.get('/add',  async (req, res, next) => {
   
     if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
         return false
     }
 
@@ -142,7 +147,7 @@ router.post('/save', async (req, res, next) => {
         if(deleteGroup) {
 
             for (const key in menus) {
-                var b = { 'groupId' :  groupId, 'menuId' : menus[key], 'can_select' : 'N', 'can_delete' : 'N', 'can_insert' : 'N', 'can_update' : 'N' }
+                var b = { 'groupId' :  groupId, 'menuId' : menus[key], 'can_select' : 'N', 'can_delete' : 'N', 'can_insert' : 'N', 'can_update' : 'N', 'id_user':req.session.id_user }
      
                 if ('can_select' in req.body) {
     
@@ -198,30 +203,5 @@ router.post('/save', async (req, res, next) => {
 
 });
 
-router.post('/update',  
-    body('groupId').not().isEmpty().withMessage('Group required'),
-    body('order').not().isEmpty().withMessage('Order required')
-,async (req, res, next) => {
-  
-    if(!req.session.loggedin)   {  
-        res.render('error')
-        return false
-    }
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        req.session.resultMessage = errors.array()
-        res.redirect('/sitemap/add');
-        return false
-    }
-    
-    var update_data = await sitemapModels.update_data({ ...req.body, ...req.query})
-
-    req.session.resultMessage = (update_data) ? helper.MessageSuccess('Success update sitemap') : helper.MessageFailed('Failed update sitemap')
-
-    res.redirect('/sitemap/add');
-
-});
 
 module.exports = router;

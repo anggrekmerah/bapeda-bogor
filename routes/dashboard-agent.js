@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
-
-var controllerName = 'dashboard_agent'
-
+const groupMenuModel = require('../models/group_menu/groupMenuModel');
+const helper = require('../config/helper');
+var groupMenuModels = new groupMenuModel()
+const controllerName = 'dashboard_agent'
+const menuId = 12
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
@@ -10,6 +12,12 @@ router.get('/',  async (req, res, next) => {
     res.render('error')
     return false
   }
+
+  var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Dashboard agent'

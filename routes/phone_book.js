@@ -4,10 +4,12 @@ const { body, validationResult } = require('express-validator');
 
 const phoneBookModel = require('../models/phone_book/phoneBookModel');
 const helper = require('../config/helper')
+const groupMenuModel = require('../models/group_menu/groupMenuModel');
 
+var groupMenuModels = new groupMenuModel()
 var controllerName = 'phone_book'
 var phoneBookModels = new phoneBookModel()
-
+const menuId = 8
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
@@ -17,9 +19,16 @@ router.get('/',  async (req, res, next) => {
         return false
     }
 
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Phone Book'
     req.renderObjects.sess = req.session
+    req.renderObjects.btnadd = (checkAccessPage.can_insert == 'Y') ? true : false
 
   res.render('phone_book/phone_book', req.renderObjects );
 
@@ -33,7 +42,7 @@ router.get('/delete/:phoneId',  async (req, res, next) => {
     }             
         
 
-    var inActiveGroup = await phoneBookModels.inActive(req.params)
+    var inActiveGroup = await phoneBookModels.inActive(req)
 
     res.redirect('/black-list');
 
@@ -45,6 +54,8 @@ router.get('/datatable',  async (req, res, next) => {
         res.render('error')
         return false
     }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
 
     var cols = [
          { 
@@ -64,7 +75,7 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 4,
             'formatter' : function( d, row ) {
                 var created_datetime = new Date(row.created_datetime).toISOString().split('T')
-                return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.created_by + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
             }
         }
         ,{ 
@@ -73,7 +84,7 @@ router.get('/datatable',  async (req, res, next) => {
             'formatter' : function( d, row ) {
 
                 var update_datetime = new Date(row.update_datetime).toISOString().split('T')
-                return row.user_updated + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.updated_by + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
  
             }
         }
@@ -82,11 +93,15 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 6, 
             'formatter' : function( d, row ) {
                 
+                var btnEdit     =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/office-hour/add?id='+row.id_office_hour) : ''
+                var btnDelete   =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/office-hour/delete/'+row.id_office_hour) : ''
+                var btnBl       =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnBlackList('/black-list/add?phone_number='+row.phone_number) : ''
+
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                    html += '    <a href="/phone-book/add?id='+row.id_phone_book+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/black-list/add?phone_number='+row.phone_number+'" class="btn btn-warning btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Black List"><i class="fas fa-phone-slash"></i></a> '
-                    html += '    <a href="/phone-book/delete/'+row.id_phone_book+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fa-solid fa-trash"></i></a> '
+                    html += btnEdit  
+                    html += btnBl
+                    html += btnDelete
                     html += '</div>'
                 
                 return html;
@@ -104,6 +119,12 @@ router.get('/add',  async (req, res, next) => {
   
     if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
         return false
     }
 
@@ -150,7 +171,7 @@ router.post('/save',
         return false
     }
 
-    var savePhone = await phoneBookModels.insertDataIgnore(req.body)
+    var savePhone = await phoneBookModels.insertDataIgnore(req)
 
     req.session.resultMessage = (savePhone) ? helper.MessageSuccess('Success save phone book') : helper.MessageFailed('Failed save phone book')
 
@@ -178,7 +199,7 @@ router.post('/update',
         return false
     }
     
-    var updatePhone = await phoneBookModels.update_data({ ...req.body, ...req.query})
+    var updatePhone = await phoneBookModels.update_data(req)
 
     req.session.resultMessage = (updatePhone) ? helper.MessageSuccess('Success update phone book') : helper.MessageFailed('Failed update phone book')
 

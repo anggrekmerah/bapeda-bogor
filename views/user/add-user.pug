@@ -30,12 +30,12 @@ block content
 
                         div(class="mb-3")
                             label(for="username" class="form-label") E-mail 
-                            input(type="text" class="form-control" id="username" name="username" placeholder="Username" value=dataUpdate.username  )
+                            input(type="text" class="form-control" id="username" name="username" placeholder="Username" value=dataUpdate.email  )
 
                         div(class="mb-3")
                             label(for="password" class="form-label") Password 
                             div(class="input-group")
-                                input(type="password" class="form-control" id="inputPassword" name="password" placeholder="Password"  )
+                                input(type="password" class="form-control" id="inputPassword" name="password" placeholder="Password" autocomplete="off" )
                                 button(class="btn bg-white text-muted input-group-text" id="togglePassword" type="button") 
                                     span(class="fa-solid fa-eye-slash" id="spanEye")
 

@@ -19,60 +19,12 @@ module.exports = class groupMenuModel extends crud_model  {
 
     }
 
-    getAllData(){
-
-        return new Promise((resolve, reject) => {
-        
-            var params = {
-                 table : this.tableName
-                ,id_field : this.prmaryKey
-                ,order : 'asc'
-            }
-
-            this.getAll(params).then( (res) => {
-            
-                resolve( res )
-        
-            }).catch( (err) => {
-                
-                reject (err)
-        
-            })
-        
-        })
-
-    }
-
-    getDataById(id) {
-        
-        return new Promise((resolve, reject) => {
-        
-            var params = {
-                table : this.tableName
-                ,id_key :  this.prmaryKey
-                ,id_value : id
-            }
-
-            this.getById(params).then( (res) => {
-            
-                resolve( res )
-        
-            }).catch( (err) => {
-                
-                reject (err)
-        
-            })
-        
-        })
-
-    }
-
     insertData( body ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.groupId, body.menuId, body.can_select, body.can_delete, body.can_insert, body.can_update , 1, new Date()]
+                  values : [body.groupId, body.menuId, body.can_select, body.can_delete, body.can_insert, body.can_update , body.id_user, new Date()]
                 , table : this.tableName
                 , fields : 'id_group, id_menu, can_select, can_delete, can_insert, can_update, user_created, created_datetime'
             }
@@ -92,96 +44,12 @@ module.exports = class groupMenuModel extends crud_model  {
 
     }
 
-    inActive( body ) {
-
-        return new Promise((resolve, reject) => {
-
-            var params = {
-                  sets : {
-                    'active' : 'N'
-                  }
-                , table : this.tableName
-                , id_key : this.prmaryKey
-                , id_val : body.groupMenupId
-            }
-
-            this.updateData(params).then( (res) => {
-            
-                resolve( true )
-        
-            }).catch( (err) => {
-                
-                reject (err)
-        
-            })
-
-        })
-        
-
-    }
-
-    activate( body ) {
-
-        return new Promise((resolve, reject) => {
-
-            var params = {
-                  sets : {
-                    'active' : 'Y'
-                  }
-                , table : this.tableName
-                , id_key : this.prmaryKey
-                , id_val : body.sitemapId
-            }
-
-            this.updateData(params).then( (res) => {
-            
-                resolve( true )
-        
-            }).catch( (err) => {
-                
-                reject (err)
-        
-            })
-
-        })
-        
-
-    }
-
-    update_data( body ) {
-
-        return new Promise((resolve, reject) => {
-
-            var params = {
-                  sets : {
-                     'id_group' : body.groupId
-                    ,'id_menu' : body.menuId
-                    ,'update_datetime' : new Date()
-                    ,'user_updated' : 1
-                  }
-                , table : this.tableName
-                , id_key : this.prmaryKey
-                , id_val : body.id
-            }
-
-            this.updateData(params).then( (res) => {
-            
-                resolve( true )
-        
-            }).catch( (err) => {
-                
-                reject (err)
-        
-            })
-
-        })
-        
-
-    }
-
     datatable(req, cols, active = 'Y') {
 
-        var query = 'select id_group, group_name, user_created, created_datetime from m_group where active = "Y"'
+        var query = `select a.id_group, a.group_name, a.user_created, a.created_datetime , concat(b.first_name,' ', b.last_name) as created_by
+        from m_group a
+        left join m_users b on b.id_user = a.user_created
+        where a.active = "Y"`
               
         return datatable.simple(query, req, this.prmaryKey, cols)
 

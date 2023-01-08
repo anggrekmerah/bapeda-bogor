@@ -12,6 +12,17 @@ module.exports={
         }]
 
     }
+    ,btnEdit: function(url) {
+        return ' <a href="'+url+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '
+    }
+
+    ,btnDelete: function(url) {
+        return ' <a href="'+url+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
+    }
+    
+    ,btnBlackList: function(url) {
+        return '    <a href="'+url+'" class="btn btn-warning btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Black List"><i class="fas fa-phone-slash"></i></a> '
+    }
 
     ,isArray: function(a) {
         return (!!a) && (a.constructor === Array);
@@ -27,7 +38,27 @@ module.exports={
        }]
         
     }
+    ,checkAccessPage: async function(req, models){
+        console.log(req)
+        var d = await models.execQuery( 'select can_select, can_delete, can_insert, can_update from m_group_menu where id_group=? and id_menu=?' ,[req.id_group, req.id_menu])  
+        
+        delete d.meta
 
+        if(d) {
+            
+            for (const key in d) {
+
+                if(d[key]['can_select'] == 'N'){
+                    return false
+                }
+
+            }
+            
+        }
+
+        return d[0]
+
+    }
     ,flashMessage: async function(req, models, defaultObject){
         
         var q = req.query

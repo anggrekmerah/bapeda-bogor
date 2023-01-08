@@ -67,12 +67,12 @@ module.exports = class menuModel extends crud_model  {
 
     }
 
-    insertData( body ) {
+    insertData( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.menuName, body.menuDesc, body.menuUrl, body.parentId, body.icon, body.orderMenu , 1, new Date()]
+                  values : [req.body.menuName, req.body.menuDesc, req.body.menuUrl, req.body.parentId, req.body.icon, req.body.orderMenu , req.session.id_user, new Date()]
                 , table : this.tableName
                 , fields : 'menu_name, menu_desc, menu_url, parent_id, icon, order_menu, user_created, created_datetime'
             }
@@ -92,13 +92,13 @@ module.exports = class menuModel extends crud_model  {
 
     }
 
-    insertDataIgnore( body ) {
+    insertDataIgnore( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                values : [body.menuName, body.menuDesc, body.menuUrl, body.parentId, body.icon, body.orderMenu , 1, new Date()]
-              , search : {'menu_name' : body.menuName, 'menu_url':body.menuUrl}
+                values : [req.body.menuName, req.body.menuDesc, req.body.menuUrl, req.body.parentId, req.body.icon, req.body.orderMenu , req.session.id_user, new Date()]
+              , search : {'menu_name' : req.body.menuName, 'menu_url':req.body.menuUrl, 'active' : 'Y'}
               , table : this.tableName
               , fields : 'menu_name, menu_desc, menu_url, parent_id, icon, order_menu, user_created, created_datetime'
             }
@@ -117,17 +117,19 @@ module.exports = class menuModel extends crud_model  {
 
     }
 
-    inActive( body ) {
+    inActive( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     'active' : 'N'
+                    ,'user_updated' : req.session.id_user
+                    ,'update_datetime' : new Date()
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.menuId
+                , id_val : req.params.menuId
             }
 
             this.updateData(params).then( (res) => {
@@ -145,17 +147,19 @@ module.exports = class menuModel extends crud_model  {
 
     }
 
-    activate( body ) {
+    activate( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     'active' : 'Y'
+                    ,'user_updated' : req.session.id_user
+                    ,'update_datetime' : new Date()
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.menuId
+                , id_val : req.params.menuId
             }
 
             this.updateData(params).then( (res) => {
@@ -173,25 +177,25 @@ module.exports = class menuModel extends crud_model  {
 
     }
 
-    update_data( body ) {
+    update_data( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
 
-                      'menu_name' : body.menuName
-                    , 'menu_desc' : body.menuDesc
-                    , 'menu_url' : body.menuUrl
-                    , 'parent_id' : body.parentId
-                    , 'icon' : body.icon
-                    , 'order_menu' : body.orderMenu
+                      'menu_name' : req.body.menuName
+                    , 'menu_desc' : req.body.menuDesc
+                    , 'menu_url' : req.body.menuUrl
+                    , 'parent_id' : req.body.parentId
+                    , 'icon' : req.body.icon
+                    , 'order_menu' : req.body.orderMenu
                     ,'update_datetime' : new Date()
-                    ,'user_updated' : 1
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.id
+                , id_val : req.query.id
             }
 
             this.updateData(params).then( (res) => {
@@ -211,7 +215,11 @@ module.exports = class menuModel extends crud_model  {
 
     datatable(req, cols, active = 'Y') {
 
-        const query = 'select * from '+this.tableName+' where active = "'+active+'" order by '+this.prmaryKey+' desc'
+        const query = `select a.*, concat(b.first_name,' ', b.last_name) as created_by, concat(c.first_name,' ', c.last_name) as updated_by 
+        from `+this.tableName+` a 
+        left join m_users b on b.id_user = a.user_created
+        left join m_users c on c.id_user = a.user_updated
+        where a.active = "`+active+`" order by a.`+this.prmaryKey+` desc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

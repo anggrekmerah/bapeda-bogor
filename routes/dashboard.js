@@ -1,14 +1,15 @@
 var express = require('express');
 const dashboardModel = require('../models/dashboard/dashboardModel');
 var router = express.Router();
-
+const helper = require('../config/helper')
 require('dotenv').config({path:'../env'})
 const env = process.env;
 
 const axios = require('axios');
-
-var dashboardModels = new dashboardModel()
-
+const groupMenuModel = require('../models/group_menu/groupMenuModel');
+var groupMenuModels = new groupMenuModel()
+const dashboardModels = new dashboardModel()
+const menuId = 11
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
@@ -16,6 +17,12 @@ router.get('/',  async (req, res, next) => {
     res.render('error')
     return false
 }
+
+var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
 
   var counter = await dashboardModels.getAllData()
 
@@ -107,6 +114,34 @@ router.post('/barge',  async (req, res, next) => {
       // handle error
       res.status(200).json({err:true , msg: error})
     })
+
+});
+
+router.post('/chart',  async (req, res, next) => {
+
+  // if(!req.session.loggedin)                
+  //   res.render('error')
+
+  var chart = await dashboardModels.getChart()
+
+  delete chart.meta
+
+  var c = []
+  console.log(chart)
+  for (const key in chart) {
+   
+    c.push({
+       'total' : Number(chart[key].total)
+      ,'tanggal' : chart[key].tanggal
+      ,'call_event' : chart[key].call_event
+      ,'tahun' : Number(chart[key].tahun)
+    })
+
+  }
+
+  res.status(200).json({err:false , msg: 'sucess', data: c})
+  
+  // res.status(200).json({err:true , msg: error})
 
 });
 

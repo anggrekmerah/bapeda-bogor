@@ -46,18 +46,23 @@ module.exports = class blackListModel extends crud_model  {
 
     datatable(req, cols) {
 
-        const query = 'select * from '+this.tableName+' where active = "Y" order by '+this.prmaryKey+' desc'
+             
+        const query = `select a.*, concat(b.first_name,' ', b.last_name) as created_by, concat(c.first_name,' ', c.last_name) as updated_by 
+                        from `+this.tableName+` as a 
+                        left join m_users b on b.id_user = a.user_created
+                        left join m_users c on c.id_user = a.user_updated
+                        where a.active = "Y" order by a.`+this.prmaryKey+` desc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 
     }
 
-    insertData( body ) {
+    insertData( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.phoneNumber, body.notes, 1, new Date()]
+                  values : [req.body.phoneNumber, req.body.notes, req.session.id_user, new Date()]
                 , table : this.tableName
                 , fields : 'phone_number, notes, user_created, created_datetime'
             }
@@ -77,13 +82,13 @@ module.exports = class blackListModel extends crud_model  {
 
     }
 
-    insertDataIgnore( body ) {
+    insertDataIgnore( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                values : [body.phoneNumber, body.notes, 1, new Date()]
-              , search : {'phone_number' : body.phoneNumber}
+                values : [req.body.phoneNumber, req.body.notes, req.session.id_user, new Date()]
+              , search : {'phone_number' : req.body.phoneNumber, 'active' : 'Y'}
               , table : this.tableName
               , fields : 'phone_number, notes, user_created, created_datetime'
             }

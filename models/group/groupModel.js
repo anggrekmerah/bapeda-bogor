@@ -68,12 +68,12 @@ module.exports = class groupModel extends crud_model  {
 
     }
 
-    insertData( body ) {
+    insertData( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.groupName, body.groupDesc, 1, new Date()]
+                  values : [req.body.groupName, req.body.groupDesc, req.session.id_user, new Date()]
                 , table : this.tableName
                 , fields : 'group_name, group_desc, user_created, created_datetime'
             }
@@ -92,13 +92,13 @@ module.exports = class groupModel extends crud_model  {
 
     }
 
-    insertDataIgnore( body ) {
+    insertDataIgnore( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [body.groupName, body.groupDesc, 1, new Date()]
-                , search : {'group_name' : body.groupName}
+                  values : [req.body.groupName, req.body.groupDesc, req.session.id_user, new Date()]
+                , search : {'group_name' : req.body.groupName, 'active' : 'Y'}
                 , table  : this.tableName
                 , fields : 'group_name, group_desc, user_created, created_datetime'
             }
@@ -119,17 +119,19 @@ module.exports = class groupModel extends crud_model  {
 
     
 
-    inActive( body ) {
+    inActive( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     'active' : 'N'
+                    ,'user_updated' : req.session.id_user
+                    ,'update_datetime' : new Date()
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.groupId
+                , id_val : req.params.groupId
             }
 
             this.updateData(params).then( (res) => {
@@ -147,20 +149,20 @@ module.exports = class groupModel extends crud_model  {
 
     }
 
-    update_data( body ) {
+    update_data( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
-                    'group_name' : body.groupName
-                    ,'group_desc' : body.groupDesc
+                    'group_name' : req.body.groupName
+                    ,'group_desc' : req.body.groupDesc
                     ,'update_datetime' : new Date()
-                    ,'user_updated' : 1
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.id
+                , id_val : req.query.id
             }
 
             this.updateData(params).then( (res) => {
@@ -179,8 +181,12 @@ module.exports = class groupModel extends crud_model  {
     }
 
     datatable(req, cols) {
-
-        const query = 'select * from m_group where active = "Y" order by id_group desc'
+        
+        const query = `select a.*, concat(b.first_name,' ', b.last_name) as created_by, concat(c.first_name,' ', c.last_name) as updated_by 
+        from m_group a 
+        left join m_users b on b.id_user = a.user_created
+        left join m_users c on c.id_user = a.user_updated
+        where a.active = "Y" order by a.id_group desc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 

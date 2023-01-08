@@ -111,25 +111,25 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    insertData( body ) {
+    insertData( req ) {
 
         return new Promise((resolve, reject) => {
 
-            console.log(body)
+            // console.log(req)
 
             var params = {
                   values : [
-                    body.parentUser,
-                    body.passHash, 
-                    body.groupId, 
-                    ('fileName' in body) ? body.fileName : '',
-                    body.extensionId, 
-                    body.username, 
-                    body.firstName, 
-                    body.lastName,
-                    body.ages,
-                    body.isAgent,
-                    1,
+                    req.body.parentUser,
+                    req.body.passHash, 
+                    req.body.groupId, 
+                    ('fileName' in req.body) ? req.body.fileName : '',
+                    req.body.extensionId, 
+                    req.body.username, 
+                    req.body.firstName, 
+                    req.body.lastName,
+                    req.body.ages,
+                    req.body.isAgent,
+                    req.session.id_user,
                     new Date()]
                 , table : this.tableName
                 , fields : 'parent_user, password, id_group, photo, id_extension, email, first_name, last_name, ages, is_agent, user_created, created_datetime'
@@ -150,26 +150,26 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    insertDataIgnore( body ) {
+    insertDataIgnore( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                 values : [
-                  body.parentUser,
-                  body.passHash, 
-                  body.groupId, 
-                  ('fileName' in body) ? body.fileName : '',
-                  body.extensionId, 
-                  body.username, 
-                  body.firstName, 
-                  body.lastName,
-                  body.ages,
-                  body.isAgent,
-                  1,
+                  req.body.parentUser,
+                  req.body.passHash, 
+                  req.body.groupId, 
+                  ('fileName' in req.body) ? req.body.fileName : '',
+                  req.body.extensionId, 
+                  req.body.username, 
+                  req.body.firstName, 
+                  req.body.lastName,
+                  req.body.ages,
+                  req.body.isAgent,
+                  req.session.id_user,
                   new Date()]
               , table : this.tableName
-              , search : {'email' : body.username}
+              , search : {'email' : req.body.username, 'active' : 'Y'}
               , fields : 'parent_user, password, id_group, photo, id_extension, email, first_name, last_name, ages, is_agent, user_created, created_datetime'
             }
 
@@ -187,17 +187,19 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    inActive( body ) {
+    inActive( req ) {
 
         return new Promise((resolve, reject) => {
 
             var params = {
                   sets : {
                     'active' : 'N'
+                    ,'update_datetime' : new Date()
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : body.userId
+                , id_val : req.params.userId
             }
 
             this.updateData(params).then( (res) => {
@@ -232,7 +234,7 @@ module.exports = class userModel extends crud_model  {
                     ,'ages':req.body.ages
                     ,'is_agent':req.body.isAgent
                     ,'update_datetime' : new Date()
-                    ,'user_updated' : 1
+                    ,'user_updated' : req.session.id_user
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
@@ -256,10 +258,13 @@ module.exports = class userModel extends crud_model  {
 
     datatable(req, cols) {
 
-        const query = `select a.*, b.group_name , c.extension
+        const query = `select a.*, b.group_name , c.extension,
+        concat(d.first_name,' ', d.last_name) as created_by, concat(e.first_name,' ', e.last_name) as updated_by  
         from ${this.tableName} a 
         left join m_group b on a.id_group = b.id_group  
         left join m_extension c on c.id_extension = a.id_extension
+        left join m_users d on d.id_user = a.user_created
+        left join m_users e on e.id_user = a.user_updated
         where a.active = "Y" order by ${this.prmaryKey} asc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)

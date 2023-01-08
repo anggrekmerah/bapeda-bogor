@@ -3,11 +3,13 @@ var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const groupModel = require('../models/group/groupModel')
-const helper = require('../config/helper')
+const helper = require('../config/helper');
+const groupMenuModel = require('../models/group_menu/groupMenuModel');
 
 var controllerName = 'group'
 var groupModels = new groupModel()
-
+var groupMenuModels = new groupMenuModel()
+const menuId = 2
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
@@ -17,10 +19,17 @@ router.get('/',  async (req, res, next) => {
         return false
     }
 
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
+
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Group'
     req.renderObjects.sess = req.session
+    req.renderObjects.btnadd = (checkAccessPage.can_insert == 'Y') ? true : false
 
   res.render('group/group', req.renderObjects );
 
@@ -33,7 +42,7 @@ router.get('/delete/:groupId',  async (req, res, next) => {
         return false
     }
 
-    var inActiveGroup = await groupModels.inActive(req.params)
+    var inActiveGroup = await groupModels.inActive(req)
 
     res.redirect('/group');
 
@@ -45,6 +54,8 @@ router.get('/datatable',  async (req, res, next) => {
         res.render('error')
         return false
     }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
 
     var cols = [
          { 
@@ -62,7 +73,7 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 3,
             'formatter' : function( d, row ) {
                 var created_datetime = new Date(row.created_datetime).toISOString().split('T')
-                return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.created_by + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
             }
         }
         ,{ 
@@ -71,7 +82,7 @@ router.get('/datatable',  async (req, res, next) => {
             'formatter' : function( d, row ) {
 
                 var update_datetime = new Date(row.update_datetime).toISOString().split('T')
-                return row.user_updated + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.updated_by + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
  
             }
         }
@@ -80,10 +91,13 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 5, 
             'formatter' : function( d, row ) {
                 
+                var btnEdit =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/group/add?id='+row.id_group) : ''
+                var btnDelete =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/group/delete/'+row.id_group) : ''
+
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                    html += '    <a href="/group/add?id='+row.id_group+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/group/delete/'+row.id_group+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
+                    html += btnEdit  
+                    html += btnDelete
                     html += '</div>'
                 
                 return html;
@@ -104,6 +118,12 @@ router.get('/add',  async (req, res, next) => {
         return false
     }
 
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
+    console.log(checkAccessPage)
     var data_update = { group_name : '', group_desc : '' }
     
     if(req.session.dataUpdate){
@@ -119,6 +139,7 @@ router.get('/add',  async (req, res, next) => {
     req.renderObjects.title = 'Add Group'
     req.renderObjects.alert = flashMessage
     req.renderObjects.sess = req.session
+   
 
     res.render('group/add-group', req.renderObjects );
   
@@ -142,7 +163,7 @@ router.post('/save',
         return false
     }
 
-    var saveGroup = await groupModels.insertDataIgnore(req.body)
+    var saveGroup = await groupModels.insertDataIgnore(req)
 
     req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success save group') : helper.MessageFailed('Failed save group')
 
@@ -168,7 +189,7 @@ router.post('/update',
         return false
     }
     
-    var saveGroup = await groupModels.update_data({ ...req.body, ...req.query})
+    var saveGroup = await groupModels.update_data(req)
 
     req.session.resultMessage = (saveGroup) ? helper.MessageSuccess('Success update group') : helper.MessageFailed('Failed update group')
 

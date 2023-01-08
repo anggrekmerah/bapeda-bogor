@@ -6,6 +6,10 @@ const userModel = require('../models/user/userModels');
 const helper = require('../config/helper')
 const groupModel = require('../models/group/groupModel');
 const extensionModel = require('../models/extension/extensionModel');
+const groupMenuModel = require('../models/group_menu/groupMenuModel');
+
+var groupMenuModels = new groupMenuModel()
+
 var bcrypt = require('bcryptjs');
 const multer  = require('multer')
 
@@ -27,19 +31,26 @@ var controllerName = 'users'
 var userModels = new userModel()
 var groupModels = new groupModel()
 var extensionModels = new extensionModel()
-
+const menuId = 3
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
 
-  if(!req.session.loggedin)   {  
-    res.render('error')
-    return false
-}
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
 
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'User'
     req.renderObjects.sess = req.session
+    req.renderObjects.btnadd = (checkAccessPage.can_insert == 'Y') ? true : false
 
   res.render('user/users', req.renderObjects );
 
@@ -48,9 +59,11 @@ router.get('/',  async (req, res, next) => {
 router.get('/datatable',  async (req, res, next) => {
     
   if(!req.session.loggedin)   {  
-    res.render('error')
-    return false
-}
+      res.render('error')
+      return false
+  }
+
+  var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
 
     var cols = [
          { 
@@ -75,7 +88,7 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 10,
             'formatter' : function( d, row ) {
                 var created_datetime = new Date(row.created_datetime).toISOString().split('T')
-                return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.created_by + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
             }
         }
         ,{ 
@@ -84,7 +97,7 @@ router.get('/datatable',  async (req, res, next) => {
             'formatter' : function( d, row ) {
 
                 var update_datetime = new Date(row.update_datetime).toISOString().split('T')
-                return row.user_updated + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.updated_by + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
  
             }
         }
@@ -93,10 +106,13 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 12, 
             'formatter' : function( d, row ) {
                 
+                var btnEdit =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/users/add?id='+row.id_user) : ''
+                var btnDelete =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/users/delete/'+row.id_user) : ''
+
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                    html += '    <a href="/users/add?id='+row.id_user+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/users/delete/'+row.id_user+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
+                    html += btnEdit  
+                    html += btnDelete
                     html += '</div>'
                 
                 return html;
@@ -117,7 +133,7 @@ router.get('/delete/:userId',  async (req, res, next) => {
     return false
 }
 
-  var inActiveGroup = await userModels.inActive(req.params)
+  var inActiveGroup = await userModels.inActive(req)
 
   res.redirect('/users');
 
@@ -130,7 +146,11 @@ router.get('/add',  async (req, res, next) => {
     return false
 }
 
-        
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
   var data_update = { 
 
     id_group : ''
@@ -223,7 +243,7 @@ router.post('/save',
   if('file' in req)
     req.body.fileName = req.file.originalname.replaceAll(' ','-')
 
-  var save = await userModels.insertDataIgnore(req.body)
+  var save = await userModels.insertDataIgnore(req)
 
   req.session.resultMessage = (save) ? helper.MessageSuccess('Success save user') : helper.MessageFailed('Failed save group')
 

@@ -4,10 +4,11 @@ const { body, validationResult } = require('express-validator');
 
 const extensionModel = require('../models/extension/extensionModel');
 const helper = require('../config/helper')
-
+const groupMenuModel = require('../models/group_menu/groupMenuModel');
 var controllerName = 'extension'
 var extensionModels = new extensionModel()
-
+var groupMenuModels = new groupMenuModel()
+const menuId = 10
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
@@ -17,9 +18,16 @@ router.get('/',  async (req, res, next) => {
         return false
     }
 
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Extension'
     req.renderObjects.sess = req.session
+    req.renderObjects.btnadd = (checkAccessPage.can_insert == 'Y') ? true : false
 
   res.render('extension/extension', req.renderObjects );
 
@@ -44,6 +52,8 @@ router.get('/datatable',  async (req, res, next) => {
         res.render('error')
         return false
     }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
 
     var cols = [
          { 
@@ -79,10 +89,13 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 4, 
             'formatter' : function( d, row ) {
                 
+                var btnEdit =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/extension/add?id='+row.id_extension) : ''
+                var btnDelete =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/extension/delete/'+row.id_extension) : ''
+
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                    html += '    <a href="/extension/add?id='+row.id_extension+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/extension/delete/'+row.id_extension+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
+                    html += btnEdit  
+                    html += btnDelete
                     html += '</div>'
                 
                 return html;
@@ -100,6 +113,12 @@ router.get('/add',  async (req, res, next) => {
   
     if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
         return false
     }
 

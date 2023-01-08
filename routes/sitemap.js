@@ -5,12 +5,14 @@ const { body, validationResult } = require('express-validator');
 const sitemapModel = require('../models/sitemap/sitemapModel');
 const groupModel = require('../models/group/groupModel');
 const helper = require('../config/helper')
+const groupMenuModel = require('../models/group_menu/groupMenuModel');
 
+var groupMenuModels = new groupMenuModel()
 var groupModels = new groupModel()
 
 var controllerName = 'sitemap'
 var sitemapModels = new sitemapModel()
-
+const menuId = 6
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
@@ -20,9 +22,16 @@ router.get('/',  async (req, res, next) => {
         return false
     }
 
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
+
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Sitemap'
     req.renderObjects.sess = req.session
+    req.renderObjects.btnadd = (checkAccessPage.can_insert == 'Y') ? true : false
 
   res.render('sitemap/sitemap', req.renderObjects );
 
@@ -35,7 +44,7 @@ router.get('/delete/:sitemapId',  async (req, res, next) => {
         return false
     }
 
-    var inActiveGroup = await sitemapModels.inActive(req.params)
+    var inActiveGroup = await sitemapModels.inActive(req)
 
     res.redirect('/sitemap');
 
@@ -47,6 +56,8 @@ router.get('/datatable',  async (req, res, next) => {
         res.render('error')
         return false
     }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
 
     var cols = [
          { 
@@ -65,7 +76,7 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 3,
             'formatter' : function( d, row ) {
                 var created_datetime = new Date(row.created_datetime).toISOString().split('T')
-                return row.user_created + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.created_by + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
             }
         }
         ,{ 
@@ -74,7 +85,7 @@ router.get('/datatable',  async (req, res, next) => {
             'formatter' : function( d, row ) {
 
                 var update_datetime = new Date(row.update_datetime).toISOString().split('T')
-                return row.user_updated + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
+                return row.updated_by + ' <small style="font-size:11px">(' + update_datetime[0] +' '+ update_datetime[1].slice(0, 8)  + ')</small>' 
  
             }
         }
@@ -83,10 +94,13 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 5, 
             'formatter' : function( d, row ) {
                 
+                var btnEdit =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/sitemap/add?id='+row.id_sitemap) : ''
+                var btnDelete =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/sitemap/delete/'+row.id_sitemap) : ''
+
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
-                    html += '    <a href="/sitemap/add?id='+row.id_sitemap+'" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit"><i class="fas fa-edit"></i></a> '  
-                    html += '    <a href="/sitemap/delete/'+row.id_sitemap+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
+                    html += btnEdit   
+                    html += btnDelete
                     html += '</div>'
                 
                 return html;
@@ -105,6 +119,12 @@ router.get('/add',  async (req, res, next) => {
   
     if(!req.session.loggedin)   {  
         res.render('error')
+        return false
+    }
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
         return false
     }
 
@@ -156,7 +176,7 @@ router.post('/save',
         return false
     }
 
-    var savesitemapModels = await sitemapModels.insertDataIgnore(req.body)
+    var savesitemapModels = await sitemapModels.insertDataIgnore(req)
 
     req.session.resultMessage = (savesitemapModels) ? helper.MessageSuccess('Success save sitemap') : helper.MessageFailed('Failed save sitemap')
 
@@ -182,7 +202,7 @@ router.post('/update',
         return false
     }
     
-    var update_data = await sitemapModels.update_data({ ...req.body, ...req.query})
+    var update_data = await sitemapModels.update_data()
 
     req.session.resultMessage = (update_data) ? helper.MessageSuccess('Success update sitemap') : helper.MessageFailed('Failed update sitemap')
 
