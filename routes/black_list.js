@@ -91,7 +91,7 @@ router.get('/datatable',  async (req, res, next) => {
        }
    ]
 
-   var data = await phoneBookModels.datatable(req, cols, 'N')
+   var data = await phoneBookModels.datatableBlackList(req, cols, 'N')
     
     res.status(200).send(data)
 
@@ -113,13 +113,13 @@ router.get('/add',  async (req, res, next) => {
 
     var n = ('phone_number' in req.query) ? req.query.phone_number : ''
 
-    var data_update = { phone_number : n, notes : ''}
+    var data_update = { phone_number : n, notes : '', pid : req.query.pid}
     
     if(req.session.dataUpdate){
 
         data_update.phone_number = req.session.dataUpdate.phoneNumber
         data_update.notes = req.session.dataUpdate.notes
-
+        
     }
 
 
@@ -153,7 +153,9 @@ router.post('/save',
         return false
     }
 
-    var savePhone = await phoneBookModels.insertDataIgnore(req)
+    req.body.phoneName = ''
+
+    var savePhone = await phoneBookModels.insertDataBlackList(req)
 
     req.session.resultMessage = (savePhone) ? helper.MessageSuccess('Success save') : helper.MessageFailed('Failed save')
 
@@ -169,7 +171,7 @@ router.get('/activate/:phoneId',  async (req, res, next) => {
     }
         
         
-    var inActiveGroup = await phoneBookModels.activate(req.params)
+    var inActiveGroup = await phoneBookModels.activateBlackList(req)
 
     res.redirect('/black-list');
 

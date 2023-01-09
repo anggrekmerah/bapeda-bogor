@@ -138,7 +138,7 @@ router.post('/save', async (req, res, next) => {
 
     var menus = req.body['menu[]']
     var groupId = req.body.groupId
-    console.log(req.body)
+    // console.log(req.body)
     var save = false
     if(menus.length > 0) {
 

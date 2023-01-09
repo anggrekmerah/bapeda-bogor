@@ -42,7 +42,7 @@ router.get('/logout',  async (req, res, next) => {
             "interface": 'SIP/'+req.session.extension
         }
         
-        console.log(queueOut) 
+        // console.log(queueOut) 
         
         amiManager.action(queueOut, async (err, ress) => {
             
@@ -127,11 +127,11 @@ router.post('/authenticate', body('username').not().isEmpty(), body('password').
                     'stateinterface' : 'SIP/'+data_user.extension
                 }
 
-                console.log(queueIn)
+                // console.log(queueIn)
                 
                 amiManager.action(queueIn, async (err, ress) => {
                    
-                    console.log(ress)
+                    // console.log(ress)
     
                     req.session.loggedin = true
                     req.session.groupId = data_user.id_group

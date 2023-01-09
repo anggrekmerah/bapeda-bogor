@@ -14,7 +14,7 @@ function checkSelect(id) {
     var is_parent_check = false
     
     $('input:checkbox.child_'+id).each(function () {
-        console.log('input:checkbox.child_'+ id +' = '+ this.checked)
+        // console.log('input:checkbox.child_'+ id +' = '+ this.checked)
         
         if(this.checked) {
             is_parent_check = this.checked

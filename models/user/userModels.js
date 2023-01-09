@@ -19,7 +19,7 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    getListParent(){
+    getListParent(currentParent){
 
         return new Promise((resolve, reject) => {
         
@@ -27,11 +27,14 @@ module.exports = class userModel extends crud_model  {
             LEFT JOIN m_group b ON a.id_group = b.id_group 
             where a.active = ? AND b.group_name IS NOT NULL AND b.id_group != ? and a.is_agent = ?`
 
+            if(currentParent != '' && currentParent != null)
+                sql += ` or a.id_user = ` + currentParent
+
             this.execQuery(sql,['Y','7','N']).then( (res) => {
             
                 resolve( res )
         
-            }).catch( (err) => {
+            }).catch( (err) => { 
                 
                 reject (err)
         
@@ -41,15 +44,20 @@ module.exports = class userModel extends crud_model  {
 
     }
 
-    getListExtension(){
+    getListExtension(currentExt){
 
         return new Promise((resolve, reject) => {
         
             var sql =`SELECT a.extension, a.id_extension FROM m_extension a
             LEFT JOIN m_users b ON b.id_extension = a.id_extension 
-            WHERE a.active = ? AND b.id_extension IS null`
+            WHERE a.active = ? AND b.id_extension IS null ` 
+            
+            if(currentExt != '' && currentExt != null)
+                sql += `or a.id_extension = `+ currentExt
 
-            this.execQuery(sql,['Y','7','N']).then( (res) => {
+            console.log(sql)
+
+            this.execQuery(sql,['Y']).then( (res) => {
             
                 resolve( res )
         

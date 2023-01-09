@@ -39,7 +39,7 @@ module.exports={
         
     }
     ,checkAccessPage: async function(req, models){
-        console.log(req)
+        // console.log(req)
         var d = await models.execQuery( 'select can_select, can_delete, can_insert, can_update from m_group_menu where id_group=? and id_menu=?' ,[req.id_group, req.id_menu])  
         
         delete d.meta

@@ -17,7 +17,7 @@ var totalSeconds = 0;
             
             var type = $('#inputPassword').attr("type");
             
-            console.log(type);
+            // console.log(type);
             
             if(type == "password") {
                 $( "#spanEye" ).removeClass("fa-eye-slash");

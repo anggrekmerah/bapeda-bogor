@@ -49,13 +49,19 @@ block content
                         div(class="mb-3")
                             label(for="Group" class="form-label") Group
                             select(class="form-control" id="groupId" name="groupId" )
-                                option(value="") ---Select---
+                                option(value="") ---Select--- 
                                 each val, index in groupList
-                                    if groupList[index].id_group != 7
+                                    if sess.groupId == 7
                                         if groupList[index].id_group == dataUpdate.id_group
                                             option(value=groupList[index].id_group selected) #{groupList[index].group_name}
                                         else 
                                             option(value=groupList[index].id_group) #{groupList[index].group_name}
+                                    else 
+                                        if groupList[index].id_group != 7
+                                            if groupList[index].id_group == dataUpdate.id_group
+                                                option(value=groupList[index].id_group selected) #{groupList[index].group_name}
+                                            else 
+                                                option(value=groupList[index].id_group) #{groupList[index].group_name}
 
                         div(class="mb-3")
                             label(for="Extension" class="form-label") Extension

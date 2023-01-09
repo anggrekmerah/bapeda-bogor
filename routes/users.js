@@ -180,18 +180,22 @@ router.get('/add',  async (req, res, next) => {
     data_update.is_agent = req.session.dataUpdate.isAgent
 
   }
-
+  
   let flashMessage = await helper.flashMessage(req, userModels, data_update)
   
+  console.log(typeof req.renderObjects.dataUpdate.parent_user)
+  console.log(req.renderObjects.dataUpdate.parent_user)
+
   var dataGroups = await groupModels.getAllData()
   
-  var dataUser = await userModels.getListParent()
+  var dataUser = await userModels.getListParent(req.renderObjects.dataUpdate.parent_user)
 
-  if(!('id' in req.query)){
-    var dataExt = await userModels.getListExtension()
-  } else {
-    var dataExt = await extensionModels.getAllData()
-  }
+  // if(!('id' in req.query)){
+    
+    var dataExt = await userModels.getListExtension(req.renderObjects.dataUpdate.id_extension)
+  // } else {
+  //   var dataExt = await extensionModels.getAllData()
+  // }
 
   req.renderObjects.controller = controllerName
   req.renderObjects.title = 'Add User'
@@ -256,7 +260,6 @@ router.post('/update',
   body('firstName').not().isEmpty().withMessage('First name required').isLength({min:3, max:100}).withMessage('First name length min:3 max:100'),
   body('lastName').not().isEmpty().withMessage('Last name required').isLength({min:3, max:100}).withMessage('Last name length min:3 max:100'),
   body('username').not().isEmpty().withMessage('Username required').isLength({min:8, max:30}).withMessage('Email length min:8 max:30'),
-  body('password').not().isEmpty().withMessage('Password required').isLength({min:8, max:30}).withMessage('Password length min:8 max:30'),
   body('groupId').not().isEmpty().withMessage('Group required')
 ,async (req, res, next) => {
 

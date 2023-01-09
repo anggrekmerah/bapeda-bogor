@@ -52,7 +52,7 @@ ws.on('message', async (data) => {
 
 						for (const key in phone) {
 							
-							if(phone[key].active == 'N') {
+							if(phone[key].black_list == 'Y') {
 
 								amiManager.action({
 									'action':'Hangup',

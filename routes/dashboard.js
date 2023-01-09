@@ -36,7 +36,7 @@ var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId
   req.renderObjects.agentList = users
   req.renderObjects.sess = req.session
 
-  console.log(req.renderObjects)
+  // console.log(req.renderObjects)
   
   res.render('dashboard/dashboard', req.renderObjects);
 
@@ -127,7 +127,7 @@ router.post('/chart',  async (req, res, next) => {
   delete chart.meta
 
   var c = []
-  console.log(chart)
+  // console.log(chart)
   for (const key in chart) {
    
     c.push({

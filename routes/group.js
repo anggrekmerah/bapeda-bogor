@@ -123,7 +123,7 @@ router.get('/add',  async (req, res, next) => {
         res.render('error_cannot_access')
         return false
     }
-    console.log(checkAccessPage)
+    // console.log(checkAccessPage)
     var data_update = { group_name : '', group_desc : '' }
     
     if(req.session.dataUpdate){

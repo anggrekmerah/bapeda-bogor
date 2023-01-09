@@ -79,7 +79,7 @@ $(function(){
                 return false
             }
 
-            console.log(data)
+            // console.log(data)
 
             var dataPointsIncoming = []
             var dataPointsReceive = []

@@ -97,20 +97,29 @@ module.exports = class phoneBookModel extends crud_model  {
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : ['N', req.body.phoneNumber, req.body.notes, req.session.id_user, new Date()]
-                , table : this.tableName
-                , fields : 'active, phone_number, notes, user_created, created_datetime'
-            }
+                sets : {
+                  
+                   'black_list' : 'Y'
+                  ,'black_list_notes' : req.body.notes
+                  ,'update_datetime' : new Date()
+                  ,'user_updated' : req.session.id_user
+                }
+              , table : this.tableName
+              , id_key : this.prmaryKey
+              , id_val : req.body.pid
+          }
 
-            this.saveData(params).then( (res) => {
-            
-                resolve( true )
-        
-            }).catch( (err) => {
-                
-                reject (err)
-        
-            })
+          console.log(params)
+
+          this.updateData(params).then( (res) => {
+          
+              resolve( true )
+      
+          }).catch( (err) => {
+              
+              reject (err)
+      
+          })
 
         })
         
@@ -202,6 +211,36 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
+    activateBlackList( req ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
+                  sets : {
+                    'black_list' : 'N'
+                    ,'update_datetime' : new Date()
+                    ,'user_updated' : req.session.id_user
+                  }
+                , table : this.tableName
+                , id_key : this.prmaryKey
+                , id_val : req.params.phoneId
+            }
+
+            this.updateData(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
     update_data( req ) {
 
         return new Promise((resolve, reject) => {
@@ -209,9 +248,9 @@ module.exports = class phoneBookModel extends crud_model  {
             var params = {
                   sets : {
                     
-                     'phone_name' : body.phoneName
-                    ,'phone_number' : body.phoneNumber
-                    ,'notes' : body.notes
+                     'phone_name' : req.body.phoneName
+                    ,'phone_number' : req.body.phoneNumber
+                    ,'notes' : req.body.notes
                     ,'update_datetime' : new Date()
                     ,'user_updated' : req.session.id_user
                   }
@@ -241,10 +280,24 @@ module.exports = class phoneBookModel extends crud_model  {
         from `+this.tableName+` a 
         left join m_users b on b.id_user = a.user_created
         left join m_users c on c.id_user = a.user_updated
-        where a.active = "`+active+`" order by a.`+this.prmaryKey+` desc`
+        where a.active = "`+active+`" and a.black_list = 'N' order by a.`+this.prmaryKey+` desc`
 
         return datatable.simple(query, req, this.prmaryKey, cols)
 
     }
+
+    datatableBlackList(req, cols, active = 'Y') {
+
+        const query = `select a.*, concat(b.first_name,' ', b.last_name) as created_by, concat(c.first_name,' ', c.last_name) as updated_by  
+        from `+this.tableName+` a 
+        left join m_users b on b.id_user = a.user_created
+        left join m_users c on c.id_user = a.user_updated
+        where a.black_list = "Y" order by a.`+this.prmaryKey+` desc`
+
+        return datatable.simple(query, req, this.prmaryKey, cols)
+
+    }
+
+    
 
 }

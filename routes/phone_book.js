@@ -44,7 +44,7 @@ router.get('/delete/:phoneId',  async (req, res, next) => {
 
     var inActiveGroup = await phoneBookModels.inActive(req)
 
-    res.redirect('/black-list');
+    res.redirect('/phone-book');
 
 });
 
@@ -93,9 +93,9 @@ router.get('/datatable',  async (req, res, next) => {
             'dt' : 6, 
             'formatter' : function( d, row ) {
                 
-                var btnEdit     =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/office-hour/add?id='+row.id_office_hour) : ''
-                var btnDelete   =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/office-hour/delete/'+row.id_office_hour) : ''
-                var btnBl       =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnBlackList('/black-list/add?phone_number='+row.phone_number) : ''
+                var btnEdit     =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/phone-book/add?id='+row.id_phone_book) : ''
+                var btnDelete   =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/phone-book/delete/'+row.id_phone_book) : ''
+                var btnBl       =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnBlackList('/black-list/add?phone_number='+row.phone_number+'&pid='+row.id_phone_book) : ''
 
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
