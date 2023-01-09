@@ -19,7 +19,11 @@ block content
                     div(class="mb-3")
                         label(for="phoneNumber" class="form-label") Phone Number 
                         input(type="hidden" name="pid" value=dataUpdate.pid  )
-                        input(type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" value=dataUpdate.phone_number  )
+
+                        if dataUpdate.pid 
+                            input(type="text" readonly="readonly" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" value=dataUpdate.phone_number  )
+                        else 
+                            input(type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" value=dataUpdate.phone_number  )
 
                     div(class="mb-3")
                         label(for="notes" class="form-label") Description
