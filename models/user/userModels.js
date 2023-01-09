@@ -229,21 +229,25 @@ module.exports = class userModel extends crud_model  {
 
         return new Promise((resolve, reject) => {
 
+            var s = {
+                'parent_user':req.body.parentUser
+               ,'id_group':req.body.groupId
+               ,'photo':('fileName' in req.body) ? req.body.fileName : ''
+               ,'id_extension':req.body.extensionId
+               ,'email':req.body.username
+               ,'first_name':req.body.firstName
+               ,'last_name':req.body.lastName
+               ,'ages':req.body.ages
+               ,'is_agent':req.body.isAgent
+               ,'update_datetime' : new Date()
+               ,'user_updated' : req.session.id_user
+             }
+
+             if('passHash' in req.body)
+                s['password'] = req.body.passHash
+
             var params = {
-                  sets : {
-                     'parent_user':req.body.parentUser
-                    ,'password':req.body.passHash
-                    ,'id_group':req.body.groupId
-                    ,'photo':('fileName' in req.body) ? req.body.fileName : ''
-                    ,'id_extension':req.body.extensionId
-                    ,'email':req.body.username
-                    ,'first_name':req.body.firstName
-                    ,'last_name':req.body.lastName
-                    ,'ages':req.body.ages
-                    ,'is_agent':req.body.isAgent
-                    ,'update_datetime' : new Date()
-                    ,'user_updated' : req.session.id_user
-                  }
+                  sets : s
                 , table : this.tableName
                 , id_key : this.prmaryKey
                 , id_val : req.query.id
