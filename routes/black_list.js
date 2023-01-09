@@ -155,7 +155,10 @@ router.post('/save',
 
     req.body.phoneName = ''
 
-    var savePhone = await phoneBookModels.insertDataBlackList(req)
+    if(req.body.pid != '')
+        var savePhone = await phoneBookModels.updateDataBlackList(req)
+    else
+        var savePhone = await phoneBookModels.insertDataBlackList(req) 
 
     req.session.resultMessage = (savePhone) ? helper.MessageSuccess('Success save') : helper.MessageFailed('Failed save')
 

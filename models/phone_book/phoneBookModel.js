@@ -97,6 +97,31 @@ module.exports = class phoneBookModel extends crud_model  {
         return new Promise((resolve, reject) => {
 
             var params = {
+                  values : [req.body.phoneNumber, req.body.notes, 'Y', req.session.id_user, new Date()]
+                , table : this.tableName
+                , fields : 'phone_number, black_list_notes, black_list, user_created, created_datetime'
+            }
+
+            this.saveData(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
+    updateDataBlackList( req ) {
+
+        return new Promise((resolve, reject) => {
+
+            var params = {
                 sets : {
                   
                    'black_list' : 'Y'
