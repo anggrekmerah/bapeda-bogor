@@ -24,7 +24,7 @@ module.exports = class userModel extends crud_model  {
         return new Promise((resolve, reject) => {
         
             var sql = `SELECT a.id_user, a.first_name, a.last_name, b.group_name FROM m_users a
-            LEFT JOIN m_group b ON a.id_group = b.id_group 
+            LEFT JOIN m_group b ON a.id_group = b.id_group and b.active = 'Y'
             where a.active = ? AND b.group_name IS NOT NULL AND b.id_group != ? and a.is_agent = ?`
 
             if(currentParent != '' && currentParent != null)
@@ -49,7 +49,7 @@ module.exports = class userModel extends crud_model  {
         return new Promise((resolve, reject) => {
         
             var sql =`SELECT a.extension, a.id_extension FROM m_extension a
-            LEFT JOIN m_users b ON b.id_extension = a.id_extension 
+            LEFT JOIN m_users b ON b.id_extension = a.id_extension AND b.active = 'Y'
             WHERE a.active = ? AND b.id_extension IS null ` 
             
             if(currentExt != '' && currentExt != null)
