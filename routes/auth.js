@@ -157,7 +157,7 @@ router.post('/authenticate', body('username').not().isEmpty(), body('password').
 
                     var update_users = await userModels.execQuery("update m_users set last_login = ? , active_login = ? where email = ? ",[new Date(), 'Y', req.body.username])
 
-                    res.redirect('/dashboard');
+                    res.redirect('/dashboard-agent');
     
                 });
 

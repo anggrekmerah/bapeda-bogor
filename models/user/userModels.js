@@ -30,6 +30,8 @@ module.exports = class userModel extends crud_model  {
             if(currentParent != '' && currentParent != null)
                 sql += ` or a.id_user = ` + currentParent
 
+            console.log(sql)
+
             this.execQuery(sql,['Y','7','N']).then( (res) => {
             
                 resolve( res )
