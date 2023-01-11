@@ -87,14 +87,17 @@ ws.on('message', async (data) => {
 
 				case 'RINGING':
 					
-					if(!('caller' in res) )
+					if(!('caller' in res) ){
 						return false
+					}
 						
-					if(res.caller.dialplan.context != 'Bapeda_in_open')
+					if(res.caller.dialplan.context != 'Bapeda_in_open'){
 						return false
+					}
 
-					if(res.caller.caller.number in tmp_incall)
+					if(res.caller.caller.number in tmp_incall){
 						return false
+					}
 
 						tmp_incall[res.caller.caller.number] = res.caller.caller.number
 						
@@ -176,8 +179,9 @@ ws.on('message', async (data) => {
 			
 				case 'ANSWER':
 
-					if(!('caller' in res) && !('peer' in res))
+					if(!('caller' in res) && !('peer' in res)){
 						return false
+					}
 					
 					var updatecounter = await websocketModels.update_counter(2)
 					var currentcounter = await websocketModels.getDataById(2)
@@ -205,8 +209,9 @@ ws.on('message', async (data) => {
 
 				case 'NOANSWER':
 					
-					if(res.caller.caller.number in tmp_abandoncall)
+					if(res.caller.caller.number in tmp_abandoncall) {
 						return false
+					}
 
 					tmp_abandoncall[res.caller.caller.number] = res.caller.caller.number
 
@@ -238,8 +243,9 @@ ws.on('message', async (data) => {
 
 				case 'BUSY':
 
-					if(res.caller.caller.number in tmp_busy)
+					if(res.caller.caller.number in tmp_busy) {
 						return false
+					}
 					
 					tmp_busy[res.caller.caller.number] = res.caller.caller.number
 
