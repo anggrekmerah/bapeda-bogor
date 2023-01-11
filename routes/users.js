@@ -79,13 +79,13 @@ router.get('/datatable',  async (req, res, next) => {
         ,{ 'db': 'extension', 'dt' : 3 }
         ,{ 'db': 'first_name', 'dt' : 4 }
         ,{ 'db': 'last_name', 'dt' : 5 }
-        ,{ 'db': 'parent_user', 'dt' : 6 }
-        ,{ 'db': 'ages', 'dt' : 7 }
-        ,{ 'db': 'last_login', 'dt' : 8 }
-        ,{ 'db': 'last_logout', 'dt' : 9 }
+        // ,{ 'db': 'parent_user', 'dt' : 6 }
+        ,{ 'db': 'ages', 'dt' : 6 }
+        ,{ 'db': 'last_login', 'dt' : 7 }
+        ,{ 'db': 'last_logout', 'dt' : 8 }
         ,{ 
             'db': 'user_created', 
-            'dt' : 10,
+            'dt' : 9,
             'formatter' : function( d, row ) {
                 var created_datetime = new Date(row.created_datetime).toISOString().split('T')
                 return row.created_by + ' <small style="font-size:11px">(' + created_datetime[0] +' '+ created_datetime[1].slice(0, 8)  + ')</small>' 
@@ -93,7 +93,7 @@ router.get('/datatable',  async (req, res, next) => {
         }
         ,{ 
             'db': 'user_updated', 
-            'dt' : 11,
+            'dt' : 10,
             'formatter' : function( d, row ) {
 
                 var update_datetime = new Date(row.update_datetime).toISOString().split('T')
@@ -103,7 +103,7 @@ router.get('/datatable',  async (req, res, next) => {
         }
         ,{ 
             'db': 'update_datetime', 
-            'dt' : 12, 
+            'dt' : 11, 
             'formatter' : function( d, row ) {
                 
                 var btnEdit =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/users/add?id='+row.id_user) : ''
