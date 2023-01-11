@@ -123,7 +123,7 @@ module.exports = class websocketModel extends crud_model  {
 
         return new Promise((resolve, reject) => {
 
-            var sql = 'UPDATE m_users a'
+            var sql = 'UPDATE m_users a '
                 sql += 'INNER JOIN m_extension b ON a.id_extension = b.id_extension'
                 sql += ' set in_call = ?, incall_datetime = now() '
                 sql += ' WHERE extension = ? '
