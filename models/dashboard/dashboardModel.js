@@ -70,6 +70,33 @@ module.exports = class dashboardModel extends crud_model  {
 
     }
 
+    getAgentCall(){
+
+        return new Promise((resolve, reject) => {
+            
+            var sql = `SELECT a.call_number, a.call_receive_number as ext, IF( b.phone_name IS NULL , a.call_number, b.phone_name) AS phone_name, b.notes 
+            FROM t_incoming_call_tmp a
+            LEFT JOIN m_phone_book b ON a.call_number = b.phone_number`
+            
+    
+            this.execQuery(sql, []).then( (res) => {
+                
+                delete res.meta
+                
+                resolve( res )
+
+            
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+
+    }
+    
+
     getUsers(params){
 
         return new Promise((resolve, reject) => {

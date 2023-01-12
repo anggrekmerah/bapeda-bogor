@@ -92,6 +92,84 @@ module.exports = class websocketModel extends crud_model  {
 
     }
 
+    insertDataTmp( value ) {
+
+        return new Promise((resolve, reject) => {
+
+            console.log(value)
+
+            var params = {
+                  values : value
+                , table : 't_incoming_call_tmp'
+                , fields : 'caller_id, peer_id, call_event, call_date, call_number, call_receive_number'
+            }
+
+            this.saveData(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
+    update_incall_tmp( caller_id, peer_id, ext, call_event ) {
+
+        return new Promise((resolve, reject) => {
+
+            var sql = 'UPDATE t_incoming_call_tmp '
+	
+                sql += ' set peer_id = ? , call_receive_number = ?, call_event = ? '
+                sql += ' WHERE caller_id = ? '
+
+            console.log(sql)
+
+            this.execQuery(sql, [ peer_id, ext, call_event, caller_id ]).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
+    delete_incall_tmp( caller_id ) {
+
+        return new Promise((resolve, reject) => {
+
+            var sql = 'DELETE FROM t_incoming_call_tmp '
+	
+                sql += ' WHERE caller_id = ? or peer_id = ?'
+
+            console.log(sql)
+
+            this.execQuery(sql, [ caller_id, caller_id ]).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
 
     update_counter( id_counter ) {
 
@@ -119,18 +197,18 @@ module.exports = class websocketModel extends crud_model  {
 
     }
 
-    update_incall( ext, isCall = 'N' ) {
+    update_incall( callerid, ext, isCall = 'N' ) {
 
         return new Promise((resolve, reject) => {
 
             var sql = 'UPDATE m_users a '
                 sql += 'INNER JOIN m_extension b ON a.id_extension = b.id_extension'
-                sql += ' set in_call = ?, incall_datetime = now() '
-                sql += ' WHERE extension = ? '
+                sql += ' set in_call = ?, incall_datetime = now(), caller_id = ? '
+                sql += ' WHERE b.extension = ? and a.active = ?'
 
             console.log(sql)
 
-            this.execQuery(sql, [ isCall, ext ]).then( (res) => {
+            this.execQuery(sql, [ isCall, callerid, ext, 'Y' ]).then( (res) => {
             
                 resolve( true )
         

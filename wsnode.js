@@ -105,7 +105,7 @@ ws.on('message', async (data) => {
 							
 						var valueRinging = [
 						 	 res.caller.id
-							,''
+							,res.peer.id
 							,res.dialstatus
 							,res.timestamp
 							,res.caller.caller.number
@@ -113,6 +113,7 @@ ws.on('message', async (data) => {
 						]
 						
 						var inserLog = await websocketModels.insertData(valueRinging)
+						var inserTmp = await websocketModels.insertDataTmp(valueRinging)
 
 						delete phone.meta
 
@@ -196,7 +197,8 @@ ws.on('message', async (data) => {
                     ]
 
 					var inserLog = await websocketModels.insertData(valueAnswer)
-					var update_incall = await websocketModels.update_incall( res.peer.caller.number, 'Y' )
+					var update_incall = await websocketModels.update_incall( res.caller.id, res.peer.caller.number, 'Y' )
+					var update_incall_tmp = await websocketModels.update_incall_tmp( res.caller.id, res.peer.id, res.peer.caller.number, res.dialstatus )
 
 					delete currentcounter.meta
 					
@@ -229,6 +231,7 @@ ws.on('message', async (data) => {
 					
 					var inserLog = await websocketModels.insertData(valueNoanswer)
 					var update_incall = await websocketModels.update_incall( res.peer.caller.number )
+					var delete_incall_tmp = await websocketModels.delete_incall_tmp(res.caller.id)
 
 					delete currentcounter.meta
 
@@ -262,6 +265,7 @@ ws.on('message', async (data) => {
                     ]
 					
 					var inserLog = await websocketModels.insertData(valueBusy)
+					var delete_incall_tmp = await websocketModels.delete_incall_tmp(res.caller.id)
 
 					delete currentcounter.meta
 					console.log(currentcounter)
@@ -295,6 +299,10 @@ ws.on('message', async (data) => {
 
 			
 			if(res.channel.dialplan.context == 'bapeda'){
+
+				var update_incall = await websocketModels.update_incall( res.channel.id, res.channel.caller.number )
+				var delete_incall_tmp = await websocketModels.delete_incall_tmp(res.channel.id)
+
 				socket.emit('destroy', res)
 			}	
 
