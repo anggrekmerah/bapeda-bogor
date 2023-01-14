@@ -51,9 +51,40 @@ module.exports = class dashboardModel extends crud_model  {
                     , DAY(a.call_date) AS tanggal
                     , a.call_event
                     , YEAR(CURDATE()) AS tahun
+                    , MONTHNAME(CURDATE()) AS bulan
                 FROM t_incoming_call_log a 
                 WHERE a.call_date BETWEEN concat(DATE_FORMAT(CURDATE(),'%Y-%m'),'-','01',' ','00:00:00') AND concat(DATE_FORMAT(CURDATE(),'%Y-%m'),'-','31',' ','23:59:59') 
                 GROUP BY DAY(a.call_date), a.call_event`
+            
+            
+            this.execQuery(sql, []).then( (res) => {
+                
+                resolve(res)
+                
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+
+    }
+
+    getChartTahun(){
+
+        return new Promise((resolve, reject) => {
+            
+            
+            var sql = `SELECT 
+                COUNT(*) AS total
+                , DAY(a.call_date) AS tanggal
+                , a.call_event
+                , YEAR(CURDATE()) AS tahun
+                , MONTH(CURDATE()) AS bulan
+            FROM t_incoming_call_log a 
+            WHERE a.call_date BETWEEN concat(DATE_FORMAT(CURDATE(),'%Y-01'),'-','01',' ','00:00:00') AND concat(DATE_FORMAT(CURDATE(),'%Y-12'),'-','31',' ','23:59:59') 
+            GROUP BY month(a.call_date), if(a.call_event = 'BUSY' , 'NOANSWER', a.call_event)`
             
             
             this.execQuery(sql, []).then( (res) => {

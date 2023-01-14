@@ -52,11 +52,17 @@ module.exports = class ssp extends crud_model {
 
     }
 
+	check_method (req) {
+
+		return (req.method == 'POST') ? req.body : req.query
+
+	}
+
     limit ( request, columns )
 	{
 		var limit = '';
 
-        var q = request.query
+        var q = this.check_method (request)
 
 		if ( 'start' in q && q['length'] != -1 ) {
 			limit = " LIMIT " + parseInt(q['start']) + ", " + parseInt( q['length'] );
@@ -82,7 +88,7 @@ module.exports = class ssp extends crud_model {
 	{
 		var order = '';
 
-        var q = request.query
+        var q = this.check_method (request)
 
 
 		if ( 'order' in q && q['order'].length ) {
@@ -123,7 +129,7 @@ module.exports = class ssp extends crud_model {
 		var globalSearch = [];
 		var columnSearch = [];
 		var dtColumns = this.pluck( columns, 'dt' );
-        var q = request.query
+        var q = this.check_method (request)
 
 		if ( 'search' in q && q['search']['value'] != '' ) {
 			var str = q['search']['value'];
@@ -195,7 +201,7 @@ module.exports = class ssp extends crud_model {
             var limit = this.limit( request, columns );
             var order = this.order( request, columns );
             var where = this.filter( request, columns, bindings );
-
+			var r = this.check_method (request)
             // Main query to actually get the data
 
             var sqlUtama = "SELECT  *, (@nomors := @nomors+1) as nomor FROM (" +query+ ") A , (select @nomors := 0) r " + where + order + limit 
@@ -218,8 +224,9 @@ module.exports = class ssp extends crud_model {
                         /*
                         * Output
                         */
+
                        var outputs = {	
-                            "draw"            : ( 'draw' in request.query ) ? parseInt( request.query['draw'] ) : 0,
+                            "draw"            : ( 'draw' in r ) ? parseInt( r['draw'] ) : 0,
                             "recordsTotal"    : parseInt( recordsTotal ),
                             "recordsFiltered" : parseInt( recordsFiltered ),
                             "data"            : this.data_output( columns, res )

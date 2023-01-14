@@ -123,10 +123,12 @@ router.post('/chart',  async (req, res, next) => {
   //   res.render('error')
 
   var chart = await dashboardModels.getChart()
+  var chartTahun = await dashboardModels.getChartTahun() 
 
   delete chart.meta
 
   var c = []
+  var t = []
   // console.log(chart)
   for (const key in chart) {
    
@@ -135,11 +137,35 @@ router.post('/chart',  async (req, res, next) => {
       ,'tanggal' : chart[key].tanggal
       ,'call_event' : chart[key].call_event
       ,'tahun' : Number(chart[key].tahun)
+      ,'bulan' : chart[key].bulan
     })
 
   }
 
-  res.status(200).json({err:false , msg: 'sucess', data: c})
+  for (const k in chartTahun) {
+   
+    if(chartTahun[k].total != null){
+
+      t.push({
+        'total' : Number(chartTahun[k].total)
+        ,'tanggal' : chartTahun[k].tanggal
+        ,'call_event' : chartTahun[k].call_event
+        ,'tahun' : Number(chartTahun[k].tahun)
+        ,'bulan' : Number(chartTahun[k].bulan)
+      })
+      
+    }
+
+  }
+
+  res.status(200).json({
+    err:false , 
+    msg: 'sucess', 
+    data: {
+      'bulan' : c,
+      'tahun' : t
+    }
+  })
   
   // res.status(200).json({err:true , msg: error})
 
