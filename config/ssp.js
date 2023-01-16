@@ -107,7 +107,7 @@ module.exports = class ssp extends crud_model {
 				columnIdx = this.array_search( requestColumn['data'], dtColumns );
 				var column = columns[ columnIdx ];
 
-				if ( requestColumn['orderable'] == 'true' ) {
+				if ( requestColumn['orderable'] ) {
 
 					var dir = (q['order'][i]['dir'] === 'asc') ? 'ASC' : 'DESC';
 
@@ -130,7 +130,7 @@ module.exports = class ssp extends crud_model {
 		var columnSearch = [];
 		var dtColumns = this.pluck( columns, 'dt' );
         var q = this.check_method (request)
-
+		console.log(q)
 		if ( 'search' in q && q['search']['value'] != '' ) {
 			var str = q['search']['value'];
 
@@ -141,15 +141,20 @@ module.exports = class ssp extends crud_model {
                 var requestColumn = q['columns'][i];
 				var columnIdx = this.array_search( requestColumn['data'], dtColumns );
 				var column = columns[ columnIdx ];
-
-				if ( requestColumn['searchable'] == 'true' ) {
+				
+				if ( requestColumn['searchable'] ) {
+				
 					if(column['db'] != ''){
+						
 						var binding = this.bind( bindings, '%' + str + '%', 'string' );
 						globalSearch.push("`" + column['db'] + "` LIKE " + binding);
 					}
 				}
 			}
 		}
+
+		console.log('atas')
+		console.log(globalSearch)
 
 		// Individual column filtering
 		if ( 'columns' in q ) {
@@ -161,11 +166,8 @@ module.exports = class ssp extends crud_model {
                 var requestColumn = q['columns'][i];
 				var columnIdx = this.array_search( requestColumn['data'], dtColumns );
 				var column = columns[ columnIdx ];
-				console.log('column datatable search')
-				console.log(column)
 				var str = requestColumn['search']['value'];
-
-				if ( requestColumn['searchable'] == 'true' && str != '' ) {
+				if ( requestColumn['searchable'] && str != '' ) {
 					if(column['db'] != ''){
 						var binding = this.bind( bindings, '%' + $str + '%', 'string' );
 						columnSearch.push("`" + $column['db'] + "` LIKE " + binding)

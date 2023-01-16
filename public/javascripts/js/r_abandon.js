@@ -11,12 +11,17 @@ function report(e) {
         ajax: {
             type: 'POST',
             url: '/report/abandon-datatable',
-            data: {
-               fromDate: $('#fromdate').val(),
-               toDate: $('#todate').val(),
-               // etc..
-            },
+            data: function (params) {
+
+                params.fromDate = $('#fromdate').val()
+                params.toDate = $('#todate').val()
+
+                return JSON.stringify( params );
+                // etc..
+             },
             dataType: "json",
+            contentType: "application/json",
+            // async: false,
             // success: function(data){
             //     return JSON.stringify( data );
             // }

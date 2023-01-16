@@ -206,7 +206,7 @@ $(function(){
                 animationEnabled: true,
                 theme: "light2",
                 title:{
-                    text: "Calls Traffic " + m  + " " + t
+                    text: "Calls Traffic " + t
                 },
                 axisX:{
                     valueFormatString: "MMM",

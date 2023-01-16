@@ -41,7 +41,7 @@ router.post('/receive-datatable',  async (req, res, next) => {
     // }
 
     // var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
-
+    console.log('ok')
     var cols = [
          { 
             'db': 'id', 
