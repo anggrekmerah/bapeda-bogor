@@ -55,10 +55,6 @@ router.post('/receive-datatable',  async (req, res, next) => {
             'db': 'datecalls', 
             'dt' : 1,
             'formatter' : function (d, row) {
-                
-                console.log('row.date_call')
-                console.log(row.datecalls)
-
                 return row.datecalls.toISOString().slice(0,10)
             }
         }

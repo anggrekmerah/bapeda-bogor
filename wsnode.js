@@ -274,6 +274,37 @@ ws.on('message', async (data) => {
 
 					socket.emit('noanswer', res)
 					break;
+
+				case 'CANCEL':
+
+					if(res.caller.caller.number in tmp_cancel) {
+						return false
+					}
+					
+					tmp_cancel[res.caller.caller.number] = res.caller.caller.number
+
+					var updatecounter = await websocketModels.update_counter(3)
+					var currentcounter = await websocketModels.getDataById(3)
+
+					var valueCancel = [
+                        res.caller.id
+						,res.peer.id
+						,res.dialstatus
+						,res.timestamp
+						,res.caller.caller.number
+						,res.peer.caller.number
+                    ]
+					
+					var inserLog = await websocketModels.insertData(valueCancel)
+					var delete_incall_tmp = await websocketModels.delete_incall_tmp(res.caller.id)
+
+					delete currentcounter.meta
+					console.log(currentcounter)
+
+					res.callCounter = currentcounter[0]['call_counter']
+
+					socket.emit('noanswer', res)
+					break;
 					
 			}
 		

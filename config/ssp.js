@@ -161,6 +161,7 @@ module.exports = class ssp extends crud_model {
                 var requestColumn = q['columns'][i];
 				var columnIdx = this.array_search( requestColumn['data'], dtColumns );
 				var column = columns[ columnIdx ];
+				console.log('column datatable search')
 				console.log(column)
 				var str = requestColumn['search']['value'];
 
@@ -225,7 +226,7 @@ module.exports = class ssp extends crud_model {
                         /*
                         * Output
                         */
-						console.log(res)
+
                        var outputs = {	
                             "draw"            : ( 'draw' in r ) ? parseInt( r['draw'] ) : 0,
                             "recordsTotal"    : parseInt( recordsTotal ),
