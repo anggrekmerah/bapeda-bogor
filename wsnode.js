@@ -29,6 +29,7 @@ ws.on('open', function open() {
 let tmp_incall = {}
 let tmp_abandoncall = {}
 let tmp_busy = {}
+let tmp_cancel = {}
  
 ws.on('message', async (data) => {
   // console.log(data)
