@@ -75,8 +75,8 @@ module.exports = class ssp extends crud_model {
 
         for (const key in cols) {
             
-            if(key == cols[key])
-                return key
+            if(search == cols[key])
+                return search
 
         }
 
@@ -116,7 +116,7 @@ module.exports = class ssp extends crud_model {
 			}
 
 			if ( orderBy.length > 0 ) {
-				order = 'ORDER BY ' + orderBy.join(', ');
+				order = ' ORDER BY ' + orderBy.join(', ');
 			}
 		}
 
@@ -124,7 +124,7 @@ module.exports = class ssp extends crud_model {
 	}
 
 
-    filter ( request, columns, bindings = '' )
+    filter ( request, columns, bindings = [] )
 	{
 		var globalSearch = [];
 		var columnSearch = [];
@@ -161,7 +161,7 @@ module.exports = class ssp extends crud_model {
                 var requestColumn = q['columns'][i];
 				var columnIdx = this.array_search( requestColumn['data'], dtColumns );
 				var column = columns[ columnIdx ];
-
+				console.log(column)
 				var str = requestColumn['search']['value'];
 
 				if ( requestColumn['searchable'] == 'true' && str != '' ) {
@@ -204,8 +204,9 @@ module.exports = class ssp extends crud_model {
 			var r = this.check_method (request)
             // Main query to actually get the data
 
-            var sqlUtama = "SELECT  *, (@nomors := @nomors+1) as nomor FROM (" +query+ ") A , (select @nomors := 0) r " + where + order + limit 
+            var sqlUtama = "SELECT  *, (@nomors := @nomors+1) as nomor FROM (" +query+ ") A , (select @nomors := "+parseInt(r['start'])+") r " + where + order + limit 
             console.log('sqlUtama = ' + sqlUtama)
+			console.log(bindings)
             this.execQuery(sqlUtama, bindings).then( (res) => {
                 // console.log(res)
                 // Data set length after filtering
@@ -224,7 +225,7 @@ module.exports = class ssp extends crud_model {
                         /*
                         * Output
                         */
-
+						console.log(res)
                        var outputs = {	
                             "draw"            : ( 'draw' in r ) ? parseInt( r['draw'] ) : 0,
                             "recordsTotal"    : parseInt( recordsTotal ),
@@ -261,13 +262,12 @@ module.exports = class ssp extends crud_model {
 
     bind ( a = [], val, type )
 	{
-		var key = ':binding_'.a.length;
 
-		a.push ({ 
-			'key'  : key,
-			'val'  : val,
-			'type' : type
-        })
+		console.log(typeof a)
+
+		var key = '?';
+
+		a.push (val)
 
 		return key;
 	}

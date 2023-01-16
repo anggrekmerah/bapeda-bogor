@@ -52,13 +52,17 @@ router.post('/receive-datatable',  async (req, res, next) => {
             }
         }
         ,{ 
-            'db': 'date_call', 
+            'db': 'datecalls', 
             'dt' : 1,
             'formatter' : function (d, row) {
-                return row.date_call.toISOString().slice(0,10)
+                
+                console.log('row.date_call')
+                console.log(row.datecalls)
+
+                return row.datecalls.toISOString().slice(0,10)
             }
         }
-        ,{ 'db': 'time_call', 'dt' : 2 }
+        ,{ 'db': 'timecalls', 'dt' : 2 }
         ,{ 'db': 'call_number', 'dt' : 3 }
         ,{ 'db': 'call_receive_number', 'dt' : 4 }
         ,{ 'db': 'duration', 'dt' : 5 }

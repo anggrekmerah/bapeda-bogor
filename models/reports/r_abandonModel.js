@@ -18,7 +18,7 @@ module.exports = class r_abandonModel {
         dt += ' 23:59:59'
 
         const query = `SELECT 
-            DATE(a.call_date) AS date_call, 
+            a.call_date AS date_call, 
             TIME(a.call_date) AS time_call,
             a.call_number,
             a.call_receive_number,
@@ -27,7 +27,8 @@ module.exports = class r_abandonModel {
         FROM bapenda.t_incoming_call_log a 
         LEFT JOIN  ast_bapenda.cdr b ON a.caller_id = b.uniqueid
         WHERE a.call_event IN('NOANSWER','BUSY') AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
-        GROUP BY a.caller_id`
+        GROUP BY a.caller_id
+        ORDER BY a.id desc`
 
         console.log(query)
 

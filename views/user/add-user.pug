@@ -89,8 +89,7 @@ block content
                         div(class="mb-3")
                             label(for="parentUser" class="form-label") Is Agent
                             select(class="form-control" id="isAgent" name="isAgent" )
-                                option(value='Y') Yes
-                                option(value='N') No
+                                | !{isagent}
 
                         div(class="mb-3")
                             button(type="submit" class="btn btn-primary float-end") #{buttonAction}
@@ -102,10 +101,11 @@ block content
                 p this user form is used to add a new user
                 p(class="text-danger") - First Name Mandatory
                 p(class="text-danger") - Last Name Mandatory
-                p(class="text-danger") - Ages Mandatory
+                p(class="text-danger") - Ages Optional
                 p(class="text-danger") - Username Mandatory
                 p(class="text-danger") - Password Mandatory
                 p(class="text-danger") - Group Mandatory
                 p(class="text-success") - Photo Optional
                 p(class="text-success") - Extension Optional
+
             

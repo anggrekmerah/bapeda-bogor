@@ -18,16 +18,18 @@ module.exports = class r_receiveModel {
         dt += ' 23:59:59'
 
         const query = `SELECT 
-            DATE(a.call_date) AS date_call, 
-            TIME(a.call_date) AS time_call,
+            a.call_date AS datecalls, 
+            TIME(a.call_date) AS timecalls,
             a.call_number,
             a.call_receive_number,
-            b.duration
+            b.duration,
+            a.id
             
         FROM bapenda.t_incoming_call_log a 
         LEFT JOIN  ast_bapenda.cdr b ON a.caller_id = b.uniqueid
         WHERE a.call_event = 'ANSWER' AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
-        GROUP BY a.caller_id`
+        GROUP BY a.caller_id
+        ORDER BY a.id desc`
 
         console.log(query)
 

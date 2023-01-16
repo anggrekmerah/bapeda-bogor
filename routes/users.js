@@ -180,11 +180,11 @@ router.get('/add',  async (req, res, next) => {
     data_update.is_agent = req.session.dataUpdate.isAgent
 
   }
-  
+
+
   let flashMessage = await helper.flashMessage(req, userModels, data_update)
   
-  console.log(typeof req.renderObjects.dataUpdate.parent_user)
-  console.log(req.renderObjects.dataUpdate.parent_user)
+  console.log(req.renderObjects.dataUpdate)
 
   var dataGroups = await groupModels.getAllData()
   
@@ -211,6 +211,23 @@ router.get('/add',  async (req, res, next) => {
   delete dataUser.meta
   req.renderObjects.userList = dataUser
 
+  var isagent = ''
+  if(req.renderObjects.dataUpdate.is_agent == ''){
+    isagent = '<option value="Y"> Yes </option> <option value="N" > No </option>'
+  } else {
+
+    if(req.renderObjects.dataUpdate.is_agent == 'Y') {
+      isagent = '<option value="Y" selected> Yes </option> <option value="N" > No </option>'
+      
+    } else {
+      isagent = '<option value="Y"> Yes </option> <option value="N" selected> No </option>'
+      
+    }
+
+  }
+  
+  console.log(isagent)
+  req.renderObjects.isagent = isagent
 
   res.render('user/add-user', req.renderObjects );
 

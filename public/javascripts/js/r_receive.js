@@ -1,6 +1,7 @@
 function report(e) {
         
-    e.innerHTML = 'Loading...'
+    if(typeof e == 'object')
+        e.innerHTML = 'Loading...'
     
     $('#tableReportReceive').DataTable({
         processing: true,
@@ -19,11 +20,23 @@ function report(e) {
             // success: function(data){
             //     return JSON.stringify( data );
             // }
+        },
+        initComplete:function( settings, json){
+            
+            console.log(json);
+
+            if(typeof e == 'object')
+                e.innerHTML = 'SEARCH'
+            
+            return json
+            // call your function here
         }
-        ,columnDefs: [
-            {"className": "text-center", "targets": 5},
-            {"className": "text-center", "targets": 0}
-        ]
+        // ,columnDefs: [
+        //     {"className": "text-center", "targets": 5},
+        //     {"className": "text-center", "targets": 0}
+        // ]
     })
 
 } 
+
+report('')
