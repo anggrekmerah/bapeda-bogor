@@ -44,4 +44,13 @@ function report(e) {
 
 } 
 
+function exportCsv(e){
+
+    var fromDate = $('#fromdate').val()
+    var toDate = $('#todate').val()
+
+    window.location.href = '/report/abandon-csv/' + fromDate +'/'+toDate
+
+}
+
 report('')

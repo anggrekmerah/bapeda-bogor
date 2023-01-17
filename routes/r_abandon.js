@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { body, validationResult } = require('express-validator');
+const { Parser } = require('json2csv');
 
 const helper = require('../config/helper');
 const groupMenuModel = require('../models/group_menu/groupMenuModel');
@@ -33,6 +34,38 @@ router.get('/abandon',  async (req, res, next) => {
 
 });
 
+router.get('/abandon-csv/:fromDate/:toDate',  async (req, res, next) => {
+
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
+    
+    const dataModel = await r_abandonModels.get_data(req)
+
+    delete dataModel.meta
+
+    if(dataModel.length > 0) {
+
+        for (const key in dataModel) {
+            
+            dataModel[key]['date_call'] = helper.convertDate(dataModel[key]['date_call'])
+            
+        }
+
+    }
+
+    var df = (req.params.fromDate == '') ? helper.dateNow() : req.params.fromDate 
+    var dt = (req.params.toDate == '') ? helper.dateNow() : req.params.toDate
+
+    const json2csvParser = new Parser();
+    const csv = json2csvParser.parse(dataModel);
+
+    res.attachment('report-abandon-'+df+'_'+dt+'.csv');
+    res.status(200).send(csv);
+
+});
+
 router.post('/abandon-datatable',  async (req, res, next) => {
 
     // if(!req.session.loggedin)   {  
@@ -55,7 +88,7 @@ router.post('/abandon-datatable',  async (req, res, next) => {
             'db': 'date_call', 
             'dt' : 1,
             'formatter' : function (d, row) {
-                return row.date_call.toISOString().slice(0,10)
+                return helper.convertDate(row.date_call)
             }
         }
         ,{ 'db': 'time_call', 'dt' : 2 }

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { body, validationResult } = require('express-validator');
+const { Parser } = require('json2csv');
 
 const helper = require('../config/helper');
 const groupMenuModel = require('../models/group_menu/groupMenuModel');
@@ -33,15 +34,47 @@ router.get('/receive',  async (req, res, next) => {
 
 });
 
+router.get('/receive-csv/:fromDate/:toDate',  async (req, res, next) => {
+
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
+    
+    const dataModel = await r_receiveModels.get_data(req)
+
+    delete dataModel.meta
+
+    if(dataModel.length > 0) {
+
+        for (const key in dataModel) {
+            
+            dataModel[key]['datecalls'] = helper.convertDate(dataModel[key]['datecalls'])
+            
+        }
+
+    }
+
+    var df = (req.params.fromDate == '') ? helper.dateNow() : req.params.fromDate 
+    var dt = (req.params.toDate == '') ? helper.dateNow() : req.params.toDate
+
+    const json2csvParser = new Parser();
+    const csv = json2csvParser.parse(dataModel);
+
+    res.attachment('report-receive-'+df+'_'+dt+'.csv');
+    res.status(200).send(csv);
+
+});
+
 router.post('/receive-datatable',  async (req, res, next) => {
 
-    // if(!req.session.loggedin)   {  
-    //     res.render('error')
-    //     return false
-    // }
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
 
     // var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
-    console.log('ok')
+    
     var cols = [
          { 
             'db': 'id', 
@@ -55,7 +88,7 @@ router.post('/receive-datatable',  async (req, res, next) => {
             'db': 'datecalls', 
             'dt' : 1,
             'formatter' : function (d, row) {
-                return row.datecalls.toISOString().slice(0,10)
+                return helper.convertDate(row.datecalls)
             }
         }
         ,{ 'db': 'timecalls', 'dt' : 2 }

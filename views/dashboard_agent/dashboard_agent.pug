@@ -9,8 +9,8 @@ block content
                 
                 - var incomingCall_ = (agent_call[index]['ext'] == '') ? 'incomingCall_'+sess.extension : 'incomingCall_'+ agent_call[index]['ext']
                 - var card_ = 'card-' + agent_call[index]['call_number']
-                - var phone_book = '/phone-book/add?phone_number='+agent_call[index]['call_number']
-                - var black_list = '/black-list/add?phone_number='+agent_call[index]['call_number']
+                - var phone_book = '/phone-book/add?phone_number='+encodeURIComponent(agent_call[index]['call_number'])
+                - var black_list = '/black-list/add?phone_number='+encodeURIComponent(agent_call[index]['call_number'])
 
                 div(class="col-md-2 my-1" id=incomingCall_  card-incoming=card_)
                     div(class="card")
@@ -40,136 +40,38 @@ block content
                                     td : 
                                     td #{agent_call[index]['notes']}
 
-            //- div(class="col-md-2 my-1 ")
-            //-     div(class="card")
-            //-         div(class="card-header blinking-in")
-            //-             i(class="fa fa-phone me-2") 
-            //-             |  Incoming call
-            //-         div(class="card-body")
-            //-             table( class="table" )   
-            //-                 tr  
-            //-                     td From
-            //-                     td :
-            //-                     td Rian
-            //-                 tr  
-            //-                     td Phone 
-            //-                     td : 
-            //-                     td 08212071292
-            //-                 tr  
-            //-                     td Note
-            //-                     td : 
-            //-                     td Jakarta
 
             //- div(class="col-md-2 my-1")
-            //-     div(class="card")
-            //-         div(class="card-header blinking-in")
-            //-             i(class="fa fa-phone me-2") 
-            //-             |  Incoming call
-            //-         div(class="card-body")
-            //-             table( class="table" )   
-            //-                 tr  
-            //-                     td From
-            //-                     td :
-            //-                     td Rian
-            //-                 tr  
-            //-                     td Phone 
-            //-                     td : 
-            //-                     td 08212071292
-            //-                 tr  
-            //-                     td Note
-            //-                     td : 
-            //-                     td Jakarta
-                
-            //- div(class="col-md-2 my-1")
-            //-     div(class="card")
-            //-         div(class="card-header blinking-in")
-            //-             i(class="fa fa-phone me-2") 
-            //-             |  Incoming call
-            //-         div(class="card-body")
-            //-             table( class="table" )   
-            //-                 tr  
-            //-                     td From
-            //-                     td :
-            //-                     td Rian
-            //-                 tr  
-            //-                     td Phone 
-            //-                     td : 
-            //-                     td 08212071292
-            //-                 tr  
-            //-                     td Note
-            //-                     td : 
-            //-                     td Jakarta
+            //-         div(class="card")
+            //-             div(class="card-header blinking-in")
+            //-                 div(class="row")
+            //-                     div(class="col-md-10")
+            //-                         i(class="fa fa-phone me-2") 
+            //-                         |  Incoming call
+            //-                     div(class="col-md-2 text-end")
+                                
+            //-                         i(class=" fa-solid fa-ellipsis-vertical" id="dropdownMenuButton1" style="cursor:pointer;" data-bs-toggle="dropdown" )
+                                    
+            //-                         - var b = "/phone-book/add?phone_number="+encodeURIComponent('+1231313')
 
-            //- div(class="col-md-2 my-1")
-            //-     div(class="card")
-            //-         div(class="card-header blinking-in")
-            //-             i(class="fa fa-phone me-2") 
-            //-             |  Incoming call
-            //-         div(class="card-body")
-            //-             table( class="table" )   
-            //-                 tr  
-            //-                     td From
-            //-                     td :
-            //-                     td Rian
-            //-                 tr  
-            //-                     td Phone 
-            //-                     td : 
-            //-                     td 08212071292
-            //-                 tr  
-            //-                     td Note
-            //-                     td : 
-            //-                     td Jakarta
-                            
-            //- div(class="col-md-2 my-1")
-            //-     div(class="card")
-            //-         div(class="card-header blinking-in")
-            //-             i(class="fa fa-phone me-2") 
-            //-             |  Incoming call
-            //-         div(class="card-body")
-            //-             table( class="table" )   
-            //-                 tr  
-            //-                     td From
-            //-                     td :
-            //-                     td Rian
-            //-                 tr  
-            //-                     td Phone 
-            //-                     td : 
-            //-                     td 08212071292
-            //-                 tr  
-            //-                     td Note
-            //-                     td : 
-            //-                     td Jakarta
+            //-                         ul(class="dropdown-menu" aria-labelledby="dropdownMenuButton1")
+            //-                             li: a(class="dropdown-item" href=b ) Add Phonebook
+            //-             div(class="card-body")
+            //-                 table( class="table" )   
+            //-                     tr  
+            //-                         td From
+            //-                         td :
+            //-                         td 1231313
+            //-                     tr  
+            //-                         td Phone 
+            //-                         td : 
+            //-                         td +1231313
+            //-                     tr  
+            //-                         td Note
+            //-                         td : 
+            //-                         td asdfa
 
-            //- div(class="col-md-2 my-1")
-            //-     div(class="card")
-            //-         div(class="card-header blinking-in")
-            //-             i(class="fa fa-phone me-2") 
-            //-             |  Incoming call
-            //-         div(class="card-body")
-            //-             table( class="table" )   
-            //-                 tr  
-            //-                     td From
-            //-                     td :
-            //-                     td Rian
-            //-                 tr  
-            //-                     td Phone 
-            //-                     td : 
-            //-                     td 08212071292
-            //-                 tr  
-            //-                     td Note
-            //-                     td : 
-            //-                     td Jakarta
-            
-                          
-                
-            //- div(class="col-md-2")
-            //-     div(class="card")
-            //-         div(class="card-header blinking-out")
-            //-             i(class="fa fa-phone me-2") 
-            //-             |  Outgoing call
-            //-         div(class="card-body")
-            //-             p(class="card-text")  From : (Extension) 997
-            //-             p(class="card-text")  To : 08212071292
+           
 
 
         

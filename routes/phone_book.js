@@ -129,7 +129,7 @@ router.get('/add',  async (req, res, next) => {
     }
 
     var n = ('phone_number' in req.query) ? req.query.phone_number : ''
-
+    console.log(n)
     var data_update = { phone_name : '', phone_number : n, notes : ''}
     
     if(req.session.dataUpdate){

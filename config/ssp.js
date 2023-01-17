@@ -130,7 +130,7 @@ module.exports = class ssp extends crud_model {
 		var columnSearch = [];
 		var dtColumns = this.pluck( columns, 'dt' );
         var q = this.check_method (request)
-		console.log(q)
+		
 		if ( 'search' in q && q['search']['value'] != '' ) {
 			var str = q['search']['value'];
 
@@ -152,9 +152,6 @@ module.exports = class ssp extends crud_model {
 				}
 			}
 		}
-
-		console.log('atas')
-		console.log(globalSearch)
 
 		// Individual column filtering
 		if ( 'columns' in q ) {
@@ -209,7 +206,7 @@ module.exports = class ssp extends crud_model {
 
             var sqlUtama = "SELECT  *, (@nomors := @nomors+1) as nomor FROM (" +query+ ") A , (select @nomors := "+parseInt(r['start'])+") r " + where + order + limit 
             console.log('sqlUtama = ' + sqlUtama)
-			console.log(bindings)
+
             this.execQuery(sqlUtama, bindings).then( (res) => {
                 // console.log(res)
                 // Data set length after filtering
@@ -228,6 +225,8 @@ module.exports = class ssp extends crud_model {
                         /*
                         * Output
                         */
+
+						console.log(res)
 
                        var outputs = {	
                             "draw"            : ( 'draw' in r ) ? parseInt( r['draw'] ) : 0,

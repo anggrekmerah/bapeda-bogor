@@ -28,6 +28,31 @@ module.exports={
         return (!!a) && (a.constructor === Array);
     }
 
+    ,dateNow: function(){
+
+        var d = new Date()
+        
+        let ank = d.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+        
+        let curdateL = ank.slice(0,10).split('/')
+        let curdate = curdateL[2].trim() + '-' + curdateL[1] + '-' + curdateL[0]
+
+        return curdate
+    }
+
+    ,convertDate: function(d){
+
+        var d = new Date(d)
+        
+        let ank = d.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+
+        let curdateL = ank.slice(0,10).split('/')
+        let curdate = curdateL[2].trim() + '-' + curdateL[1] + '-' + curdateL[0]
+
+        return curdate
+        
+    }
+
     ,MessageFailed: function (message) {
 
         return [{
