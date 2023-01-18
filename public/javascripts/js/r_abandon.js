@@ -49,7 +49,15 @@ function exportCsv(e){
     var fromDate = $('#fromdate').val()
     var toDate = $('#todate').val()
 
-    window.location.href = '/report/abandon-csv/' + fromDate +'/'+toDate
+    var u = ''
+
+    if( fromDate != '' && toDate != '') {
+        u = fromDate +'/'+toDate
+    } else {
+        u = 'null/null'
+    }
+
+    window.location.href = '/report/abandon-csv/' + u
 
 }
 

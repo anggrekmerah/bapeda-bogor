@@ -12,8 +12,8 @@ module.exports = class r_abandonModel extends crud_model {
 
         return new Promise((resolve, reject) => {
         
-            var df = (req.params.fromDate == '') ? helper.dateNow() : req.params.fromDate 
-            var dt = (req.params.toDate == '') ? helper.dateNow() : req.params.toDate
+            var df = (req.params.fromDate == 'null') ? helper.dateNow() : req.params.fromDate 
+            var dt = (req.params.toDate == 'null') ? helper.dateNow() : req.params.toDate
 
 
             df += ' 00:00:00'
@@ -28,7 +28,7 @@ module.exports = class r_abandonModel extends crud_model {
                 
             FROM bapenda.t_incoming_call_log a 
             LEFT JOIN  ast_bapenda.cdr b ON a.caller_id = b.uniqueid
-            WHERE a.call_event IN('NOANSWER','BUSY','CANCEL') AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
+            WHERE a.call_event IN('NOANSWER','BUSY','CANCEL') calltype = 'Incoming' AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
             GROUP BY a.caller_id
             ORDER BY a.id desc`
 

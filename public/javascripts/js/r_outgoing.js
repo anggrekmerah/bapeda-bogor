@@ -3,14 +3,14 @@ function report(e) {
     if(typeof e == 'object')
         e.innerHTML = 'Loading...'
     
-    $('#tableReportReceive').DataTable({
+    $('#tableReportOutgoing').DataTable({
         processing: true,
         serverSide: true,
         bDestroy: true,
         // bJQueryUI: true,
         ajax: {
             type: 'POST',
-            url: '/report/receive-datatable',
+            url: '/report/outgoing-datatable',
             data: function (params) {
 
                 params.fromDate = $('#fromdate').val()
@@ -57,7 +57,7 @@ function exportCsv(e){
         u = 'null/null'
     }
 
-    window.location.href = '/report/receive-csv/' + u
+    window.location.href = '/report/outgoing-csv/' + u
 
 }
 

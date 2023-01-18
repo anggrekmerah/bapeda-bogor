@@ -192,7 +192,7 @@ module.exports={
         // html += '        </div>'
         html += '        <div class="p-2 flex-fill bd-highlight">'
         html += '            <button id="btnBargeAgent_'+params.extension+'" class="btn btn-'+buttonBg+' btn-sm float-end ms-1" '+buttonDisable+' >Barge</button> '
-        html += '            <button id="btnWishpAgent_'+params.extension+'" class="btn btn-'+buttonBg+' btn-sm float-end ms-1" '+buttonDisable+' >Wishp</button> '
+        html += '            <button id="btnWishpAgent_'+params.extension+'" class="btn btn-'+buttonBg+' btn-sm float-end ms-1" '+buttonDisable+' >Whisp</button> '
         html += '            <button id="btnSpyAgent_'+params.extension+'" class="btn btn-'+buttonBg+' btn-sm float-end ms-1" '+buttonDisable+' >Spy</button> '
         html += '        </div>'
         html += '    </div>'
