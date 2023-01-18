@@ -54,7 +54,7 @@ router.get('/receive-csv/:fromDate/:toDate',  async (req, res, next) => {
             if(dataModel[key]['dstchannel'] != '') {
 
                 var dst = dataModel[key]['dstchannel'].split('-')
-                var s = dst[0].slice(3, dst[0].length)
+                var s = dst[0].slice(4, dst[0].length)
 
                 dataModel[key]['dstchannel'] = s
 
@@ -111,7 +111,7 @@ router.post('/receive-datatable',  async (req, res, next) => {
                 var s = ''
                 if(row.dstchannel != '') {
                     var dst = row.dstchannel.split('-')
-                    s = dst[0].slice(3, dst[0].length)
+                    s = dst[0].slice(4, dst[0].length)
                 }
 
                 return s
