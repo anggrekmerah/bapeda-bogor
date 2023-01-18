@@ -28,7 +28,7 @@ module.exports = class r_abandonModel extends crud_model {
                 billsec
                 
             FROM ast_bapenda.cdr
-            WHERE calltype = 'Incoming' AND disposition IN( 'NO ANSWER', 'BUSY') AND calldate BETWEEN '`+df+`' AND '`+dt+`'
+            WHERE calltype = 'Incoming' AND ( disposition IN( 'NO ANSWER', 'BUSY') OR dstchannel = '' ) AND calldate BETWEEN '`+df+`' AND '`+dt+`'
             GROUP BY uniqueid
             ORDER BY recid desc`
 
@@ -67,7 +67,7 @@ module.exports = class r_abandonModel extends crud_model {
             recid
             
         FROM ast_bapenda.cdr
-        WHERE calltype = 'Incoming' AND disposition IN( 'NO ANSWER', 'BUSY') AND calldate BETWEEN '`+df+`' AND '`+dt+`'
+        WHERE calltype = 'Incoming' AND ( disposition IN( 'NO ANSWER', 'BUSY') OR dstchannel = '' ) AND calldate BETWEEN '`+df+`' AND '`+dt+`'
         GROUP BY uniqueid
         ORDER BY recid desc`
 

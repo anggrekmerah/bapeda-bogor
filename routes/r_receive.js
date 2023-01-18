@@ -65,8 +65,8 @@ router.get('/receive-csv/:fromDate/:toDate',  async (req, res, next) => {
 
     }
 
-    var df = (req.params.fromDate == '') ? helper.dateNow() : req.params.fromDate 
-    var dt = (req.params.toDate == '') ? helper.dateNow() : req.params.toDate
+    var df = (req.params.fromDate == 'null') ? helper.dateNow() : req.params.fromDate 
+    var dt = (req.params.toDate == 'null') ? helper.dateNow() : req.params.toDate
 
     const json2csvParser = new Parser();
     const csv = json2csvParser.parse(dataModel);

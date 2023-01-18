@@ -28,7 +28,7 @@ module.exports = class r_receiveModel extends crud_model {
                 billsec
                 
             FROM ast_bapenda.cdr
-            WHERE calltype = 'Incoming' AND disposition = 'ANSWERED' AND calldate BETWEEN '`+df+`' AND '`+dt+`'
+            WHERE calltype = 'Incoming' AND disposition = 'ANSWERED' AND dstchannel != ''  AND calldate BETWEEN '`+df+`' AND '`+dt+`'
             ORDER BY recid desc`
 
             console.log(query)
@@ -66,7 +66,7 @@ module.exports = class r_receiveModel extends crud_model {
             recid
             
         FROM ast_bapenda.cdr
-        WHERE calltype = 'Incoming' AND disposition = 'ANSWERED' AND calldate BETWEEN '`+df+`' AND '`+dt+`'
+        WHERE calltype = 'Incoming' AND disposition = 'ANSWERED' AND dstchannel != '' AND calldate BETWEEN '`+df+`' AND '`+dt+`'
         ORDER BY recid desc`
 
         console.log(query)
