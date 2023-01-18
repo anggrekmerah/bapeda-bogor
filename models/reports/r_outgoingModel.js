@@ -25,7 +25,7 @@ module.exports = class r_outgoingModel extends crud_model {
                 src,
                 dst,
                 disposition,
-                duration
+                billsec
                 
             FROM ast_bapenda.cdr
             WHERE calltype = 'Outgoing' AND calldate BETWEEN '`+df+`' AND '`+dt+`'

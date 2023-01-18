@@ -95,7 +95,7 @@ router.post('/outgoing-datatable',  async (req, res, next) => {
         ,{ 'db': 'src', 'dt' : 3 }
         ,{ 'db': 'dst', 'dt' : 4 }
         ,{ 'db': 'disposition', 'dt' : 5 }
-        ,{ 'db': 'duration', 'dt' : 6 }
+        ,{ 'db': 'billsec', 'dt' : 6 }
        
     ]
 
