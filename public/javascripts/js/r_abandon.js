@@ -7,6 +7,7 @@ function report(e) {
         processing: true,
         serverSide: true,
         bDestroy: true,
+        order: [[0, 'desc']],
         // bJQueryUI: true,
         ajax: {
             type: 'POST',
