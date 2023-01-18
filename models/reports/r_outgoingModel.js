@@ -62,7 +62,7 @@ module.exports = class r_outgoingModel extends crud_model {
             src,
             dst,
             disposition,
-            duration,
+            billsec,
             recid
             
         FROM ast_bapenda.cdr
