@@ -49,8 +49,8 @@ router.get('/abandon-csv/:fromDate/:toDate',  async (req, res, next) => {
 
         for (const key in dataModel) {
             
-            dataModel[key]['date_call'] = helper.convertDate(dataModel[key]['date_call'])
-            
+            dataModel[key]['calldate'] = helper.convertDate(dataModel[key]['calldate'])
+            dataModel[key]['dst'] = ''
         }
 
     }
@@ -76,8 +76,8 @@ router.post('/abandon-datatable',  async (req, res, next) => {
     // var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
 
     var cols = [
-         { 
-            'db': 'id', 
+        { 
+            'db': 'recid', 
             'dt' : 0,
             'formatter' : function( d, row ) {
 
@@ -85,16 +85,21 @@ router.post('/abandon-datatable',  async (req, res, next) => {
             }
         }
         ,{ 
-            'db': 'date_call', 
+            'db': 'calldate', 
             'dt' : 1,
             'formatter' : function (d, row) {
-                return helper.convertDate(row.date_call)
+                return helper.convertDate(row.calldate)
             }
         }
-        ,{ 'db': 'time_call', 'dt' : 2 }
-        ,{ 'db': 'call_number', 'dt' : 3 }
-        ,{ 'db': 'call_receive_number', 'dt' : 4 }
-        ,{ 'db': 'duration', 'dt' : 5 }
+        ,{ 'db': 'timecalls', 'dt' : 2 }
+        ,{ 'db': 'src', 'dt' : 3 }
+        ,{ 
+            'db': 'dst', 
+            'dt' : 4,
+            'formatter' : function (d, row) {
+                return ''
+            } }
+        ,{ 'db': 'billsec', 'dt' : 5 }
        
     ]
 

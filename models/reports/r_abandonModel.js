@@ -20,17 +20,17 @@ module.exports = class r_abandonModel extends crud_model {
             dt += ' 23:59:59'
 
             const query = `SELECT 
-                a.call_date AS date_call, 
-                TIME(a.call_date) AS time_call,
-                a.call_number,
-                a.call_receive_number,
-                b.duration
+                calldate, 
+                TIME(calldate) AS timecalls,
+                src,
+                dst,
+                disposition,
+                billsec
                 
-            FROM bapenda.t_incoming_call_log a 
-            LEFT JOIN  ast_bapenda.cdr b ON a.caller_id = b.uniqueid
-            WHERE a.call_event IN('NOANSWER','BUSY','CANCEL') calltype = 'Incoming' AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
-            GROUP BY a.caller_id
-            ORDER BY a.id desc`
+            FROM ast_bapenda.cdr
+            WHERE calltype = 'Incoming' AND disposition IN( 'NO ANSWER', 'BUSY') AND calldate BETWEEN '`+df+`' AND '`+dt+`'
+            GROUP BY uniqueid
+            ORDER BY recid desc`
 
             console.log(query)
     
@@ -58,18 +58,18 @@ module.exports = class r_abandonModel extends crud_model {
         dt += ' 23:59:59'
 
         const query = `SELECT 
-            a.call_date AS date_call, 
-            TIME(a.call_date) AS time_call,
-            a.call_number,
-            a.call_receive_number,
-            b.duration,
-            a.id
+            calldate, 
+            TIME(calldate) AS timecalls,
+            src,
+            dst,
+            disposition,
+            billsec,
+            recid
             
-        FROM bapenda.t_incoming_call_log a 
-        LEFT JOIN  ast_bapenda.cdr b ON a.caller_id = b.uniqueid
-        WHERE a.call_event IN('NOANSWER','BUSY','CANCEL') AND b.calltype = 'Incoming' AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
-        GROUP BY a.caller_id
-        ORDER BY a.id desc`
+        FROM ast_bapenda.cdr
+        WHERE calltype = 'Incoming' AND disposition IN( 'NO ANSWER', 'BUSY') AND calldate BETWEEN '`+df+`' AND '`+dt+`'
+        GROUP BY uniqueid
+        ORDER BY recid desc`
 
         console.log(query)
 
