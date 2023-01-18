@@ -28,7 +28,7 @@ module.exports = class r_receiveModel extends crud_model {
                 
             FROM bapenda.t_incoming_call_log a 
             LEFT JOIN  ast_bapenda.cdr b ON a.caller_id = b.uniqueid
-            WHERE a.call_event = 'ANSWER' AND calltype = 'Incoming' AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
+            WHERE a.call_event = 'ANSWER' AND b.calltype = 'Incoming' AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
             GROUP BY a.caller_id
             ORDER BY a.id desc`
 
@@ -67,7 +67,7 @@ module.exports = class r_receiveModel extends crud_model {
             
         FROM bapenda.t_incoming_call_log a 
         LEFT JOIN  ast_bapenda.cdr b ON a.caller_id = b.uniqueid
-        WHERE a.call_event = 'ANSWER' AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
+        WHERE a.call_event = 'ANSWER' AND b.calltype = 'Incoming' AND a.call_date BETWEEN '`+df+`' AND '`+dt+`'
         GROUP BY a.caller_id
         ORDER BY a.id desc`
 
