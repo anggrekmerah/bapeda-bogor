@@ -64,7 +64,7 @@ router.get('/abandon-csv/:fromDate/:toDate',  async (req, res, next) => {
     res.attachment('report-abandon-'+df+'_'+dt+'.csv');
     res.status(200).send(csv);
 
-});
+}); 
 
 router.post('/abandon-datatable',  async (req, res, next) => {
 

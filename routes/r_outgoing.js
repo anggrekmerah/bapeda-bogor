@@ -65,7 +65,7 @@ router.get('/outgoing-csv/:fromDate/:toDate',  async (req, res, next) => {
     res.status(200).send(csv);
 
 });
-
+ 
 router.post('/outgoing-datatable',  async (req, res, next) => {
 
     if(!req.session.loggedin)   {  

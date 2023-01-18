@@ -30,7 +30,7 @@ module.exports = class r_abandonModel extends crud_model {
             FROM ast_bapenda.cdr
             WHERE calltype = 'Incoming' AND ( disposition IN( 'NO ANSWER', 'BUSY') OR dstchannel = '' ) AND calldate BETWEEN '`+df+`' AND '`+dt+`'
             GROUP BY uniqueid
-            ORDER BY recid desc`
+            ORDER BY recid desc` 
 
             console.log(query)
     

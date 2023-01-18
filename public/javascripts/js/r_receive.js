@@ -26,7 +26,7 @@ function report(e) {
             // success: function(data){
             //     return JSON.stringify( data );
             // }
-        },
+        }, 
         initComplete:function( settings, json){
             
             console.log(json);

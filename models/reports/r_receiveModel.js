@@ -64,7 +64,7 @@ module.exports = class r_receiveModel extends crud_model {
             disposition,
             billsec,
             recid
-            
+             
         FROM ast_bapenda.cdr
         WHERE calltype = 'Incoming' AND disposition = 'ANSWERED' AND dstchannel != '' AND calldate BETWEEN '`+df+`' AND '`+dt+`'
         ORDER BY recid desc`

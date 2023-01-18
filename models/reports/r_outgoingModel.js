@@ -30,7 +30,7 @@ module.exports = class r_outgoingModel extends crud_model {
             FROM ast_bapenda.cdr
             WHERE calltype = 'Outgoing' AND calldate BETWEEN '`+df+`' AND '`+dt+`'
             ORDER BY recid desc`
-
+ 
             console.log(query)
     
             this.execQuery(query, []).then( (res) => {
