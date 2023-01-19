@@ -40,7 +40,7 @@ router.post('/chart',  async (req, res, next) => {
     // if(!req.session.loggedin)                
     //   res.render('error')
   
-    var chart = await r_kpiModels.getChartKpi({id : 25})
+    var chart = await r_kpiModels.getChartKpi({id : req.session.id_user })
   
     delete chart.meta
   
