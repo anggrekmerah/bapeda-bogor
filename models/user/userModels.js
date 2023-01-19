@@ -270,6 +270,47 @@ module.exports = class userModel extends crud_model  {
 
     }
 
+    update_profile( req ) {
+
+        return new Promise((resolve, reject) => {
+
+            var s = {
+                'email':req.body.username
+               ,'first_name':req.body.firstName
+               ,'last_name':req.body.lastName
+               ,'ages':req.body.ages
+               ,'update_datetime' : new Date()
+               ,'user_updated' : req.session.id_user
+            }
+
+            if('passHash' in req.body)
+                s['password'] = req.body.passHash
+
+            if('fileName' in req.body)
+                s['photo'] = req.body.fileName 
+
+            var params = {
+                  sets : s
+                , table : this.tableName
+                , id_key : this.prmaryKey
+                , id_val : req.session.id_user
+            }
+
+            this.updateData(params).then( (res) => {
+            
+                resolve( true )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+
+        })
+        
+
+    }
+
     datatable(req, cols) {
 
         const query = `select a.*, b.group_name , c.extension,

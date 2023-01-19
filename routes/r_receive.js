@@ -49,7 +49,7 @@ router.get('/receive-csv/:fromDate/:toDate',  async (req, res, next) => {
 
         for (const key in dataModel) {
             
-            dataModel[key]['datecalls'] = helper.convertDate(dataModel[key]['datecalls'])
+            dataModel[key]['calldate'] = helper.convertDate(dataModel[key]['calldate'])
 
             if(dataModel[key]['dstchannel'] != '') {
 

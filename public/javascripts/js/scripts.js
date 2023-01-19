@@ -9,30 +9,36 @@
 var intervalCOunter = {}
 var totalSeconds = 0;
 
+function tp(e, ind, se) {
+            
+    
+    var type = $('#'+ind).attr("type");
+    
+    // console.log(type);
+    
+    if(type == "password") {
+        $( "#"+se ).removeClass("fa-eye-slash");
+        $( "#"+se ).addClass("fa-eye");
+        $('#'+ind).attr("type","text");
+
+    } else if (type == "text") {
+
+        $( "#"+se ).removeClass("fa-eye");
+        $( "#"+se ).addClass("fa-eye-slash");
+        $('#'+ind).attr("type","password");
+
+    }
+
+}
+
 (function($) {
+
+    
+
     $(function() {
-        $("#togglePassword").click(function (e) {
+
         
-            e.preventDefault();
-            
-            var type = $('#inputPassword').attr("type");
-            
-            // console.log(type);
-            
-            if(type == "password") {
-                $( "#spanEye" ).removeClass("fa-eye-slash");
-                $( "#spanEye" ).addClass("fa-eye");
-                $('#inputPassword').attr("type","text");
-    
-            } else if (type == "text") {
-    
-                $( "#spanEye" ).removeClass("fa-eye");
-                $( "#spanEye" ).addClass("fa-eye-slash");
-                $('#inputPassword').attr("type","password");
-    
-            }
-    
-        });
+
     });
 })(jQuery);
 

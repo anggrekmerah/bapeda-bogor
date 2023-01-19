@@ -160,8 +160,8 @@ html
                                                 div(class="input-field") 
                                                     span(class="fas fa-lock p-2") 
                                                     input(type="password" placeholder="Enter your Password" required class="form-control" id="inputPassword" name="password" autocomplete="off") 
-                                                    button(class="btn bg-white text-muted" id="togglePassword" type="button") 
-                                                        span(class="fa-solid fa-eye-slash" id="spanEye") 
+                                                    button(class="btn bg-white text-muted " id="togglePassword"  type="button" onclick = "tp(this, 'inputPassword', 'spanEyeAuth')") 
+                                                        span(class="fa-solid fa-eye-slash" id="spanEyeAuth") 
                                                     
                                             div(class="d-flex align-items-start")
                                                 //- div(class="col") 

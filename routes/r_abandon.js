@@ -99,7 +99,7 @@ router.post('/abandon-datatable',  async (req, res, next) => {
             'formatter' : function (d, row) {
                 return ''
             } }
-        ,{ 'db': 'billsec', 'dt' : 5 }
+        // ,{ 'db': 'billsec', 'dt' : 5 }
        
     ]
 

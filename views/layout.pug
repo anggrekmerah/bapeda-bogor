@@ -87,7 +87,8 @@ html
         li(class="nav-item dropdown")
           a(class="nav-link dropdown-toggle" id="navbarDropdownAtas" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"): i( class="fas fa-user fa-fw")
           ul(class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAtas")
-            li: a(class="dropdown-item" href="#!") Profile
+            - var uid =  "/users/profile?id=" + sess.id_user
+            li: a(class="dropdown-item" href=uid) Profile
             //- li: a(class="dropdown-item" href="#!") Activity Log
             li: hr(class="dropdown-divider")
             li: a(class="dropdown-item" href="/auth/logout") Logout
@@ -218,4 +219,7 @@ case controller
     script(src="/javascripts/js/r_abandon.js")
   when 'r_outgoing'
     script(src="/javascripts/js/r_outgoing.js")
+  when 'r_kpi'
+    script(src="/javascripts/js/r_kpi.js")  
+    script(src="/javascripts/js/canvasjs.min.js")
             

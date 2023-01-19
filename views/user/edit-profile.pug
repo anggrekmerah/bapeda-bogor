@@ -1,0 +1,73 @@
+extends ../layout
+
+block content
+    
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+
+            div(class="col-md-2")
+                - var p = "/images/user-photo/" + dataUpdate.photo
+                img(id="imageAgent_" src=p class="img-cover" style="width:80px; height: 80px '+image_disable+'")
+            div(class="col-md-6")
+                | !{alert}
+                form(class="row g-3" action="/users/profile-update" method="post" id="formUser" enctype="multipart/form-data")
+                    div(class="col-md-6")
+                        div(class="mb-3")
+                            label(for="firstName" class="form-label") First Name 
+                            input(type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" value=dataUpdate.first_name  )
+                                
+                        div(class="mb-3")
+                            label(for="lastName" class="form-label") Last Name 
+                            input(type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" value=dataUpdate.last_name  )
+
+                        div(class="mb-3")
+                            label(for="ages" class="form-label") Ages 
+                            input(type="text" class="form-control" id="ages" name="ages" placeholder="Ages" value=dataUpdate.ages  )
+
+                        div(class="mb-3")
+                            label(for="username" class="form-label") E-mail 
+                            input(type="text" class="form-control" id="username" name="username" placeholder="Username" value=dataUpdate.email  )
+
+                        div(class="mb-3")
+                            label(for="password" class="form-label") Old Password 
+                            div(class="input-group")
+                                input(type="password" class="form-control" id="inputPasswordOld" name="oldPassword" placeholder="Old Password" autocomplete="off" )
+                                button(class="btn bg-white text-muted input-group-text togglePassword" id="togglePassword" type="button" onclick = "tp(this, 'inputPasswordOld', 'spanEyeOld')") 
+                                    span(class="fa-solid fa-eye-slash" id="spanEyeOld")
+
+                        div(class="mb-3")
+                            label(for="password" class="form-label") New Password 
+                            div(class="input-group")
+                                input(type="password" class="form-control" id="inputPasswordNew" name="newPassword" placeholder="New Password" autocomplete="off" )
+                                button(class="btn bg-white text-muted input-group-text togglePassword" id="togglePassword" type="button" onclick = "tp(this, 'inputPasswordNew', 'spanEyeNew')") 
+                                    span(class="fa-solid fa-eye-slash" id="spanEyeNew")
+
+                        div(class="mb-3")
+                            label(for="password" class="form-label") Retype Password 
+                            div(class="input-group")
+                                input(type="password" class="form-control" id="inputPasswordRetype" name="retypePassword" placeholder="Retype Password" autocomplete="off" )
+                                button(class="btn bg-white text-muted input-group-text togglePassword" id="togglePassword" type="button" onclick = "tp(this, 'inputPasswordRetype', 'spanEyeRetype')") 
+                                    span(class="fa-solid fa-eye-slash" id="spanEyeRetype")
+
+                        div(class="mb-3")
+                            label(for="Photo" class="form-label") Photo
+                            input(type="file" class="form-control" id="photo" name="photo"  )
+
+                   
+
+                        div(class="mb-3")
+                            button(type="submit" class="btn btn-primary float-end") Update
+                            a( class="btn btn-primary float-end me-2" href="/users" ) Back
+                            button(type="button" class="btn btn-danger float-end me-2" id="discard") Reset
+        
+            div(class="col-md-4")
+                label(class="fw-bold") Notes : 
+                p this user form is used to edit profile
+                p(class="text-danger") - First Name Mandatory
+                p(class="text-danger") - Last Name Mandatory
+                p(class="text-danger") - Ages Optional
+                p(class="text-danger") - E-mail Mandatory
+                p(class="text-danger") - Password Mandatory
+
+            

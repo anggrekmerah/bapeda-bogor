@@ -139,12 +139,131 @@ router.get('/delete/:userId',  async (req, res, next) => {
 
 });
 
+router.get('/profile',  async (req, res, next) => {
+
+	if(!req.session.loggedin)   {  
+		res.render('error')
+		return false
+	}
+
+    var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
+    if(!checkAccessPage){  
+        res.render('error_cannot_access')
+        return false
+    }
+
+	var data_update = { 
+
+	    username : ''
+	   ,first_name : ''
+	   ,last_name : ''
+	   ,photo : ''
+	   ,ages : ''
+	   
+	  }
+	
+	  if(req.session.dataUpdate){
+	
+		data_update.username = req.session.dataUpdate.username
+		data_update.first_name = req.session.dataUpdate.firstName
+		data_update.last_name = req.session.dataUpdate.lastName
+		data_update.ages = req.session.dataUpdate.ages
+	
+	  }
+
+	let flashMessage = await helper.flashMessage(req, userModels, data_update)
+	  console.log(flashMessage)
+	req.renderObjects.controller = controllerName
+	req.renderObjects.title = 'Edit Profile'
+	req.renderObjects.sess = req.session
+	req.renderObjects.alert = flashMessage
+	
+
+	res.render('user/edit-profile', req.renderObjects );
+
+
+})
+
+router.post('/profile-update',  
+  	upload.single('photo')
+,async (req, res, next) => {
+
+  	if(!req.session.loggedin)   {  
+		res.render('error')
+		return false
+	}
+
+	var oldPassword = req.body.oldPassword
+	var newPassword = req.body.newPassword
+	var retypePassword = req.body.retypePassword
+	var error = false
+
+	if(oldPassword != '') {
+
+		var u = await userModels.getDataById(req.session.id_user)
+
+		var validate = bcrypt.compareSync(oldPassword, u[0].password); // true
+
+		if(!validate) {
+
+			req.session.resultMessage = helper.MessageSuccess('Wrong Password')
+			req.session.dataUpdate = req.body
+			res.redirect('/users/profile?id='+req.session.id_user);
+			return false
+
+		} else {
+
+			if (newPassword == '') {
+				req.session.resultMessage = helper.MessageFailed('New Password required')
+				req.session.dataUpdate = req.body
+				res.redirect('/users/profile?id='+req.session.id_user);
+				return false		
+			} else if (retypePassword == '') {
+				req.session.resultMessage = helper.MessageFailed('Retype Password required')
+				req.session.dataUpdate = req.body
+				res.redirect('/users/profile?id='+req.session.id_user);
+				return false		
+			} else if (newPassword != retypePassword) {
+				req.session.resultMessage = helper.MessageFailed('Retype Password not match')
+				req.session.dataUpdate = req.body
+				res.redirect('/users/profile?id='+req.session.id_user);
+				return false
+			} else {
+
+				var salt = bcrypt.genSaltSync(10);
+				var hash = bcrypt.hashSync(newPassword, salt);
+				
+				req.body.passHash = hash
+				
+				error = false
+
+			}
+
+		}
+		
+	} 
+	
+
+	if('file' in req)
+		req.body.fileName = req.file.originalname.replaceAll(' ','-')
+
+
+	var udpate = await userModels.update_profile(req)
+
+	req.session.resultMessage = (udpate) ? helper.MessageSuccess('Success update user') : helper.MessageFailed('Failed update user')
+
+	res.redirect('/auth/logout');
+
+});
+
+
+
 router.get('/add',  async (req, res, next) => {
 
   if(!req.session.loggedin)   {  
     res.render('error')
     return false
-}
+  }
 
     var checkAccessPage = await helper.checkAccessPage({id_group:req.session.groupId, id_menu : menuId}, groupMenuModels)
     if(!checkAccessPage){  
@@ -183,8 +302,6 @@ router.get('/add',  async (req, res, next) => {
 
 
   let flashMessage = await helper.flashMessage(req, userModels, data_update)
-  
-  console.log(req.renderObjects.dataUpdate)
 
   var dataGroups = await groupModels.getAllData()
   

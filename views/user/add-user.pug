@@ -5,9 +5,11 @@ block content
     if 'id_user' in dataUpdate 
         - var action = "update?id="+ dataUpdate.id_user
         - var buttonAction = 'Update'
+        - var title = 'Update User'
     else 
         - var action = "save"
         - var buttonAction = 'Save'
+        - var title = 'Add User'
 
     h1(class="mt-4") #{title}
     div(class="container-fluid border p-2" style="margin-top : 35px;")
@@ -36,7 +38,7 @@ block content
                             label(for="password" class="form-label") Password 
                             div(class="input-group")
                                 input(type="password" class="form-control" id="inputPassword" name="password" placeholder="Password" autocomplete="off" )
-                                button(class="btn bg-white text-muted input-group-text" id="togglePassword" type="button") 
+                                button(class="btn bg-white text-muted input-group-text togglePassword" id="togglePassword" type="button" onclick = "tp(this, 'inputPassword', 'spanEye')") 
                                     span(class="fa-solid fa-eye-slash" id="spanEye")
 
                         div(class="mb-3")
@@ -102,7 +104,7 @@ block content
                 p(class="text-danger") - First Name Mandatory
                 p(class="text-danger") - Last Name Mandatory
                 p(class="text-danger") - Ages Optional
-                p(class="text-danger") - Username Mandatory
+                p(class="text-danger") - E-mail Mandatory
                 p(class="text-danger") - Password Mandatory
                 p(class="text-danger") - Group Mandatory
                 p(class="text-success") - Photo Optional
