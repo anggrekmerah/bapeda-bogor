@@ -22,8 +22,8 @@ module.exports = class r_abandonModel extends crud_model {
             const query = `SELECT 
                 calldate, 
                 TIME(calldate) AS timecalls,
-                src,
-                dst
+                src as source,
+                billsec as duration
                 
             FROM ast_bapenda.cdr
             WHERE calltype = 'Incoming' AND ( disposition IN( 'NO ANSWER', 'BUSY') OR dstchannel = '' ) AND calldate BETWEEN '`+df+`' AND '`+dt+`'

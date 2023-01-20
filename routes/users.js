@@ -252,7 +252,7 @@ router.post('/profile-update',
 
 	req.session.resultMessage = (udpate) ? helper.MessageSuccess('Success update user') : helper.MessageFailed('Failed update user')
 
-	res.redirect('/auth/logout');
+	res.redirect('/users/profile?id='+req.session.id_user);
 
 });
 

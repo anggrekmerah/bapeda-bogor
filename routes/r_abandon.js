@@ -50,7 +50,7 @@ router.get('/abandon-csv/:fromDate/:toDate',  async (req, res, next) => {
         for (const key in dataModel) {
             
             dataModel[key]['calldate'] = helper.convertDate(dataModel[key]['calldate'])
-            dataModel[key]['dst'] = ''
+            // dataModel[key]['dst'] = ''
         }
 
     }
@@ -93,13 +93,13 @@ router.post('/abandon-datatable',  async (req, res, next) => {
         }
         ,{ 'db': 'timecalls', 'dt' : 2 }
         ,{ 'db': 'src', 'dt' : 3 }
-        ,{ 
-            'db': 'dst', 
-            'dt' : 4,
-            'formatter' : function (d, row) {
-                return ''
-            } }
-        // ,{ 'db': 'billsec', 'dt' : 5 }
+        // ,{ 
+        //     'db': 'dst', 
+        //     'dt' : 4,
+        //     'formatter' : function (d, row) {
+        //         return ''
+        //     } }
+        ,{ 'db': 'billsec', 'dt' : 4 }
        
     ]
 
