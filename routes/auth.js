@@ -22,8 +22,10 @@ router.get('/',  async (req, res, next) => {
 
     var u = ('username' in req.query) ? req.query.username : ''
 
-    let flashMessage = await helper.flashMessage(req, userModels, { username : u } )
+    let flashMessage = await helper.flashMessage(req, userModels, { username : req.session.u_email } )
     
+    delete req.session.u_email
+
     req.renderObjects.alert = flashMessage
 
     res.render('auth/form-auth', req.renderObjects);
@@ -62,7 +64,7 @@ router.get('/logout',  async (req, res, next) => {
     
                 req.session.destroy()
     
-                res.redirect('/auth')
+                res.redirect('/')
     
             }
             
@@ -84,7 +86,7 @@ router.get('/logout',  async (req, res, next) => {
 
         req.session.destroy()
 
-        res.redirect('/auth')
+        res.redirect('/')
         
     }
     
@@ -195,8 +197,9 @@ router.post('/authenticate', body('username').not().isEmpty(), body('password').
         } else {
 
             req.session.resultMessage = helper.MessageFailed('Username or Password Failed')
-            
-            res.redirect('/auth?username='+req.body.username);
+            req.session.u_email = req.body.username
+            // res.redirect('/?username='+req.body.username);
+            res.redirect('/');
 
         }
 
@@ -204,7 +207,9 @@ router.post('/authenticate', body('username').not().isEmpty(), body('password').
 
         req.session.resultMessage = helper.MessageFailed('Username Not Found')
         req.body.dataUpdate = { username : req.body.username }
-        res.redirect('/auth?username='+req.body.username);
+        req.session.u_email = req.body.username
+        // res.redirect('/?username='+req.body.username);
+        res.redirect('/');
 
     }
 

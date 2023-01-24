@@ -23,7 +23,7 @@ var r_user_activityRouter = require('./routes/r_user_activity');
 
 module.exports ={
     routes : function (app) {
-        app.use('/', indexRouter);
+        app.use('/', authRouter);
         app.use('/users', usersRouter);
         app.use('/group', groupRouter);
         app.use('/menu', menuRouter);
