@@ -243,6 +243,7 @@ ioSocket.on("responseDestroy", (res) => {
     if(document.body.contains(document.getElementById('statusInCallAgent_'+res.channel.caller.number))) { // dashboard
 
         clearInterval(intervalCOunter[res.channel.caller.number])
+        totalSeconds = 0
 
         document.getElementById('statusInCallAgent_'+res.channel.caller.number).innerHTML = 'IDLE'
 

@@ -102,18 +102,19 @@ $(function(){
 
                 switch (d[key].call_event) {
 
-                case 'RINGING':
-                    dataPointsIncoming.push({ x: new Date(d[key].tahun, 0, d[key].tanggal), y: Number(d[key].total) })
-                    break;
-        
-                case 'ANSWER':
-                    dataPointsReceive.push({ x: new Date(d[key].tahun, 0, d[key].tanggal), y: Number(d[key].total) })
-                    break;
-                
-                case 'NOANSWER':
-                case 'BUSY':
-                    dataPointsAbandon.push({ x: new Date(d[key].tahun, 0, d[key].tanggal) , y: Number(d[key].total) })
-                    break;
+                    case 'RINGING':
+                        dataPointsIncoming.push({ x: parseInt(d[key].tanggal), y: Number(d[key].total) })
+                        break;
+            
+                    case 'ANSWER':
+                        dataPointsReceive.push({ x: parseInt(d[key].tanggal), y: Number(d[key].total) })
+                        break;
+                    
+                    case 'NOANSWER':
+                    case 'BUSY':
+                    case 'CANCEL':
+                        dataPointsAbandon.push({ x: parseInt(d[key].tanggal) , y: Number(d[key].total) })
+                        break;
                 
                 }
 
@@ -133,12 +134,17 @@ $(function(){
                     
                     case 'NOANSWER':
                     case 'BUSY':
+                    case 'CANCEL':
                         dataPointsAbandonTahun.push({ x: new Date(dt[k].tahun, (parseInt(dt[k].bulan) - 1), dt[k].tanggal), y: Number(dt[k].total) })
                         break;
                 
                 }
 
             }
+
+            console.log(dataPointsIncoming)
+            console.log(dataPointsReceive)
+            console.log(dataPointsAbandon)
 
             console.log(dataPointsIncomingTahun)
             console.log(dataPointsReceiveTahun)
@@ -147,56 +153,43 @@ $(function(){
               
             var chart = new CanvasJS.Chart("chartContainer", {
                 animationEnabled: true,
-                theme: "light2",
                 title:{
                     text: "Calls Traffic " + m  + " " + t
                 },
-                axisX:{
-                    valueFormatString: "DD MMM",
-                    crosshair: {
-                        enabled: true,
-                        snapToDataPoint: true
-                    }
+                axisX: {
+                    valueFormatString: "#"
                 },
-                axisY: {
-                    title: "",
-                    includeZero: true,
-                    crosshair: {
-                        enabled: true
-                    }
+                // axisY: {
+                //     title: "Temperature (in °C)",
+                //     suffix: " °C"
+                // },
+                legend:{
+                    cursor: "pointer",
+                    fontSize: 16,
+                    itemclick: toggleDataSeries
                 },
                 toolTip:{
-                    shared:true
-                },  
-                legend:{
-                    cursor:"pointer",
-                    verticalAlign: "bottom",
-                    horizontalAlign: "left",
-                    dockInsidePlotArea: true,
-                    itemclick: toogleDataSeries
+                    shared: true
                 },
                 data: [{
-                    type: "line",
-                    showInLegend: true,
                     name: "Incoming",
-                    markerType: "square",
-                    color: "#F08080",
+                    type: "spline",
+                    yValueFormatString: "#",
+                    showInLegend: true,
                     dataPoints: dataPointsIncoming
                 },
                 {
-                    type: "line",
-                    showInLegend: true,
                     name: "Receive",
-                    markerType: "square",
-                    color: "#1da585",
+                    type: "spline",
+                    yValueFormatString: "#",
+                    showInLegend: true,
                     dataPoints: dataPointsReceive
                 },
                 {
-                    type: "line",
-                    showInLegend: true,
                     name: "Abandon",
-                    markerType: "square",
-                    color: "#dfa115",
+                    type: "spline",
+                    yValueFormatString: "#",
+                    showInLegend: true,
                     dataPoints: dataPointsAbandon
                 }]
             });
@@ -230,7 +223,7 @@ $(function(){
                     verticalAlign: "bottom",
                     horizontalAlign: "left",
                     dockInsidePlotArea: true,
-                    itemclick: toogleDataSeries
+                    itemclick: toogleDataSeriesTahun
                 },
                 data: [{
                     type: "line",
@@ -259,7 +252,7 @@ $(function(){
             });
             chartTahun.render();
             
-            function toogleDataSeries(e){
+            function toggleDataSeries(e){
                 if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
                     e.dataSeries.visible = false;
                 } else{
@@ -267,8 +260,17 @@ $(function(){
                 }
                 chart.render();
             }
+
+            function toogleDataSeriesTahun(e){
+                if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else{
+                    e.dataSeries.visible = true;
+                }
+                chartTahun.render();
+            }
         
-            chart.render();
+            // chart.render();
 
         },
         error: function(errMsg) {
