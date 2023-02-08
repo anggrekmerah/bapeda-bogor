@@ -130,6 +130,15 @@ router.get('/add',  async (req, res, next) => {
 
     var n = ('phone_number' in req.query) ? req.query.phone_number : ''
     console.log(n)
+
+    var checkNumber = await phoneBookModels.getDataByNumber(n)
+    
+    delete checkNumber.meta
+    
+    if(checkNumber.length > 0 && 'id_phone_book' in checkNumber[0]){
+        req.query.id = checkNumber[0]['id_phone_book']
+    }
+
     var data_update = { phone_name : '', phone_number : n, notes : ''}
     
     if(req.session.dataUpdate){

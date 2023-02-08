@@ -67,6 +67,30 @@ module.exports = class phoneBookModel extends crud_model  {
 
     }
 
+    getDataByNumber(n) {
+        
+        return new Promise((resolve, reject) => {
+        
+            var params = {
+                table : this.tableName
+                ,id_key :  'phone_number'
+                ,id_value : n
+            }
+
+            this.getById(params).then( (res) => {
+            
+                resolve( res )
+        
+            }).catch( (err) => {
+                
+                reject (err)
+        
+            })
+        
+        })
+
+    }
+
     insertData( req ) {
 
         return new Promise((resolve, reject) => {
