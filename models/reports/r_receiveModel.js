@@ -20,14 +20,20 @@ module.exports = class r_receiveModel extends crud_model {
             dt += ' 23:59:59'
 
             const query = `SELECT 
-                calldate, 
-                TIME(calldate) AS timecalls,
-                src,
-                dstchannel,
-                disposition,
-                billsec
+                a.calldate, 
+                TIME(a.calldate) AS timecalls,
+                a.src,
+                a.dstchannel,
+                a.disposition,
+                a.billsec,
+                SUBSTRING_INDEX(SUBSTRING_INDEX(a.dstchannel, '-',1), '/',-1)  AS extension,
+                b.phone_name,
+                CONCAT(d.first_name, ' ', d.last_name) AS agent_name
                 
-            FROM ast_bapenda.cdr
+            FROM ast_bapenda.cdr a
+            LEFT JOIN bapenda.m_phone_book b ON b.phone_number = a.src
+            LEFT JOIN bapenda.m_extension c ON c.extension = SUBSTRING_INDEX(SUBSTRING_INDEX(dstchannel, '-',1), '/',-1)
+            LEFT JOIN bapenda.m_users d ON d.id_extension = c.id_extension
             WHERE calltype = 'Incoming' AND disposition = 'ANSWERED' AND dstchannel != ''  AND calldate BETWEEN '`+df+`' AND '`+dt+`'
             ORDER BY recid desc`
 

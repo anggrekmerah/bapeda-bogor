@@ -33,9 +33,13 @@ module.exports={
         var d = new Date()
         
         let ank = d.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-        
+        console.log('date now')
+        console.log(ank)
         let curdateL = ank.slice(0,10).split('/')
-        let curdate = curdateL[2].trim() + '-' + curdateL[1] + '-' + curdateL[0]
+        let m = (curdateL[1] < 10) ? '0'+curdateL[1] : curdateL[1]
+        let da = (curdateL[0] < 10) ? '0'+curdateL[0] : curdateL[0]
+
+        let curdate = curdateL[2].trim().split(' ')[0] + '-' + m + '-' + da
 
         return curdate
     }
@@ -47,7 +51,12 @@ module.exports={
         let ank = d.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
         let curdateL = ank.slice(0,10).split('/')
-        let curdate = curdateL[2].trim() + '-' + curdateL[1] + '-' + curdateL[0]
+
+        let m = (curdateL[1] < 10) ? '0'+curdateL[1] : curdateL[1]
+        let da = (curdateL[0] < 10) ? '0'+curdateL[0] : curdateL[0]
+
+
+        let curdate = curdateL[2].trim().split(' ')[0] + '-' + m + '-' + da
 
         return curdate
         

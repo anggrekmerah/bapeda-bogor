@@ -198,6 +198,8 @@ ws.on('message', async (data) => {
                     ]
 
 					var inserLog = await websocketModels.insertData(valueAnswer)
+
+					console.log('DARI ANSWER')
 					var update_incall = await websocketModels.update_incall( res.caller.id, res.peer.caller.number, 'Y' )
 					var update_incall_tmp = await websocketModels.update_incall_tmp( res.caller.id, res.peer.id, res.peer.caller.number, res.dialstatus )
 

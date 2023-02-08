@@ -26,19 +26,20 @@ block content
                                         li: a(class="dropdown-item" href=phone_book ) Add Phonebook
                                         li: a(class="dropdown-item" href=black_list ) Add Blacklist
                         div(class="card-body")
-                            table( class="table" )   
-                                tr  
-                                    td From
-                                    td :
-                                    td #{agent_call[index]['phone_name']}
-                                tr  
-                                    td Phone 
-                                    td : 
-                                    td #{agent_call[index]['call_number']}
-                                tr  
-                                    td Note
-                                    td : 
-                                    td #{agent_call[index]['notes']}
+                            div(class="table-responsive")
+                                table( class="table" )   
+                                    tr  
+                                        td From
+                                        td :
+                                        td #{agent_call[index]['phone_name']}
+                                    tr  
+                                        td Phone 
+                                        td : 
+                                        td #{agent_call[index]['call_number']}
+                                    tr  
+                                        td Note
+                                        td : 
+                                        td #{agent_call[index]['notes']}
 
 
             //- div(class="col-md-2 my-1")
