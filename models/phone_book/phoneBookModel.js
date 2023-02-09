@@ -177,21 +177,23 @@ module.exports = class phoneBookModel extends crud_model  {
 
     insertDataIgnore( req ) {
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => { 
 
             var params = {
-                values : [req.body.phoneName, req.body.phoneNumber, req.body.notes, req.session.id_user, new Date()]
-                , search : {'phone_number' : req.body.phoneNumber, 'active' : 'Y'}
+                values : [req.body.phoneName, req.body.phoneNumber.trim(), req.body.notes, req.session.id_user, new Date()]
+                , search : {'phone_number' : req.body.phoneNumber.trim(), 'active' : 'Y'}
                 , table : this.tableName
                 , fields : 'phone_name, phone_number, notes, user_created, created_datetime'
             }
+
+            console.log(params)
 
             this.saveDataIgnore(params).then( (res) => {
             
                 resolve( true )
         
             }).catch( (err) => {
-                
+                console.log(err)
                 reject (false)
         
             })
