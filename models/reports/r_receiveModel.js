@@ -20,15 +20,14 @@ module.exports = class r_receiveModel extends crud_model {
             dt += ' 23:59:59'
 
             const query = `SELECT 
-                a.calldate, 
-                TIME(a.calldate) AS timecalls,
-                a.src,
-                a.dstchannel,
-                a.disposition,
-                a.billsec,
-                SUBSTRING_INDEX(SUBSTRING_INDEX(a.dstchannel, '-',1), '/',-1)  AS extension,
-                b.phone_name,
-                CONCAT(d.first_name, ' ', d.last_name) AS agent_name
+                date(a.calldate) as \`Date\`, 
+                TIME(a.calldate) AS \`Time\`,
+                CONCAT(d.first_name, ' ', d.last_name) AS 'Agent_Name',
+                SUBSTRING_INDEX(SUBSTRING_INDEX(a.dstchannel, '-',1), '/',-1)  AS 'Agent_Ext',
+                b.phone_name as 'WP_Name',
+                a.src as 'WP_Phone',
+                b.notes as 'Description',
+                a.billsec as 'Duration_(second)'
                 
             FROM ast_bapenda.cdr a
             LEFT JOIN bapenda.m_phone_book b ON b.phone_number = a.src
@@ -63,16 +62,22 @@ module.exports = class r_receiveModel extends crud_model {
         dt += ' 23:59:59'
 
         const query = `SELECT 
-            calldate, 
-            TIME(calldate) AS timecalls,
-            src,
-            dstchannel,
-            disposition,
-            billsec,
-            recid
-             
-        FROM ast_bapenda.cdr
+            a.calldate, 
+            TIME(a.calldate) AS timecalls,
+            CONCAT(d.first_name, ' ', d.last_name) AS agent_name,
+            SUBSTRING_INDEX(SUBSTRING_INDEX(a.dstchannel, '-',1), '/',-1)  AS extension,
+            b.phone_name,
+            a.src,
+            b.notes,
+            a.billsec,
+            a.recid
+            
+        FROM ast_bapenda.cdr a
+        LEFT JOIN bapenda.m_phone_book b ON b.phone_number = a.src
+        LEFT JOIN bapenda.m_extension c ON c.extension = SUBSTRING_INDEX(SUBSTRING_INDEX(dstchannel, '-',1), '/',-1)
+        LEFT JOIN bapenda.m_users d ON d.id_extension = c.id_extension
         WHERE calltype = 'Incoming' AND disposition = 'ANSWERED' AND dstchannel != '' AND calldate BETWEEN '`+df+`' AND '`+dt+`'
+        GROUP BY a.calldate
         ORDER BY recid desc`
 
         console.log(query)

@@ -49,16 +49,16 @@ router.get('/receive-csv/:fromDate/:toDate',  async (req, res, next) => {
 
         for (const key in dataModel) {
             
-            dataModel[key]['calldate'] = helper.convertDate(dataModel[key]['calldate'])
+            dataModel[key]['Date'] = helper.convertDate(dataModel[key]['Date'])
 
-            if(dataModel[key]['dstchannel'] != '') {
+            // if(dataModel[key]['dstchannel'] != '') {
 
-                var dst = dataModel[key]['dstchannel'].split('-')
-                var s = dst[0].slice(4, dst[0].length)
+            //     var dst = dataModel[key]['dstchannel'].split('-')
+            //     var s = dst[0].slice(4, dst[0].length)
 
-                dataModel[key]['dstchannel'] = s
+            //     dataModel[key]['dstchannel'] = s
 
-            }
+            // }
             
             
         } 
@@ -102,23 +102,13 @@ router.post('/receive-datatable',  async (req, res, next) => {
             }
         }
         ,{ 'db': 'timecalls', 'dt' : 2 }
-        ,{ 'db': 'src', 'dt' : 3 }
-        ,{ 
-            'db': 'dstchannel', 
-            'dt' : 4,
-            'formatter' : function (d, row) {
-
-                var s = ''
-                if(row.dstchannel != '') {
-                    var dst = row.dstchannel.split('-')
-                    s = dst[0].slice(4, dst[0].length)
-                }
-
-                return s
-            } 
-        }
-        ,{ 'db': 'billsec', 'dt' : 5 }
-       
+        ,{ 'db': 'agent_name', 'dt' : 3 }
+        ,{ 'db': 'extension', 'dt' : 4 }
+        ,{ 'db': 'phone_name', 'dt' : 5 }
+        ,{ 'db': 'src', 'dt' : 6 }
+        ,{ 'db': 'notes', 'dt' : 7 }
+        ,{ 'db': 'billsec', 'dt' : 8 }
+        
     ]
 
     var data = await r_receiveModels.datatable(req, cols)
