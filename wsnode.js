@@ -181,7 +181,7 @@ ws.on('message', async (data) => {
 			
 				case 'ANSWER':
 
-					if(!('caller' in res) && !('peer' in res)){
+					if(!('peer' in res)  && !('caller' in res) ){
 						return false
 					}
 					
