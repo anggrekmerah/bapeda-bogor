@@ -120,32 +120,71 @@ $(function(){
 
             }
 
+            var it = {}
+            var rt = {}
+            var at = {}
+
             for (const k in dt) {
-                
+                var mtt = new Date(dt[k].tahun, (parseInt(dt[k].bulan) - 1), 1).toLocaleString('en-US', { month: 'short' });
                 switch (dt[k].call_event) {
 
                     case 'RINGING':
-                        dataPointsIncomingTahun.push({ x: new Date(dt[k].tahun, (parseInt(dt[k].bulan) - 1), dt[k].tanggal), y: Number(dt[k].total) })
+                        if(it[ dt[k].bulan ] != undefined) {
+                            it[dt[k].bulan]['RINGING'] = { label: mtt, y: (it[dt[k].bulan]['RINGING']['y'] + Number(dt[k].total)) , indexLabelFontSize: 16}
+                        } else {
+                            it[dt[k].bulan] = {'RINGING' : { label: mtt, y: Number(dt[k].total) , indexLabelFontSize: 16}}
+                        }
+                        
                         break;
             
                     case 'ANSWER':
-                        dataPointsReceiveTahun.push({ x: new Date(dt[k].tahun, (parseInt(dt[k].bulan) - 1), dt[k].tanggal), y: Number(dt[k].total) })
+                        if(rt[ dt[k].bulan ] != undefined) {
+                            rt[dt[k].bulan]['ANSWER'] = { label: mtt, y: (it[dt[k].bulan]['RINGING']['y'] + Number(dt[k].total)) , indexLabelFontSize: 16}
+                        } else {
+                            rt[dt[k].bulan] = {'ANSWER' : { label: mtt, y: Number(dt[k].total) , indexLabelFontSize: 16}} 
+                        }
                         break;
                     
                     case 'NOANSWER':
                     case 'BUSY':
                     case 'CANCEL':
-                        dataPointsAbandonTahun.push({ x: new Date(dt[k].tahun, (parseInt(dt[k].bulan) - 1), dt[k].tanggal), y: Number(dt[k].total) })
+                        if(at[ dt[k].bulan ] != undefined) {
+                            at[dt[k].bulan]['ABANDON'] = { label: mtt, y: (it[dt[k].bulan]['RINGING']['y'] + Number(dt[k].total)) , indexLabelFontSize: 16}
+                        } else {
+                            at[dt[k].bulan] = {'ABANDON' : { label: mtt, y: Number(dt[k].total) , indexLabelFontSize: 16}} 
+                        }
                         break;
                 
                 }
 
             }
 
-            console.log(dataPointsIncoming)
-            console.log(dataPointsReceive)
-            console.log(dataPointsAbandon)
+            
+            for (let index = 1; index <= 12; index++) {
+                
+                var mt = new Date(t, (index - 1), 1).toLocaleString('en-US', { month: 'short' });
 
+                if(it[index] == undefined) {
+                    dataPointsIncomingTahun.push({ label: mt, y: 0 , indexLabelFontSize: 16})
+                } else {
+                    dataPointsIncomingTahun.push(it[index]['RINGING'])
+                }
+
+                if(it[index] == undefined) {
+                    dataPointsReceiveTahun.push({ label: mt, y: 0 , indexLabelFontSize: 16})
+                } else {
+                    dataPointsReceiveTahun.push(rt[index]['ANSWER'])
+                }
+
+                if(it[index] == undefined) {
+                    dataPointsAbandonTahun.push({ label: mt, y: 0 , indexLabelFontSize: 16})
+                } else {
+                    dataPointsAbandonTahun.push(at[index]['ABANDON'])
+                }
+                
+                
+
+            }
             console.log(dataPointsIncomingTahun)
             console.log(dataPointsReceiveTahun)
             console.log(dataPointsAbandonTahun)
@@ -156,13 +195,24 @@ $(function(){
                 title:{
                     text: "Calls Traffic " + m  + " " + t
                 },
-                axisX: {
-                    valueFormatString: "#"
+                axisX:{
+                    labelFontSize: 12,
+                    interval: 1,
+                    intervalType: "number"
+                    // valueFormatString: "MMM",
+                    // crosshair: {
+                    //     enabled: false,
+                    //     snapToDataPoint: true
+                    // }
                 },
-                // axisY: {
-                //     title: "Temperature (in °C)",
-                //     suffix: " °C"
-                // },
+                axisY: {
+                    labelFontSize: 12
+                    // title: "",
+                    // includeZero: true,
+                    // crosshair: {
+                    //     enabled: true
+                    // }
+                },
                 legend:{
                     cursor: "pointer",
                     fontSize: 16,
@@ -197,23 +247,27 @@ $(function(){
 
             var chartTahun = new CanvasJS.Chart("chartContainerTahun", {
                 animationEnabled: true,
-                theme: "light2",
+                // theme: "light2",
                 title:{
                     text: "Calls Traffic " + t
                 },
                 axisX:{
-                    valueFormatString: "MMM",
-                    crosshair: {
-                        enabled: true,
-                        snapToDataPoint: true
-                    }
+                    labelFontSize: 12,
+                    interval: 1,
+                    intervalType: "month"
+                    // valueFormatString: "MMM",
+                    // crosshair: {
+                    //     enabled: false,
+                    //     snapToDataPoint: true
+                    // }
                 },
                 axisY: {
-                    title: "",
-                    includeZero: true,
-                    crosshair: {
-                        enabled: true
-                    }
+                    labelFontSize: 12
+                    // title: "",
+                    // includeZero: true,
+                    // crosshair: {
+                    //     enabled: true
+                    // }
                 },
                 toolTip:{
                     shared:true
@@ -221,12 +275,12 @@ $(function(){
                 legend:{
                     cursor:"pointer",
                     verticalAlign: "bottom",
-                    horizontalAlign: "left",
-                    dockInsidePlotArea: true,
+                    fontSize: 16,
+                    // dockInsidePlotArea: true,
                     itemclick: toogleDataSeriesTahun
                 },
                 data: [{
-                    type: "line",
+                    type: "spline",
                     showInLegend: true,
                     name: "Incoming",
                     markerType: "square",
@@ -234,7 +288,7 @@ $(function(){
                     dataPoints: dataPointsIncomingTahun
                 },
                 {
-                    type: "line",
+                    type: "spline",
                     showInLegend: true,
                     name: "Receive",
                     markerType: "square",
@@ -242,7 +296,7 @@ $(function(){
                     dataPoints: dataPointsReceiveTahun
                 },
                 {
-                    type: "line",
+                    type: "spline",
                     showInLegend: true,
                     name: "Abandon",
                     markerType: "square",
