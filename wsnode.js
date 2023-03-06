@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 var http = require("http");
 var amis = require('asterisk-manager');
 
-require('dotenv').config({path:'.env'})
+require('dotenv').config({path:'/home/bapeda-bogor/.env'})
 
 const { io } = require("socket.io-client");
 const { stat } = require('fs');
