@@ -1,6 +1,6 @@
 
 // require('dotenv').config({path:'/home/git/sms/.env'})
-require('dotenv').config({path:'.env'})
+require('dotenv').config({path:'/home/bapeda-bogor/.env'})
 
 const mariadb = require('mariadb');
 
