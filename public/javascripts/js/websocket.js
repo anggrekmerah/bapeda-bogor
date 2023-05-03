@@ -1,5 +1,5 @@
 
-const ioSocket = io('http://'+window.location.hostname+':3000',{
+const ioSocket = io('http://'+window.location.hostname+':3010',{
     transports: ["websocket", "polling"] // use WebSocket first, if available
 });
 
