@@ -16,7 +16,7 @@ const config = {
   },
   
 };
-
+console.log(config.db)
 const pool = mariadb.createPool(config.db);
 
 // expose the ability to create new connections
