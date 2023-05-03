@@ -10,7 +10,7 @@ const websocketModel = require('./models/websocket/websocketModel');
 
 const env = process.env;
 
-const socket = io('ws://localhost:3000');
+const socket = io('ws://localhost:3010');
 
 var websocketModels = new websocketModel()
 
