@@ -1,0 +1,113 @@
+extends ../layout
+
+block content
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+            div(class="col-md-4")
+                div(class="card")
+                    div( class="card-header") 
+                        span(class="fs-4") Whatsapp Usage
+                        a(class="btn btn-primary float-end" href="#") View Detail
+                    div(class="card-body")
+                        h5(class="card-title") 8.721 / 20.000
+                        p(class="card-text") 11.279 Message Left
+                        br
+                    div(class="card-footer")
+                        div(class="progress")
+                            div(class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 25%")
+                        span(class="card-text" style="font-size:12px;") Has been used
+                        span(class="card-text" style="font-size:10px; float:right !important; margin-top:6px;") 48.5%
+                        
+            div(class="col-md-8")
+                div(class="card")
+                    div( class="card-header") 
+                        span(class="fs-4") Detail All Usage
+                    div(class="card-body")
+                        div(class="row")
+                            div(class="col-md-5")
+                                div(id="chartContainer" style="height: 150px; width: 100%;")
+                            div(class="col-md-7")      
+                                table(class="table table-borderless") 
+                                    tr 
+                                        td
+                                        td All Campaign
+                                        td 5
+                                        td: a(href="#") View Detail
+                                    tr 
+                                        td: span(class="badge bg-success") 
+                                        td Campaign Finish
+                                        td 2
+                                        td: a(href="#") View Detail 
+                                    tr 
+                                        td: span(class="badge bg-primary") 
+                                        td Campaign Ready
+                                        td 2
+                                        td: a(href="#") View Detail
+                                    tr 
+                                        td: span(class="badge bg-danger") 
+                                        td Campaign Draft
+                                        td 1
+                                        td: a(href="#") View Detail
+                                    
+            div(class="row mt-5") 
+                div(class="col-md-2")         
+                    select(class="form-select")
+                        option(value="all") All Status
+                        option(value="all") Draft
+                        option(value="all") Finish
+                        option(value="all") Ready
+                div(class="col-md-2")         
+                    select(class="form-select")
+                        option(value="") Select Recipients
+                        option(value="all") Recipients 1
+                        option(value="all") Recipients 2
+                        option(value="all") Recipients 3
+                div(class="col-md-2")
+                    button(class="btn btn-warning") Apply    
+
+            div(class="row mt-5")
+                div(class="col-md-12")
+                    table(class="table" id="wa-datatable")
+                        thead
+                            tr 
+                                th(class="text-center") Whatsapp Name 
+                                th(class="text-center") Status
+                                th(class="text-center") Recipient
+                                th(class="text-center") Time
+                                th(class="text-center") Action
+                        tbody 
+                            tr 
+                                td Hallo Selamat Datang!
+                                td(class="text-center"): span(class="badge bg-danger") Draft
+                                td(class="text-center"): span(class="badge bg-secondary") Recipients 1
+                                td(class="text-start" style="font-size:12px;") 
+                                    i Scheduled Time  
+                                    p 2023-05-01 12:15:02
+                                td(class="text-center") 
+                                    span: i(class="fa-solid fa-chart-simple ms-5")
+                                    span: i(class="fa-solid fa-pencil ms-5")
+                                    span: i(class="fa-solid fa-trash ms-5") 
+                            tr 
+                                td Promo Khusus!
+                                td(class="text-center"): span(class="badge bg-success") Finish
+                                td(class="text-center"): span(class="badge bg-secondary") Recipients 2
+                                td(class="text-start" style="font-size:12px;")
+                                    i Send Time
+                                    p 2023-05-01 12:15:02
+                                td(class="text-center") 
+                                    span: i(class="fa-solid fa-chart-simple ms-5")
+                                    span: i(class="fa-solid fa-pencil ms-5")
+                                    span: i(class="fa-solid fa-trash ms-5") 
+                            tr 
+                                td Diskon 50%!
+                                td(class="text-center"): span(class="badge bg-primary") Draft
+                                td(class="text-center"): span(class="badge bg-secondary") Recipients 1
+                                td(class="text-start" style="font-size:12px;") 
+                                    i Ready Time
+                                    p 2023-05-01 12:15:02
+                                td(class="text-center") 
+                                    span: i(class="fa-solid fa-chart-simple ms-5")
+                                    span: i(class="fa-solid fa-pencil ms-5")
+                                    span: i(class="fa-solid fa-trash ms-5") 
+
