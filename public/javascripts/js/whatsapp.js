@@ -1,6 +1,8 @@
 window.onload = function () {
 
     $('#wa-datatable').DataTable()
+    $('#table_template').DataTable()
+    $('#sender_table').DataTable()
 
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
