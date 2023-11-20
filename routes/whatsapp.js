@@ -6,12 +6,52 @@ const whatsappModel = require('../models/whatsapp/whatsappModel')
 const helper = require('../config/helper');
 const groupMenuModel = require('../models/group_menu/groupMenuModel');
 
+const fs   = require('fs');
+const jwt  = require('jsonwebtoken');
+
 var groupMenuModels = new groupMenuModel()
 var controllerName = 'whatsapp'
 var whatsappModels = new whatsappModel()
 
 
+/* GET redirect page. */
+router.get('/redirect',  async (req, res, next) => {
 
+    // PAYLOAD
+    var payload = {
+        id_user: req.session.id_user,
+        email: req.session.email
+    };
+    // PRIVATE and PUBLIC key
+    var privateKEY  = fs.readFileSync("./rsa_2048/private_key.pem", 'utf8');
+    var i  = 'Benpenda Kota Bogor';          // Issuer 
+    var s  = req.session.email;        // Subject 
+    var a  = 'http://localhost:8080'; // Audience
+
+    // SIGNING OPTIONS
+    var signOptions = {
+        issuer:  i,
+        subject:  s,
+        audience:  a,
+        expiresIn:  100,
+        algorithm:  "RS256"
+    };
+
+    var token = jwt.sign(payload, privateKEY, signOptions);
+    console.log('token = ' + token)
+    
+    res.cookie('token', token).redirect('http://localhost:8080/whatsapp/getredirect');
+
+});
+
+router.get('/getredirect',  async (req, res, next) => {
+
+    console.log('Authorization')
+
+    console.log(req.cookies.token)
+    res.send({'ok':'ok'})
+
+});
 
 /* GET home page. */
 router.get('/dashboard',  async (req, res, next) => {
