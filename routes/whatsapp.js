@@ -23,7 +23,7 @@ router.get('/redirect',  async (req, res, next) => {
         email: req.session.email
     };
     // PRIVATE and PUBLIC key
-    var privateKEY  = fs.readFileSync("../rsa_2048/private_key.pem", 'utf8');
+    var privateKEY  = fs.readFileSync("/home/bapeda-bogor/routes/rsa_2048/private_key.pem", 'utf8');
     var i  = 'Benpenda Kota Bogor';          // Issuer 
     var s  = req.session.email;        // Subject 
     var a  = 'http://192.168.101.127/'; // Audience
