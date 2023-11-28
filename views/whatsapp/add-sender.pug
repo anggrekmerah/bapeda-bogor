@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+    
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+            div(class="col-md-4")
+                form(class="row g-3" action="save" method="post" id="formSender")
+                    div(class="mb-3")
+                        label(for="senderid" class="form-label") Sender ID 
+                        input(type="text" class="form-control" id="senderid" name="senderid" placeholder="Sender ID" )
+                            
+                    div(class="mb-3")
+                        label(for="purpose" class="form-label") Purpose
+                        input(type="text" class="form-control" id="purpose" name="Purpose" placeholder="Purpose" )
+                    
+                    div(class="mb-3")
+                        button(type="submit" class="btn btn-primary float-end") Save
+                        a( class="btn btn-primary float-end me-2" href="/group" ) Back
+                        button(type="button" class="btn btn-danger float-end me-2" id="discard") Reset
+            
+            div(class="col-md-4")
+                label(class="fw-bold") Notes : 
+                p This sender form serves to create a sender ID
+                p(class="text-danger") - Sender ID Mandatory
+                p(class="text-danger") - Purpose Mandatory
+            

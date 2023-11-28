@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+    
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+            div(class="col-md-6")
+                
+                form(class="row g-3" action='save-template' method="post" id="formTemplate")
+                    div(class="mb-3")
+                        label(for="templateName" class="form-label") Template Name 
+                        input(type="text" class="form-control" id="templateName" name="templateName" placeholder="Template Name " )
+                            
+                    div(class="input-group mb-3")
+                        div(class="col mb-3 ")
+                            label(for="exampleFormControlInput1" class="form-label") Account
+                            select(class="form-select" name="account" id="account")
+                                option(value="") Choose Account 
+                        div(class="col mb-3 ms-3")
+                            label(for="exampleFormControlInput1" class="form-label") Category
+                            select(class="form-select" name="category" id="category")
+                                option(value="") Choose Category
+                        div(class="col mb-3 ms-3")
+                            label(for="exampleFormControlInput1" class="form-label") Language
+                            select(class="form-select" name="language" id="language")
+                                option(value="") Choose Language
+                        
+                    div(class="mb-3")
+                        label(for="templateName" class="form-label") Message 
+                        textarea( cols="30", rows="10" class="form-control" id="message" name="message" placeholder="Template Name " )
+                        
+                    div(class="mb-3")
+                        button(type="submit" class="btn btn-primary float-end") Save
+                        a( class="btn btn-primary float-end me-2" href="/group" ) Back
+                        button(type="button" class="btn btn-danger float-end me-2" id="discard") Reset
+            
+            div(class="col-md-4")
+                label(class="fw-bold") Notes : 
+                p This Template form serves to create a Whatsapp Template message
+               
+                p(class="text-danger") - Account Mandatory
+                p(class="text-danger") - Category Mandatory
+                p(class="text-danger") - Language Mandatory
+            

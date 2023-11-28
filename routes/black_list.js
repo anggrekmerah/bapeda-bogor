@@ -10,7 +10,7 @@ var phoneBookModels = new phoneBookModel()
 var groupMenuModels = new groupMenuModel()
 
 const controllerName = 'black_list'
-const menuId = 9
+const menuId = 9 
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {

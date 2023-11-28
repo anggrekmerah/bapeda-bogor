@@ -92,6 +92,8 @@ html
             //- li: a(class="dropdown-item" href="#!") Activity Log
             li: hr(class="dropdown-divider")
             li: a(class="dropdown-item" href="/auth/logout") Logout
+        li(class="nav-item")
+          a(class="btn btn-success" href="/whatsapp/redirect") Whatsapp Blast
           
     div( id="layoutSidenav")
       
@@ -220,5 +222,8 @@ case controller
     script(src="/javascripts/js/r_outgoing.js")
   when 'r_kpi'
     script(src="/javascripts/js/r_kpi.js")  
+    script(src="/javascripts/js/canvasjs.min.js")
+  when 'whatsapp'
+    script(src="/javascripts/js/whatsapp.js")
     script(src="/javascripts/js/canvasjs.min.js")
             

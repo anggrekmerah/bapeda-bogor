@@ -1,0 +1,47 @@
+extends ../layout
+
+block content
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="card")
+            div(class="card-header card-title align-middle"): h4 Status Update
+                a(class="btn btn-warning float-end" href="/whatsapp/template-add") Create Template
+            div(class="card-body")
+                p(class="card-text") Whatsapp need to validate message it will take up to 7 days estimated time to validate tempate from our user usually witin 24h template status will be updated on 07:00 13:00 19:00 01:00 every day
+        div(class="row mt-3")
+            div(class="col-md-2")
+                select(class="form-select")
+                    option(value="") All Status 
+            div(class="col-md-2")
+                buton(class="btn btn-warning") Apply
+            div(class="col-md-12 mt-3")
+                table(class="table" id="table_template")
+                    thead 
+                        tr 
+                            th(class="text-center") Template Name
+                            th(class="text-center") Status
+                            th(class="text-center") Category 
+                            th(class="text-center") Language
+                            th(class="text-center") Last Updated
+                            th(class="text-center") Action 
+                    tbody 
+                        tr 
+                            td Hallo Selamat Datang!
+                            td(class="text-center"): span(class="badge bg-danger") REJECTED
+                            td(class="text-center"): span(class="badge bg-secondary") Account Update
+                            td(class="text-center"): ID
+                            td(class="text-start" style="font-size:12px;") 2023-05-01 12:15:02
+                            td(class="text-center") 
+                                span: i(class="fa-solid fa-chart-simple ms-5")
+                                span: i(class="fa-solid fa-pencil ms-5")
+                                span: i(class="fa-solid fa-trash ms-5") 
+                        tr 
+                            td Hallo Selamat Datang!
+                            td(class="text-center"): span(class="badge bg-danger") REJECTED
+                            td(class="text-center"): span(class="badge bg-secondary") Account Update
+                            td(class="text-center"): ID
+                            td(class="text-start" style="font-size:12px;") 2023-05-01 12:15:02
+                            td(class="text-center") 
+                                span: i(class="fa-solid fa-chart-simple ms-5")
+                                span: i(class="fa-solid fa-pencil ms-5")
+                                span: i(class="fa-solid fa-trash ms-5") 

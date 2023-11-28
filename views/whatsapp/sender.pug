@@ -1,0 +1,33 @@
+extends ../layout
+
+block content
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        
+        a(class="btn btn-primary float-end mb-2" href="/whatsapp/add-sender") Add Sender
+
+        table(class="table table-sm " id="sender_table")
+            thead 
+                tr 
+                    th(class="text-center") Company ID 
+                    th(class="text-center") Sender ID 
+                    th(class="text-center") Purpose 
+                    th(class="text-center") Active
+                    th(class="text-center") Created Date 
+                    th(class="text-center") Approve Status 
+                    th(class="text-center") Approve Date
+                    th(class="text-center") Action 
+            tbody 
+                 tr 
+                    td 47 
+                    td WHATSAPP3241 
+                    td TEST 
+                    td Y
+                    td 2023-06-08 
+                    td Approved 
+                    td 2023-06-08
+                    td(class="text-center") 
+                        span: i(class="fa-solid fa-pencil ms-5")
+                        span: i(class="fa-solid fa-trash ms-5") 
+               
+
