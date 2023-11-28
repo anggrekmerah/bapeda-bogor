@@ -26,7 +26,7 @@ router.get('/redirect',  async (req, res, next) => {
     var privateKEY  = fs.readFileSync("./rsa_2048/private_key.pem", 'utf8');
     var i  = 'Benpenda Kota Bogor';          // Issuer 
     var s  = req.session.email;        // Subject 
-    var a  = 'http://localhost:8080'; // Audience
+    var a  = 'http://192.168.101.127/'; // Audience
 
     // SIGNING OPTIONS
     var signOptions = {
@@ -40,7 +40,7 @@ router.get('/redirect',  async (req, res, next) => {
     var token = jwt.sign(payload, privateKEY, signOptions);
     console.log('token = ' + token)
     
-    res.cookie('token', token).redirect('http://localhost:8080/whatsapp/getredirect');
+    res.cookie('token', token).redirect('https://cloudapi.infopedia.id');
 
 });
 
