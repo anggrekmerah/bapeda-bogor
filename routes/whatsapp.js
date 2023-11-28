@@ -6,6 +6,8 @@ const whatsappModel = require('../models/whatsapp/whatsappModel')
 const helper = require('../config/helper');
 const groupMenuModel = require('../models/group_menu/groupMenuModel');
 
+var path = require("path");
+
 const fs   = require('fs');
 const jwt  = require('jsonwebtoken');
 
@@ -24,7 +26,7 @@ router.get('/redirect',  async (req, res, next) => {
     };
     // PRIVATE and PUBLIC key
     console.log(__filename)
-    var privateKEY  = fs.readFileSync("./private_key.pem", 'utf8');
+    var privateKEY  = fs.readFileSync(path.resolve(__dirname, 'private_key.pem'), 'utf8');
     var i  = 'Benpenda Kota Bogor';          // Issuer 
     var s  = req.session.email;        // Subject 
     var a  = 'http://192.168.101.127/'; // Audience
