@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        
+        if btnadd
+            a(class="btn btn-primary float-end mb-2" href="upload/add") Upload FIle
+
+        table(class="table table-sm table-bordered display compact table-striped" id="tableUploadFile")
+            thead 
+                tr
+                    th(scope="col" class="text-center") No
+                    th(scope="col") Document 
+                    th(scope="col") Created By 
+                    th(scope="col") Updated By 
+                    th(scope="col" class="text-center") Action
+            tbody 
+               

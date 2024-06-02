@@ -19,6 +19,10 @@ module.exports={
     ,btnDelete: function(url) {
         return ' <a href="'+url+'" class="btn btn-danger btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"><i class="fas fa-trash-alt"></i></a> '
     }
+
+    ,btnPreview: function(url) {
+        return ' <a href="'+url+'" class="btn btn-success btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Preview"><i class="fa-regular fa-eye"></i></a> '
+    }
     
     ,btnBlackList: function(url) {
         return '    <a href="'+url+'" class="btn btn-warning btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Black List"><i class="fas fa-phone-slash"></i></a> '

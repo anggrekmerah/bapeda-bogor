@@ -12,6 +12,7 @@ let dashboardRouter = require('./routes/dashboard');
 let dashboard_agentRouter = require('./routes/dashboard-agent');
 let authRouter = require('./routes/auth');
 let office_hourRouter = require('./routes/office_hour');
+let upload_file = require('./routes/upload_file');
 
 let whatsapp = require('./routes/whatsapp');
 
@@ -38,8 +39,8 @@ module.exports ={
         app.use('/dashboard-agent', dashboard_agentRouter);
         app.use('/auth', authRouter);
         app.use('/office-hour', office_hourRouter);
-
-        app.use('/whatsapp', whatsapp);
+        app.use('/upload', upload_file);
+        // app.use('/whatsapp', whatsapp);
 
         app.use('/report', r_abandonRouter);
         app.use('/report', r_incomingRouter);

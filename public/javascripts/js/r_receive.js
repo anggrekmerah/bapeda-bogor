@@ -62,4 +62,27 @@ function exportCsv(e){
 
 }
 
+function downloadRecording(e) {
+
+
+    var fromDate = $('#fromdate').val()
+    var toDate = $('#todate').val()
+
+    var u = ''
+
+    if( fromDate == '' && toDate == '') {
+        setTimeout(() => {
+            alert('Date cannot be empty')
+            e.innerHTML = 'Download Recording'
+        }, "500");
+        
+        
+        return false
+    } 
+
+    
+    window.location.href = '/report/receive-recording/' + fromDate +'/'+toDate
+
+}
+
 report('')
