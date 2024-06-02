@@ -27,7 +27,9 @@ module.exports = class r_receiveModel extends crud_model {
                 b.phone_name as 'WP_Name',
                 a.src as 'WP_Phone',
                 b.notes as 'Description',
-                a.billsec as 'Duration_(second)'
+                a.billsec as 'Duration_(second)',
+                a.recpath,
+                a.recfile
                 
             FROM ast_bapenda.cdr a
             LEFT JOIN bapenda.m_phone_book b ON b.phone_number = a.src
@@ -70,7 +72,9 @@ module.exports = class r_receiveModel extends crud_model {
             a.src,
             b.notes,
             a.billsec,
-            a.recid
+            a.recid,
+            a.recpath,
+            a.recfile
             
         FROM ast_bapenda.cdr a
         LEFT JOIN bapenda.m_phone_book b ON b.phone_number = a.src
