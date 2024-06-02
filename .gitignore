@@ -59,3 +59,7 @@ typings/
 
 # next.js build output
 .next
+
+public/asterisk/
+public/document/
+public/images/user-photo/

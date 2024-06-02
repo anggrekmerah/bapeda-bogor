@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+    
+    if 'id_document' in dataUpdate 
+        - var action = "update?id="+ dataUpdate.id_document
+        - var buttonAction = 'Update'
+    else 
+        - var action = "save"
+        - var buttonAction = 'Save'
+
+    h1(class="mt-4") #{title}
+    div(class="container-fluid border p-2" style="margin-top : 35px;")
+        div(class="row")
+            div(class="col-md-4")
+                | !{alert}
+                form(class="row g-3" action=action method="post" id="formUpload" enctype="multipart/form-data")
+                    div(class="mb-3")
+                        label(for="Document" class="form-label") Document 
+                        input(type="file" class="form-control" id="document" name="document"  )
+                            
+                    
+                    div(class="mb-3")
+                        button(type="submit" class="btn btn-primary float-end") #{buttonAction}
+                        a( class="btn btn-primary float-end me-2" href="/upload" ) Back
+                        button(type="button" class="btn btn-danger float-end me-2" id="discard") Reset
+            
+            div(class="col-md-4")
+                label(class="fw-bold") Notes : 
+                p This upload form serves to upload document
+                p(class="text-danger") - Document Mandatory
+            
