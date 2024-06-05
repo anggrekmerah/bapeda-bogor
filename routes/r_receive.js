@@ -119,6 +119,7 @@ router.get('/receive-recording/:fromDate/:toDate',  async (req, res, next) => {
             req.session.resultMessage = '<div class="alert alert-danger">Cannot find any recording files</div>'
 
             res.redirect('/report/receive');
+            return false
         }
             
 
