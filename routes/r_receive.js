@@ -35,6 +35,7 @@ router.get('/receive',  async (req, res, next) => {
     req.renderObjects.controller = controllerName
     req.renderObjects.title = 'Report Receive'
     req.renderObjects.sess = req.session
+    req.renderObjects.alert = req.session.resultMessage
     res.render('reports/receive', req.renderObjects );
 
 });
@@ -99,14 +100,27 @@ router.get('/receive-recording/:fromDate/:toDate',  async (req, res, next) => {
 
     if(dataModel.length > 0) {
 
+        var canzip = false;
+
         for (const key in dataModel) {
             
             var mp3 =  dataModel[key]['recpath'].replace('/home/', 'public/') + "/" + dataModel[key]['recfile'];
 
-            const fileData = fs.readFileSync( mp3 );
-            zip.file(dataModel[key]['recfile'], fileData);
+            if (fs.existsSync('foo.txt')) {
+                const fileData = fs.readFileSync( mp3 );
+                zip.file(dataModel[key]['recfile'], fileData);
+                canzip = true
+            }
+            
             
         } 
+
+        if(!canzip) {
+            req.session.resultMessage = '<div class="alert alert-danger">Cannot find any recording files</div>'
+
+            res.redirect('/report/receive');
+        }
+            
 
         zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
         .pipe(fs.createWriteStream('public/' + zipName))
