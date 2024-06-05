@@ -179,14 +179,18 @@ router.post('/receive-datatable',  async (req, res, next) => {
             'dt' : 9,
             'formatter' : function (d, row) {
 
+               console.log('row.recpath')
+               console.log(typeof row.recpath)
+               console.log( row.recpath)
                
-                var mp3 =  row.recpath.replace('/home/', 'http://localhost:8080/') + "/" + row.recfile;
-
+                var mp3 = ( row.recpath !== null && row.recfile !== null  ) ? row.recpath.replace('/home/', 'http://192.168.101.127/') + "/" + row.recfile : '';
+           
                 var audio  = '<figure> <audio controls>'
                     audio += '<source src="'+mp3+'" type="audio/mpeg">'
                     audio += '</audio> </figure>'
                     
                 return audio
+                 
 
             }
         }
