@@ -16,7 +16,7 @@ const multer  = require('multer')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/document/')
+    cb(null, '/home/bapeda-bogor/public/document/')
   },
   size: function (req, file, cb) {
     cb(null, 500000000)
