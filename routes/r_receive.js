@@ -5,6 +5,7 @@ const { Parser } = require('json2csv');
 
 const JSZip = require('jszip');
 const fs = require('fs');
+const path = require('path')
 
 const zip = new JSZip();
 
@@ -105,8 +106,7 @@ router.get('/receive-recording/:fromDate/:toDate',  async (req, res, next) => {
         for (const key in dataModel) {
             
             // var mp3 =  dataModel[key]['recpath'].replace('/home/', 'public/') + "/" + dataModel[key]['recfile'];
-            var mp3 = ( dataModel[key]['recpath'] !== null && dataModel[key]['recfile'] !== null  ) ? dataModel[key]['recpath'].replace('/home/bapeda-bogor/public/', 'public/') + "/" + dataModel[key]['recfile'] : '';
-
+            var mp3 = ( dataModel[key]['recpath'] !== null && dataModel[key]['recfile'] !== null  ) ? dataModel[key]['recpath'] + "/" + dataModel[key]['recfile'] : '';
             if (fs.existsSync(mp3)) {
                 const fileData = fs.readFileSync( mp3 );
                 zip.file(dataModel[key]['recfile'], fileData);
@@ -124,21 +124,23 @@ router.get('/receive-recording/:fromDate/:toDate',  async (req, res, next) => {
         return false
     }
         
+    var publicPath = path.join(__dirname, '../public/')
 
     zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
-    .pipe(fs.createWriteStream('public/' + zipName))
+    .pipe(fs.createWriteStream( publicPath + zipName))
     .on('finish', function () {
         console.log( zipName + " written.");
 
-        res.download('public/' + zipName, zipName, function (err) {
-            console.log('public/' + zipName)
-            fs.unlink('public/' + zipName, function (err) {
+        res.download(publicPath + zipName, zipName, function (err) {
+            console.log( publicPath + zipName)
+            fs.unlink( publicPath + zipName, function (err) {
                 console.log('ke apus')
             })
         })
 
     })
     .on('error', function () {
+        console.log(__dirname)
         req.session.resultMessage = '<div class="alert alert-danger">Failed generate zip</div>'
 
         res.redirect('/report/receive');
