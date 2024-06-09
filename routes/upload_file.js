@@ -246,8 +246,8 @@ router.get('/preview/:id', async function(req, res, next) {
         for (const key in dataModel) {
             
             filename = dataModel[key]['document'];
-            stream = fs.readFileSync('/bapeda-bogor/public/document/' + filename);
-            stat = fs.statSync('/bapeda-bogor/public/document/' + filename)
+            stream = fs.readFileSync('/home/bapeda-bogor/public/document/' + filename);
+            stat = fs.statSync('/home/bapeda-bogor/public/document/' + filename)
         } 
 
     }
