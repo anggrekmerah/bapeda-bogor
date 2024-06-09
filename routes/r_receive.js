@@ -97,46 +97,55 @@ router.get('/receive-recording/:fromDate/:toDate',  async (req, res, next) => {
     var dt = (req.params.toDate == 'null') ? helper.dateNow() : req.params.toDate
 
     const zipName = 'recording-'+df+'_'+dt+'.zip'
+    
+    var canzip = false;
 
     if(dataModel.length > 0) {
 
-        var canzip = false;
-
         for (const key in dataModel) {
             
-            var mp3 =  dataModel[key]['recpath'].replace('/home/', 'public/') + "/" + dataModel[key]['recfile'];
+            // var mp3 =  dataModel[key]['recpath'].replace('/home/', 'public/') + "/" + dataModel[key]['recfile'];
+            var mp3 = ( dataModel[key]['recpath'] !== null && dataModel[key]['recfile'] !== null  ) ? dataModel[key]['recpath'].replace('/home/bapeda-bogor/public/', 'public/') + "/" + dataModel[key]['recfile'] : '';
 
-            if (fs.existsSync('foo.txt')) {
+            if (fs.existsSync(mp3)) {
                 const fileData = fs.readFileSync( mp3 );
                 zip.file(dataModel[key]['recfile'], fileData);
                 canzip = true
             }
             
-            
         } 
-
-        if(!canzip) {
-            req.session.resultMessage = '<div class="alert alert-danger">Cannot find any recording files</div>'
-
-            res.redirect('/report/receive');
-            return false
-        }
-            
-
-        zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
-        .pipe(fs.createWriteStream('public/' + zipName))
-        .on('finish', function () {
-            console.log("sample.zip written.");
-        });
 
     }
 
-    res.download('public/' + zipName, zipName, function (err) {
-        console.log('public/' + zipName)
-        fs.unlink('public/' + zipName, function (err) {
-            console.log('ke apus')
+    if(!canzip) {
+        req.session.resultMessage = '<div class="alert alert-danger">Cannot find any recording files</div>'
+
+        res.redirect('/report/receive');
+        return false
+    }
+        
+
+    zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
+    .pipe(fs.createWriteStream('public/' + zipName))
+    .on('finish', function () {
+        console.log( zipName + " written.");
+
+        res.download('public/' + zipName, zipName, function (err) {
+            console.log('public/' + zipName)
+            fs.unlink('public/' + zipName, function (err) {
+                console.log('ke apus')
+            })
         })
+
     })
+    .on('error', function () {
+        req.session.resultMessage = '<div class="alert alert-danger">Failed generate zip</div>'
+
+        res.redirect('/report/receive');
+        return false
+    });
+
+    
     
     
 
@@ -183,6 +192,7 @@ router.post('/receive-datatable',  async (req, res, next) => {
                console.log(typeof row.recpath)
                console.log( row.recpath)
                
+                // var mp3 = ( row.recpath !== null && row.recfile !== null  ) ? row.recpath.replace('/home/bapeda-bogor/public/', 'http://localhost:8080/') + "/" + row.recfile : '';
                 var mp3 = ( row.recpath !== null && row.recfile !== null  ) ? row.recpath.replace('/home/bapeda-bogor/public/', 'http://192.168.101.127/') + "/" + row.recfile : '';
            
                 var audio  = '<figure> <audio controls>'
@@ -202,5 +212,7 @@ router.post('/receive-datatable',  async (req, res, next) => {
     res.status(200).json(data)
 
 });
+
+
 
 module.exports = router;

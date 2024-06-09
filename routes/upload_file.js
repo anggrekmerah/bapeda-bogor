@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { body, validationResult } = require('express-validator');
+const fs = require('fs');
 
 const uploadFileModel = require('../models/upload/uploadFileModel')
 const helper = require('../config/helper');
@@ -222,5 +223,52 @@ router.post('/update',
     res.redirect('/upload/add');
 
 });
+
+router.get('/preview/:id', async function(req, res, next) {
+    
+    if(!req.session.loggedin)   {  
+        res.render('error')
+        return false
+    }
+    
+    const dataModel = await uploadFileModels.getDataById(req.params.id)
+
+    delete dataModel.meta
+
+
+    var stream = '';
+    var filename = '';
+    var stat = '';
+
+
+    if(dataModel.length > 0) {
+
+        for (const key in dataModel) {
+            
+            filename = dataModel[key]['document'];
+            stream = fs.readFileSync('/bapeda-bogor/public/document/' + filename);
+            stat = fs.statSync('/bapeda-bogor/public/document/' + filename)
+        } 
+
+    }
+
+    if(stream != '') {
+        console.log(filename)
+        filename = encodeURIComponent(filename);
+        // Ideally this should strip them
+    
+        res.setHeader('Content-Length', stat.size);
+        res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
+        res.setHeader('Content-type', 'application/pdf');
+    
+        res.send(stream);
+        
+    } else {
+        res.redirect('/upload');
+    }
+    
+    
+
+  });
 
 module.exports = router;
