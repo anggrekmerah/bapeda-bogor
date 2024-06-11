@@ -3,7 +3,7 @@ extends ../layout
 block content
     
     if 'id_document' in dataUpdate 
-        - var action = "update?id="+ dataUpdate.id_document
+        - var action = "update/"+ dataUpdate.id_document
         - var buttonAction = 'Update'
     else 
         - var action = "save"
@@ -20,7 +20,8 @@ block content
                         input(type="file" class="form-control" id="document" name="document"  )
                     div(class="mb-3")
                         label(for="Description" class="form-label") Description 
-                        textarea( class="form-control" id="descriptions" name="descriptions"  )
+                        textarea( class="form-control" id="descriptions" name="descriptions" ) 
+                            | #{dataUpdate.descriptions}
                     
                     div(class="mb-3")
                         button(type="submit" class="btn btn-primary float-end") #{buttonAction}

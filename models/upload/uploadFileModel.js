@@ -162,7 +162,7 @@ module.exports = class uploadFileModel extends crud_model  {
                   }
                 , table : this.tableName
                 , id_key : this.prmaryKey
-                , id_val : req.query.id
+                , id_val : req.params.id
             }
 
             this.updateData(params).then( (res) => {

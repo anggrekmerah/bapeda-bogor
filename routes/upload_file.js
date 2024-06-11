@@ -17,7 +17,7 @@ const multer  = require('multer')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '/home/bapeda-bogor/public/document/')
+    cb(null, path.dirname(path.dirname(__filename)) + '/public/document/')
   },
   size: function (req, file, cb) {
     cb(null, 500000000)
@@ -31,7 +31,7 @@ const upload = multer({storage })
 
 /* GET home page. */
 router.get('/',  async (req, res, next) => {
-
+   
     if(!req.session.loggedin)   {  
         res.render('error')
         return false
@@ -145,13 +145,14 @@ router.get('/add',  async (req, res, next) => {
         return false
     }
     // console.log(checkAccessPage)
-    var data_update = { document : '' }
-    
-    // if(req.session.dataUpdate){
+    var data_update = { document : '', descriptions : '' }
 
-    //     data_update.fileName = req.session.dataUpdate.groupName
+    if(req.session.dataUpdate){
+
+        data_update.document = req.session.dataUpdate.document
+        data_update.descriptions = req.session.dataUpdate.descriptions
      
-    // }
+    }
     
     let flashMessage = await helper.flashMessage(req, uploadFileModels, data_update )
     
@@ -196,7 +197,7 @@ router.post('/save',
 
 });
 
-router.post('/update',  
+router.post('/update/:id',  
     upload.single('document')
 ,async (req, res, next) => {
   
@@ -210,7 +211,7 @@ router.post('/update',
     if (!errors.isEmpty()) {
         req.session.resultMessage = errors.array()
         req.session.dataUpdate = req.body
-        res.redirect('/upload/add');
+        res.redirect('/upload/add?id=' + req.params.id);
         return false
     }
     
@@ -222,7 +223,7 @@ router.post('/update',
 
     req.session.resultMessage = (saveDocument) ? helper.MessageSuccess('Success upload') : helper.MessageFailed('Failed upload')
 
-    res.redirect('/upload/add');
+    res.redirect('/upload');
 
 });
 
