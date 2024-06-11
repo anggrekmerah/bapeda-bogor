@@ -1,3 +1,12 @@
+
+function showModal(title, body) {
+    $('#modalTitle').html(title)
+    $('#modalBody').html(body)
+
+    var myModal = new bootstrap.Modal(document.getElementById('modalView'))
+    myModal.show()
+}
+
 $(function(){
 
     $('#tableUploadFile').DataTable({

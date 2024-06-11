@@ -110,13 +110,15 @@ router.get('/datatable',  async (req, res, next) => {
                 
                 var btnEdit =  (checkAccessPage && checkAccessPage.can_update == 'Y') ? helper.btnEdit('/upload/add?id='+row.id_document) : ''
                 var btnDelete =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnDelete('/upload/delete/'+row.id_document) : ''
-                var btnPreview =  (checkAccessPage && checkAccessPage.can_delete == 'Y') ? helper.btnPreview('/upload/preview/'+row.id_document) : ''
-
+                var btnDownload =  helper.btnDownload('/upload/preview/'+row.id_document)
+                var btnView =  helper.btnModalView('Description of ' + row.document, row.descriptions)
+               
                 var html = ''
                     html += '<div class="btn-group" role="group" aria-label="Basic example">'
                     html += btnEdit  
                     html += btnDelete
-                    html += btnPreview
+                    html += btnDownload
+                    html += btnView
                     html += '</div>'
                 
                 return html;

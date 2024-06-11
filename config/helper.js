@@ -23,9 +23,38 @@ module.exports={
     ,btnPreview: function(url) {
         return ' <a href="'+url+'" class="btn btn-success btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Preview"><i class="fa-regular fa-eye"></i></a> '
     }
+
+    ,btnModalView: function(title, body) {
+        return ' <a onclick="showModal(\''+title+'\', \''+body+'\')" class="btn btn-dark btn-sm " title="Preview"><i class="fa-regular fa-eye"></i></a> '
+    }
+
+    ,btnDownload: function(url) {
+        return ' <a href="'+url+'" class="btn btn-info btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Download"><i class="fa-solid fa-download"></i></a> '
+    }
     
     ,btnBlackList: function(url) {
         return '    <a href="'+url+'" class="btn btn-warning btn-sm " data-bs-toggle="tooltip" data-bs-placement="right" title="Black List"><i class="fas fa-phone-slash"></i></a> '
+    }
+
+    ,modalDatatable: function(title, body, id) {
+        var modal = ''
+        modal += '<div class="modal" id="'+id+'" tabindex="99999" aria-labelledby="exampleModalLabel" aria-hidden="false">'
+        modal += '    <div class="modal-dialog">'
+        modal += '        <div class="modal-content">'
+        modal += '        <div class="modal-header">'
+        modal += '            <h5 class="modal-title">'+title+'</h5>'
+        modal += '            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+        modal += '        </div>'
+        modal += '        <div class="modal-body">'
+        modal += '            <p>'+body+'</p>'
+        modal += '        </div>'
+        modal += '        <div class="modal-footer">'
+        modal += '            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>'
+        modal += '        </div>'
+        modal += '        </div>'
+        modal += '    </div>'
+        modal += '</div>'
+        return modal
     }
 
     ,isArray: function(a) {

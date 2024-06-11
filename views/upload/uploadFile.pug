@@ -16,4 +16,17 @@ block content
                     th(scope="col") Updated By 
                     th(scope="col" class="text-center") Action
             tbody 
-               
+            
+    div(class="modal fade" tabindex="-1" id="modalView")
+        div(class="modal-dialog")
+            div(class="modal-content")
+                div(class="modal-header")
+                    h5(class="modal-title" id="modalTitle") Modal title
+                    button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+                
+                div(class="modal-body")
+                    div(id="modalBody") Modal body text goes here
+                
+                div(class="modal-footer")
+                    button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Close
+            

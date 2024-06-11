@@ -104,9 +104,9 @@ module.exports = class uploadFileModel extends crud_model  {
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [req.body.fileName, req.session.id_user, new Date()]
+                  values : [req.body.fileName, req.body.descriptions, req.session.id_user, new Date()]
                 , table : this.tableName
-                , fields : 'document, user_created, created_datetime'
+                , fields : 'document, descriptions, user_created, created_datetime'
             }
 
             this.saveData(params).then( (res) => {
@@ -128,10 +128,10 @@ module.exports = class uploadFileModel extends crud_model  {
         return new Promise((resolve, reject) => {
 
             var params = {
-                  values : [req.body.fileName, req.session.id_user, new Date()]
+                  values : [req.body.fileName, req.body.descriptions, req.session.id_user, new Date()]
                 , search : { 'document' : req.body.fileName }
                 , table  : this.tableName
-                , fields : 'document, user_created, created_datetime'
+                , fields : 'document, descriptions, user_created, created_datetime'
             }
 
             this.saveDataIgnore(params).then( (res) => {
@@ -156,6 +156,7 @@ module.exports = class uploadFileModel extends crud_model  {
             var params = {
                   sets : {
                     'document' : req.body.fileName
+                    ,'descriptions' : req.body.descriptions
                     ,'update_datetime' : new Date()
                     ,'user_updated' : req.session.id_user
                   }
