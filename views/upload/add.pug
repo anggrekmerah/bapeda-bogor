@@ -5,9 +5,11 @@ block content
     if 'id_document' in dataUpdate 
         - var action = "update/"+ dataUpdate.id_document
         - var buttonAction = 'Update'
+        - var hiddenFile = '<input type="hidden" class="form-control" id="document_hidden" name="document_hidden" value="'+dataUpdate.document+'" >'
     else 
         - var action = "save"
         - var buttonAction = 'Save'
+        - var hiddenFile = ''
 
     h1(class="mt-4") #{title}
     div(class="container-fluid border p-2" style="margin-top : 35px;")
@@ -18,6 +20,7 @@ block content
                     div(class="mb-3")
                         label(for="Document" class="form-label") Document 
                         input(type="file" class="form-control" id="document" name="document"  )
+                        | !{hiddenFile}
                     div(class="mb-3")
                         label(for="Description" class="form-label") Description 
                         textarea( class="form-control" id="descriptions" name="descriptions" ) 

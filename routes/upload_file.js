@@ -214,9 +214,14 @@ router.post('/update/:id',
         res.redirect('/upload/add?id=' + req.params.id);
         return false
     }
-    
-    if('file' in req)
+
+    if('file' in req) {
         req.body.fileName = req.file.originalname.replaceAll(' ','-')
+    } else {
+        req.body.fileName = req.body.document_hidden.replaceAll(' ','-')
+    }
+        
+
 
 
     var saveDocument = await uploadFileModels.update_data(req)
